@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵签占卜</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "STKaiti", "KaiTi", "楷体", "PingFang SC", serif;
+            background: radial-gradient(ellipse at top, #4a2c1a 0%, #2a1810 60%, #1a0e08 100%);
+            min-height: 100vh; padding: 20px; color: #f0d9a8;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        h1 {
+            text-align: center; font-size: 2.4rem; margin-bottom: 8px;
+            color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.4);
+            letter-spacing: 8px;
+        }
+        .subtitle { text-align: center; color: #b89968; margin-bottom: 30px; font-size: 14px; }
+
+        /* 摇签区 */
+        .draw-section { text-align: center; margin-bottom: 30px; }
+        .question-box {
+            width: 100%; max-width: 480px; padding: 12px 16px; margin: 0 auto 20px;
+            background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 8px; color: #f0d9a8; font-size: 15px; font-family: inherit;
+            outline: none;
+        }
+        .question-box::placeholder { color: #8a7050; }
+        .question-box:focus { border-color: #ffd700; }
+
+        .shake-btn {
+            padding: 14px 40px; font-size: 18px; font-family: inherit;
+            background: linear-gradient(135deg, #c9a961, #8b6914);
+            color: #fff; border: 2px solid #ffd700; border-radius: 40px;
+            cursor: pointer; letter-spacing: 4px; transition: all .3s;
+            box-shadow: 0 4px 20px rgba(255,215,0,0.3);
+        }
+        .shake-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(255,215,0,0.5); }
+        .shake-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* 摇签筒动画 */
+        .bamboo-holder {
+            font-size: 80px; margin: 20px auto; width: 100px; height: 120px;
+            display: flex; align-items: center; justify-content: center;
+            transform-origin: bottom center;
+        }
+        .shaking { animation: shake 0.4s infinite; }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-12deg); }
+            75% { transform: rotate(12deg); }
+        }
+
+        /* 签文卡片 */
+        .fortune-card {
+            background: linear-gradient(135deg, #f5e6c8, #e8d4a8);
+            border: 3px double #8b6914; border-radius: 12px;
+            padding: 30px; margin: 24px 0; position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: fadeUp .6s ease;
+        }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+        .fortune-card::before, .fortune-card::after {
+            content: "❖"; position: absolute; color: #8b6914; font-size: 20px;
+        }
+        .fortune-card::before { top: 8px; left: 12px; }
+        .fortune-card::after { bottom: 8px; right: 12px; }
+
+        .level-badge {
+            display: inline-block; padding: 4px 16px; border-radius: 20px;
+            font-size: 14px; font-weight: 700; margin-bottom: 12px;
+        }
+        .level-SUPREME { background: #ffd700; color: #4a2c1a; }
+        .level-GOOD { background: #c9a961; color: #fff; }
+        .level-NEUTRAL { background: #a8946a; color: #fff; }
+        .level-BAD { background: #8a7050; color: #fff; }
+        .level-WORST { background: #4a3a2a; color: #ddd; }
+
+        .fortune-number { color: #8b6914; font-size: 13px; margin-bottom: 4px; }
+        .fortune-title {
+            font-size: 2rem; color: #4a2c1a; text-align: center;
+            margin: 12px 0 20px; letter-spacing: 6px; font-weight: 700;
+        }
+        .fortune-poem {
+            font-size: 18px; color: #3a2410; line-height: 2.2; text-align: center;
+            white-space: pre-line; margin: 20px 0; font-family: "STKaiti","KaiTi",serif;
+        }
+        .fortune-interp {
+            background: rgba(139,105,20,0.08); border-left: 3px solid #8b6914;
+            padding: 14px 16px; border-radius: 4px; color: #5a3a1a;
+            font-size: 15px; line-height: 1.8; margin-top: 16px;
+        }
+        .interp-label { font-weight: 700; color: #8b6914; }
+
+        /* 历史记录 */
+        .history-section { margin-top: 30px; }
+        .history-section h3 {
+            color: #ffd700; font-size: 1.2rem; margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 10px;
+        }
+        .history-list { list-style: none; }
+        .history-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px;
+            background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 8px; margin-bottom: 8px; font-size: 14px;
+        }
+        .history-item .num { color: #b89968; min-width: 60px; }
+        .history-item .q { color: #8a7050; flex: 1; font-style: italic; }
+        .history-item .time { color: #6a5040; font-size: 12px; }
+        .history-item .del { background: none; border: none; color: #8a4040; cursor: pointer; font-size: 16px; }
+        .history-item .del:hover { color: #c74a4a; }
+        .empty { text-align: center; color: #6a5040; padding: 30px; font-style: italic; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>灵签占卜</h1>
+        <p class="subtitle">心诚则灵 · 静心默念所问之事 · 摇签问卜</p>
+
+        <div class="draw-section">
+            <input type="text" class="question-box" id="question" placeholder="（可选）默念您想问的事，如：事业、姻缘、学业..." maxlength="50">
+            <div class="bamboo-holder" id="holder">🎍</div>
+            <button class="shake-btn" id="draw-btn" onclick="draw()">摇 签</button>
+        </div>
+
+        <div id="fortune-display" class="hidden"></div>
+
+        <div class="history-section">
+            <h3>📜 求签历史</h3>
+            <ul class="history-list" id="history-list">
+                <li class="empty">尚无求签记录</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API = '/api/fortunes';
+
+        async function draw() {
+            const question = document.getElementById('question').value.trim();
+            const btn = document.getElementById('draw-btn');
+            const holder = document.getElementById('holder');
+            const display = document.getElementById('fortune-display');
+
+            btn.disabled = true;
+            btn.textContent = '摇签中...';
+            holder.classList.add('shaking');
+            display.classList.add('hidden');
+
+            // 摇签动画 1.2 秒后请求
+            await new Promise(r => setTimeout(r, 1200));
+
+            try {
+                const res = await fetch(`${API}/draw`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(question ? {question} : {})
+                });
+                const fortune = await res.json();
+                holder.classList.remove('shaking');
+                renderFortune(fortune, question);
+                loadHistory();
+            } catch (e) {
+                alert('抽签失败，请重试');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '摇 签';
+                holder.classList.remove('shaking');
+            }
+        }
+
+        function renderFortune(f, question) {
+            const display = document.getElementById('fortune-display');
+            display.classList.remove('hidden');
+            display.innerHTML = `
+                <div class="fortune-card">
+                    <div style="text-align:center;">
+                        <span class="level-badge level-${f.level}">${f.levelLabel}</span>
+                    </div>
+                    <div class="fortune-number" style="text-align:center;">第 ${f.number} 签</div>
+                    <div class="fortune-title">${escapeHtml(f.title)}</div>
+                    <div class="fortune-poem">${escapeHtml(f.poem)}</div>
+                    ${question ? `<p style="text-align:center;color:#8b6914;font-size:13px;margin-bottom:12px;">所问：${escapeHtml(question)}</p>` : ''}
+                    <div class="fortune-interp">
+                        <span class="interp-label">解曰：</span>${escapeHtml(f.interpretation)}
+                    </div>
+                </div>
+            `;
+            display.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        async function loadHistory() {
+            const res = await fetch(`${API}/history`);
+            const list = await res.json();
+            const ul = document.getElementById('history-list');
+            if (list.length === 0) {
+                ul.innerHTML = '<li class="empty">尚无求签记录</li>';
+                return;
+            }
+            ul.innerHTML = list.map(r => `
+                <li class="history-item">
+                    <span class="num">第${r.fortuneNumber}签</span>
+                    <span class="level-badge level-${r.level}" style="font-size:11px;padding:2px 10px;">${r.levelLabel}</span>
+                    <span class="q">${r.question ? escapeHtml(r.question) : '（未注明）'}</span>
+                    <span class="time">${formatTime(r.drawnAt)}</span>
+                    <button class="del" onclick="delRecord(${r.id})" title="删除">×</button>
+                </li>
+            `).join('');
+        }
+
+        async function delRecord(id) {
+            if (!confirm('删除这条记录？')) return;
+            await fetch(`${API}/history/${id}`, {method: 'DELETE'});
+            loadHistory();
+        }
+
+        function escapeHtml(s) {
+            return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function formatTime(s) {
+            return s ? s.replace('T',' ').substring(0,16) : '';
+        }
+
+        loadHistory();
+    </script>
+</body>
+</html>
