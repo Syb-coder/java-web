@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>求职信息管理平台 · Java-5</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 28px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        header h1 { font-size: 24px; margin-bottom: 4px; }
+        header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .stat-card .label { font-size: 13px; color: #909399; margin-bottom: 6px; }
+        .stat-card .value { font-size: 22px; font-weight: 600; color: #303133; }
+        .stat-card .breakdown { margin-top: 8px; font-size: 12px; color: #606266; }
+        .stat-card .breakdown span { display: inline-block; margin-right: 10px; }
+
+        .toolbar {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .toolbar input, .toolbar select {
+            padding: 8px 12px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+            color: #303133;
+        }
+        .toolbar input { flex: 1; min-width: 180px; }
+        .toolbar button {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .toolbar button:hover { background: #5a6fd6; }
+        .toolbar button.sync {
+            background: #f56c6c;
+        }
+        .toolbar button.sync:hover { background: #e64949; }
+        .toolbar button.secondary {
+            background: #fff;
+            color: #606266;
+            border: 1px solid #dcdfe6;
+        }
+        .toolbar button.secondary:hover { background: #f5f7fa; }
+
+        .job-list { display: grid; gap: 14px; }
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 22px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+            transition: transform 0.15s;
+        }
+        .job-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .job-card.v2ex { border-left-color: #f56c6c; }
+        .job-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        .job-title { font-size: 17px; font-weight: 600; color: #303133; }
+        .job-salary { font-size: 16px; font-weight: 600; color: #f56c6c; }
+        .job-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: #606266; margin-bottom: 8px; }
+        .job-meta .company { color: #409eff; font-weight: 500; }
+        .job-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 8px; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #ecf0f1;
+            color: #606266;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .tag.category { background: #e0e7ff; color: #4338ca; }
+        .tag.source-local { background: #d1fae5; color: #065f46; }
+        .tag.source-v2ex { background: #fee2e2; color: #991b1b; }
+        .job-detail { margin-top: 8px; font-size: 13px; color: #606266; }
+        .job-detail p { margin-bottom: 4px; }
+        .job-detail .field-label { color: #909399; margin-right: 4px; }
+        .external-link { color: #409eff; text-decoration: none; font-size: 12px; margin-left: 8px; }
+        .external-link:hover { text-decoration: underline; }
+
+        .empty { text-align: center; padding: 60px 20px; color: #909399; }
+        .toast {
+            position: fixed; top: 20px; right: 20px;
+            background: #2c3e50; color: white;
+            padding: 12px 20px; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(-10px);
+            transition: all 0.3s; z-index: 1000;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { background: #f56c6c; }
+        .toast.success { background: #67c23a; }
+        footer { text-align: center; padding: 24px; color: #909399; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>求职信息管理平台</h1>
+        <p>Spring Boot 4 + H2 · 多条件检索 · 接入 V2EX 酷工作节点</p>
+    </header>
+
+    <div class="container">
+        <div class="stats" id="stats"></div>
+
+        <div class="toolbar">
+            <input id="keyword" type="text" placeholder="搜索关键词（岗位/公司/技能）" />
+            <input id="city" type="text" placeholder="城市" style="max-width:140px" />
+            <select id="category">
+                <option value="">全部分类</option>
+                <option value="DEVELOPMENT">研发类</option>
+                <option value="PRODUCT">产品类</option>
+                <option value="DESIGN">设计类</option>
+                <option value="OPERATIONS">运营类</option>
+                <option value="QA">测试类</option>
+                <option value="DEVOPS">运维类</option>
+                <option value="DATA">数据类</option>
+                <option value="ALGORITHM">算法类</option>
+            </select>
+            <select id="experience">
+                <option value="">经验不限</option>
+                <option value="NONE">经验不限</option>
+                <option value="FRESH">应届生</option>
+                <option value="ONE_TO_THREE">1-3年</option>
+                <option value="THREE_TO_FIVE">3-5年</option>
+                <option value="FIVE_TO_TEN">5-10年</option>
+                <option value="TEN_PLUS">10年以上</option>
+            </select>
+            <select id="education">
+                <option value="">学历不限</option>
+                <option value="NONE">学历不限</option>
+                <option value="HIGH_SCHOOL">高中</option>
+                <option value="COLLEGE">大专</option>
+                <option value="BACHELOR">本科</option>
+                <option value="MASTER">硕士</option>
+                <option value="PHD">博士</option>
+            </select>
+            <input id="salaryMin" type="number" placeholder="最低薪资(K)" style="max-width:140px" />
+            <button onclick="search()">搜索</button>
+            <button class="secondary" onclick="resetFilters()">重置</button>
+            <button class="sync" onclick="syncV2ex()">同步 V2EX</button>
+        </div>
+
+        <div class="job-list" id="jobList"></div>
+    </div>
+
+    <footer>Java-5 求职信息管理平台 · 本地种子 + V2EX API 数据源</footer>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API = '/api/jobs';
+
+        async function loadStats() {
+            try {
+                const resp = await fetch(`${API}/stats`);
+                const data = await resp.json();
+                renderStats(data);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderStats(s) {
+            const container = document.getElementById('stats');
+            if (!s) { container.innerHTML = ''; return; }
+            const catHtml = Object.entries(s.byCategory || {})
+                .sort((a, b) => b[1] - a[1])
+                .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            const cityHtml = Object.entries(s.byCity || {})
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            const srcHtml = Object.entries(s.bySource || {})
+                .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            container.innerHTML = `
+                <div class="stat-card"><div class="label">岗位总数</div><div class="value">${s.total || 0}</div></div>
+                <div class="stat-card"><div class="label">按分类</div><div class="breakdown">${catHtml || '—'}</div></div>
+                <div class="stat-card"><div class="label">Top 城市</div><div class="breakdown">${cityHtml || '—'}</div></div>
+                <div class="stat-card"><div class="label">按来源</div><div class="breakdown">${srcHtml || '—'}</div></div>
+            `;
+        }
+
+        async function search() {
+            const params = new URLSearchParams();
+            const kw = document.getElementById('keyword').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const cat = document.getElementById('category').value;
+            const exp = document.getElementById('experience').value;
+            const edu = document.getElementById('education').value;
+            const sal = document.getElementById('salaryMin').value.trim();
+            if (kw) params.append('keyword', kw);
+            if (city) params.append('city', city);
+            if (cat) params.append('category', cat);
+            if (exp) params.append('experience', exp);
+            if (edu) params.append('education', edu);
+            if (sal) params.append('salaryMin', sal * 1000);
+
+            try {
+                const resp = await fetch(`${API}?${params.toString()}`);
+                const list = await resp.json();
+                renderJobs(list);
+            } catch (e) {
+                showToast('查询失败：' + e.message, 'error');
+            }
+        }
+
+        function renderJobs(list) {
+            const container = document.getElementById('jobList');
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div class="empty">没有符合条件的岗位</div>';
+                return;
+            }
+            container.innerHTML = list.map(j => `
+                <div class="job-card ${j.source === 'V2EX' ? 'v2ex' : ''}">
+                    <div class="job-head">
+                        <div class="job-title">${escapeHtml(j.title || '')}</div>
+                        <div class="job-salary">${escapeHtml(j.salaryDesc || '')}</div>
+                    </div>
+                    <div class="job-meta">
+                        <span class="company">${escapeHtml(j.company || '')}</span>
+                        <span>${escapeHtml(j.city || '城市不限')}</span>
+                        <span>${escapeHtml(j.experienceLabel || '经验不限')}</span>
+                        <span>${escapeHtml(j.educationLabel || '学历不限')}</span>
+                        <span>发布于 ${j.publishedDate || ''}</span>
+                    </div>
+                    <div class="job-tags">
+                        <span class="tag category">${escapeHtml(j.categoryLabel || '未分类')}</span>
+                        <span class="tag ${j.source === 'V2EX' ? 'source-v2ex' : 'source-local'}">${escapeHtml(j.sourceLabel || '本地')}</span>
+                        ${(j.skills || '').split('/').filter(s => s.trim()).map(s => `<span class="tag">${escapeHtml(s.trim())}</span>`).join('')}
+                    </div>
+                    ${j.responsibilities ? `<div class="job-detail"><p><span class="field-label">职责：</span>${escapeHtml(j.responsibilities)}</p></div>` : ''}
+                    ${j.requirements ? `<div class="job-detail"><p><span class="field-label">要求：</span>${escapeHtml(j.requirements)}</p></div>` : ''}
+                    ${j.benefits ? `<div class="job-detail"><p><span class="field-label">福利：</span>${escapeHtml(j.benefits)}</p></div>` : ''}
+                    ${j.externalUrl ? `<a class="external-link" href="${escapeHtml(j.externalUrl)}" target="_blank" rel="noopener">查看原帖 ↗</a>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function resetFilters() {
+            ['keyword', 'city', 'category', 'experience', 'education', 'salaryMin']
+                .forEach(id => document.getElementById(id).value = '');
+            search();
+        }
+
+        async function syncV2ex() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '同步中...';
+            try {
+                const resp = await fetch(`${API}/sync-v2ex`, { method: 'POST' });
+                const data = await resp.json();
+                showToast(`同步成功，新增 ${data.inserted || 0} 条 V2EX 岗位`, 'success');
+                await loadStats();
+                await search();
+            } catch (e) {
+                showToast('同步失败：' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '同步 V2EX';
+            }
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + (type || '');
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s).replace(/[&<>"']/g, c =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+        }
+
+        // 回车触发搜索
+        document.getElementById('keyword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') search();
+        });
+
+        // 初始化加载
+        loadStats();
+        search();
+    </script>
+</body>
+</html>
