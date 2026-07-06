@@ -1,0 +1,16 @@
+# Maven 本地代理配置（含环境特定信息，不入库）
+.mvn-settings.xml
+
+# 构建产物
+target/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# 系统
+.DS_Store
+Thumbs.db
