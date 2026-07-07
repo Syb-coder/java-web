@@ -405,14 +405,183 @@
             .form-row { grid-template-columns: 1fr; }
             .toolbar { flex-direction: column; align-items: stretch; }
         }
+
+        /* ===== 登录遮罩 ===== */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--color-blue-dark) 0%, var(--color-blue) 50%, var(--color-red-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-overlay.hidden { display: none; }
+
+        .login-card {
+            background: var(--color-white);
+            width: 360px;
+            border-radius: 6px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .login-card .login-header {
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            padding: 24px;
+            text-align: center;
+            border-bottom: 3px solid var(--color-gold);
+        }
+
+        .login-card .login-header .badge {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .login-card .login-header h2 {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .login-card .login-header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .login-card .login-body {
+            padding: 28px 28px 32px;
+        }
+
+        .login-card .form-group {
+            margin-bottom: 18px;
+        }
+
+        .login-card .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 6px;
+        }
+
+        .login-card .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .login-card .form-group input:focus {
+            outline: none;
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+        }
+
+        .login-card .btn-login {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .login-card .btn-login:hover { opacity: 0.9; }
+        .login-card .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .login-card .login-tip {
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: #FFF8E1;
+            border-left: 3px solid var(--color-gold);
+            font-size: 12px;
+            color: #6D4C00;
+            border-radius: 2px;
+        }
+
+        .login-card .login-error {
+            margin-top: 12px;
+            color: var(--color-red);
+            font-size: 13px;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .top-bar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar .user-info .username {
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        .top-bar .user-info .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--color-white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .top-bar .user-info .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
     </style>
 </head>
 <body>
+    <!-- 登录遮罩（未登录时显示） -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="badge">🛡️</div>
+                <h2>国家网络安全宣传官网</h2>
+                <p>内容管理后台 · 管理员登录</p>
+            </div>
+            <div class="login-body">
+                <form id="login-form" onsubmit="return doLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">用户名</label>
+                        <input type="text" id="login-username" autocomplete="username" required placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" autocomplete="current-password" required placeholder="请输入密码">
+                    </div>
+                    <button type="submit" class="btn-login" id="login-btn">登 录</button>
+                    <div class="login-error" id="login-error"></div>
+                </form>
+                <div class="login-tip">
+                    默认账号：<strong>admin</strong> / <strong>admin@123</strong><br>
+                    请登录后及时修改密码。
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 顶部栏 -->
     <header class="top-bar">
         <div class="container">
             <div class="title">内容管理后台 · 国家网络安全宣传官网</div>
-            <div class="actions">
+            <div class="user-info">
+                <span class="username" id="current-user"></span>
+                <button class="logout-btn" onclick="doLogout()">退出登录</button>
                 <a href="index.html">返回前台</a>
                 <a href="/h2-console" target="_blank">H2 控制台</a>
             </div>
@@ -625,9 +794,98 @@
             const opts = { method, headers: { 'Content-Type': 'application/json' } };
             if (data) opts.body = JSON.stringify(data);
             const resp = await fetch(url, opts);
+            // 401 未登录或会话过期，跳转登录
+            if (resp.status === 401) {
+                showLoginOverlay();
+                throw new Error('未登录或登录已过期');
+            }
             if (resp.status === 204) return null;
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
             return resp.json();
+        }
+
+        // ===== 认证相关 =====
+        /**
+         * 显示登录遮罩
+         */
+        function showLoginOverlay() {
+            document.getElementById('login-overlay').classList.remove('hidden');
+            document.getElementById('current-user').textContent = '';
+        }
+
+        /**
+         * 隐藏登录遮罩
+         */
+        function hideLoginOverlay() {
+            document.getElementById('login-overlay').classList.add('hidden');
+        }
+
+        /**
+         * 处理登录表单提交
+         */
+        async function doLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errEl = document.getElementById('login-error');
+            const btn = document.getElementById('login-btn');
+            errEl.textContent = '';
+            btn.disabled = true;
+            btn.textContent = '登录中...';
+            try {
+                const resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (resp.status === 401) {
+                    errEl.textContent = '用户名或密码错误';
+                    return;
+                }
+                if (!resp.ok) {
+                    errEl.textContent = '登录失败（HTTP ' + resp.status + '）';
+                    return;
+                }
+                const user = await resp.json();
+                document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);
+                hideLoginOverlay();
+                // 登录成功后加载首个面板数据
+                loadNews();
+                showToast('登录成功', 'success');
+            } catch (e) {
+                errEl.textContent = '网络错误：' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '登 录';
+            }
+        }
+
+        /**
+         * 退出登录
+         */
+        async function doLogout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } catch (e) { /* 忽略 */ }
+            showLoginOverlay();
+            showToast('已退出登录');
+        }
+
+        /**
+         * 校验当前登录态（页面加载时调用）
+         */
+        async function checkAuth() {
+            try {
+                const resp = await fetch('/api/auth/me');
+                if (resp.ok) {
+                    const user = await resp.json();
+                    document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);
+                    hideLoginOverlay();
+                    return true;
+                }
+            } catch (e) { /* 忽略 */ }
+            showLoginOverlay();
+            return false;
         }
 
         // ===== Tab 切换 =====
@@ -1059,7 +1317,13 @@
         });
 
         // ===== 初始化 =====
-        loadNews();
+        // 页面加载时先校验登录态，已登录则加载首页数据，未登录则显示登录遮罩
+        (async () => {
+            const loggedIn = await checkAuth();
+            if (loggedIn) {
+                loadNews();
+            }
+        })();
     </script>
 </body>
 </html>

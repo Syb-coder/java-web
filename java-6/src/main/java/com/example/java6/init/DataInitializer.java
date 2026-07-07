@@ -1,5 +1,6 @@
 package com.example.java6.init;
 
+import com.example.java6.model.AdminUser;
 import com.example.java6.model.KnowledgeArticle;
 import com.example.java6.model.KnowledgeCategory;
 import com.example.java6.model.News;
@@ -9,10 +10,12 @@ import com.example.java6.model.RegulationCategory;
 import com.example.java6.model.Report;
 import com.example.java6.model.ReportStatus;
 import com.example.java6.model.ReportType;
+import com.example.java6.repository.AdminUserRepository;
 import com.example.java6.repository.KnowledgeArticleRepository;
 import com.example.java6.repository.NewsRepository;
 import com.example.java6.repository.RegulationRepository;
 import com.example.java6.repository.ReportRepository;
+import com.example.java6.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
@@ -41,13 +44,17 @@ public class DataInitializer {
      * @param knowledgeRepo 知识仓库
      * @param regulationRepo 法规仓库
      * @param reportRepo    举报仓库
+     * @param adminRepo     管理员账号仓库
+     * @param authService   认证服务（用于 BCrypt 加密密码）
      * @return ApplicationRunner
      */
     @Bean
     ApplicationRunner initData(NewsRepository newsRepo,
                                KnowledgeArticleRepository knowledgeRepo,
                                RegulationRepository regulationRepo,
-                               ReportRepository reportRepo) {
+                               ReportRepository reportRepo,
+                               AdminUserRepository adminRepo,
+                               AuthService authService) {
         return args -> {
             if (newsRepo.count() == 0) {
                 initNews(newsRepo);
@@ -61,9 +68,32 @@ public class DataInitializer {
             if (reportRepo.count() == 0) {
                 initReports(reportRepo);
             }
-            log.info("国家网络安全宣传官网示例数据初始化完成：新闻 {} 条、知识 {} 篇、法规 {} 条、举报 {} 条",
-                    newsRepo.count(), knowledgeRepo.count(), regulationRepo.count(), reportRepo.count());
+            // 初始化默认管理员账号（仅当不存在任何管理员时）
+            if (adminRepo.count() == 0) {
+                initAdminUser(adminRepo, authService);
+            }
+            log.info("国家网络安全宣传官网示例数据初始化完成：新闻 {} 条、知识 {} 篇、法规 {} 条、举报 {} 条、管理员 {} 个",
+                    newsRepo.count(), knowledgeRepo.count(), regulationRepo.count(), reportRepo.count(), adminRepo.count());
         };
+    }
+
+    /**
+     * 初始化默认管理员账号
+     *
+     * <p>默认账号：admin / admin@123（生产环境请立即修改密码）。</p>
+     *
+     * @param repo        管理员仓库
+     * @param authService 认证服务（用于 BCrypt 加密）
+     */
+    private void initAdminUser(AdminUserRepository repo, AuthService authService) {
+        String encodedPassword = authService.encodePassword("admin@123");
+        AdminUser admin = new AdminUser(
+                "admin",
+                encodedPassword,
+                "系统管理员"
+        );
+        repo.save(admin);
+        log.info("默认管理员账号已创建：admin / admin@123（请及时修改密码）");
     }
 
     /**
