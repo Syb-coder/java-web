@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>衣匠 · 服装私人定制</title>
+    <style>
+        /* ===== 全局样式 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                "Microsoft YaHei", sans-serif;
+            background-color: #f7f5f2;
+            color: #2c2418;
+            line-height: 1.6;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #3d2817 100%);
+            color: #f5e6c8;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .brand p {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .user-area .hello { color: #d4b483; }
+
+        .btn {
+            padding: 8px 18px;
+            border: 1px solid #d4b483;
+            background: transparent;
+            color: #d4b483;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: #d4b483; color: #1a1a1a; }
+
+        .btn-primary {
+            background: #8b6f47;
+            color: #fff;
+            border-color: #8b6f47;
+        }
+
+        .btn-primary:hover { background: #6b5536; border-color: #6b5536; color: #fff; }
+
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+        /* ===== 导航标签 ===== */
+        .nav-tabs {
+            background: #fff;
+            padding: 0 40px;
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #e8e0d4;
+        }
+
+        .nav-tab {
+            padding: 14px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #6b5d4d;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover { color: #8b6f47; }
+
+        .nav-tab.active {
+            color: #8b6f47;
+            border-bottom-color: #8b6f47;
+            font-weight: 600;
+        }
+
+        /* ===== 主容器 ===== */
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 40px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ===== 卡片 ===== */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(139, 111, 71, 0.08);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            color: #3d2817;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0e8da;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ===== 首页欢迎区 ===== */
+        .hero {
+            background: linear-gradient(135deg, #3d2817 0%, #6b5536 100%);
+            color: #f5e6c8;
+            padding: 48px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            opacity: 0.85;
+            font-size: 14px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .feature-item {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid #d4b483;
+        }
+
+        .feature-item .icon {
+            font-size: 28px;
+            color: #8b6f47;
+            margin-bottom: 12px;
+        }
+
+        .feature-item h4 {
+            color: #3d2817;
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            font-size: 13px;
+            color: #6b5d4d;
+        }
+
+        /* ===== 商品网格 ===== */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar label { font-size: 13px; color: #6b5d4d; }
+
+        .filter-bar select, .filter-bar input {
+            padding: 6px 10px;
+            border: 1px solid #e0d6c0;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #fff;
+        }
+
+        .goods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .goods-card {
+            background: #fff;
+            border: 1px solid #f0e8da;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .goods-card:hover {
+            box-shadow: 0 4px 16px rgba(139, 111, 71, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .goods-thumb {
+            height: 160px;
+            background: linear-gradient(135deg, #f5e6c8 0%, #d4b483 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b5536;
+            font-size: 40px;
+            font-weight: 300;
+        }
+
+        .goods-body {
+            padding: 16px;
+        }
+
+        .goods-body h4 {
+            color: #3d2817;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .goods-meta {
+            font-size: 12px;
+            color: #8b6f47;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .goods-meta .tag {
+            background: #f5e6c8;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .goods-desc {
+            font-size: 12px;
+            color: #6b5d4d;
+            margin-bottom: 12px;
+            min-height: 32px;
+        }
+
+        .goods-price {
+            font-size: 18px;
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .goods-price small {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        /* ===== 表单 ===== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+
+        .form-group label {
+            font-size: 13px;
+            color: #3d2817;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-group label .hint {
+            color: #999;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: 6px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1px solid #e0d6c0;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-group textarea { resize: vertical; min-height: 60px; }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ===== 量体指引 ===== */
+        .measure-guide {
+            background: #faf6ed;
+            border-left: 4px solid #8b6f47;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #6b5d4d;
+        }
+
+        .measure-guide h4 {
+            color: #3d2817;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .measure-guide ul { padding-left: 20px; }
+
+        .measure-guide li { margin: 4px 0; }
+
+        /* ===== 表格 ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0e8da;
+        }
+
+        th {
+            background: #faf6ed;
+            color: #3d2817;
+            font-weight: 600;
+        }
+
+        tr:hover { background: #fcf9f0; }
+
+        .empty-tip {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* ===== 状态徽章 ===== */
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-PENDING { background: #fff3cd; color: #856404; }
+        .status-MEASURING { background: #d1ecf1; color: #0c5460; }
+        .status-CUTTING { background: #d4edda; color: #155724; }
+        .status-SEWING { background: #e2d9f3; color: #6f42c1; }
+        .status-FITTING { background: #f8d7da; color: #721c24; }
+        .status-COMPLETED { background: #d4edda; color: #155724; }
+
+        /* ===== 订单进度 ===== */
+        .progress-flow {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .progress-flow::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: #e0d6c0;
+            z-index: 0;
+        }
+
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e0d6c0;
+            margin: 0 auto 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .progress-step.done .step-dot {
+            background: #8b6f47;
+            border-color: #8b6f47;
+            color: #fff;
+        }
+
+        .progress-step.current .step-dot {
+            background: #fff;
+            border-color: #8b6f47;
+            color: #8b6f47;
+            font-weight: 600;
+            box-shadow: 0 0 0 4px rgba(139, 111, 71, 0.2);
+        }
+
+        .step-label {
+            font-size: 11px;
+            color: #6b5d4d;
+        }
+
+        .progress-step.done .step-label,
+        .progress-step.current .step-label {
+            color: #3d2817;
+            font-weight: 600;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-mask.show { display: flex; }
+
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            padding: 28px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            color: #3d2817;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0e8da;
+        }
+
+        .modal-close {
+            float: right;
+            cursor: pointer;
+            color: #999;
+            font-size: 20px;
+        }
+
+        /* ===== 提示 ===== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: #3d2817;
+            color: #f5e6c8;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 9999;
+        }
+
+        .toast.show { opacity: 1; }
+
+        .toast.error { background: #c0392b; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="brand">
+        <h1>衣匠 · TAILOR</h1>
+        <p>BESPOKE TAILORING PLATFORM</p>
+    </div>
+    <div class="user-area" id="userArea">
+        <!-- 未登录：显示登录/注册按钮 -->
+        <span class="hello" id="helloText" style="display:none;"></span>
+        <button class="btn btn-primary" onclick="openLoginModal()" id="loginBtn">登录</button>
+        <button class="btn" onclick="openRegisterModal()" id="registerBtn">注册</button>
+        <button class="btn" onclick="logout()" id="logoutBtn" style="display:none;">退出</button>
+    </div>
+</div>
+
+<div class="nav-tabs">
+    <button class="nav-tab active" data-tab="home" onclick="switchTab('home')">首页</button>
+    <button class="nav-tab" data-tab="fabric" onclick="switchTab('fabric')">面料库</button>
+    <button class="nav-tab" data-tab="style" onclick="switchTab('style')">款式库</button>
+    <button class="nav-tab" data-tab="measure" onclick="switchTab('measure')">我的量体</button>
+    <button class="nav-tab" data-tab="order" onclick="switchTab('order')">我的订单</button>
+</div>
+
+<div class="container">
+
+    <!-- ===== 首页 ===== -->
+    <div class="tab-content active" id="tab-home">
+        <div class="hero">
+            <h2>匠心定制 · 专属于你</h2>
+            <p>打破传统线下定制在时间与空间上的局限，让高端定制服务触手可及。
+                浏览面料、选择款式、提交尺寸、追踪进度，全流程在线完成。</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="icon">◎</div>
+                <h4>精选面料</h4>
+                <p>棉麻丝毛羊绒牛仔多材质，覆盖全季节需求</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">◇</div>
+                <h4>款式定制</h4>
+                <p>西装、衬衫、连衣裙、旗袍等多样款式可选</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">△</div>
+                <h4>在线量体</h4>
+                <p>标准化量体字段说明，自助录入尺寸数据</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">○</div>
+                <h4>进度追踪</h4>
+                <p>从待确认到完成全流程可视化，状态实时更新</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 面料库 ===== -->
+    <div class="tab-content" id="tab-fabric">
+        <div class="card">
+            <div class="card-title">面料库
+                <small style="font-weight:normal;color:#999;font-size:12px;">挑选您喜爱的面料</small>
+            </div>
+            <div class="filter-bar">
+                <label>材质：</label>
+                <select id="fabricMaterialFilter" onchange="loadFabrics()">
+                    <option value="">全部</option>
+                </select>
+                <label>颜色：</label>
+                <select id="fabricColorFilter" onchange="loadFabrics()">
+                    <option value="">全部</option>
+                </select>
+                <label>价格上限：</label>
+                <input type="number" id="fabricPriceFilter" placeholder="不限" oninput="loadFabrics()">
+            </div>
+            <div class="goods-grid" id="fabricGrid">
+                <div class="empty-tip">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 款式库 ===== -->
+    <div class="tab-content" id="tab-style">
+        <div class="card">
+            <div class="card-title">款式库
+                <small style="font-weight:normal;color:#999;font-size:12px;">选择您心仪的款式</small>
+            </div>
+            <div class="filter-bar">
+                <label>类别：</label>
+                <select id="styleCategoryFilter" onchange="loadStyles()">
+                    <option value="">全部</option>
+                </select>
+                <label>关键词：</label>
+                <input type="text" id="styleKeywordFilter" placeholder="款式名称" oninput="loadStyles()">
+            </div>
+            <div class="goods-grid" id="styleGrid">
+                <div class="empty-tip">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 我的量体 ===== -->
+    <div class="tab-content" id="tab-measure">
+        <div class="card">
+            <div class="card-title">我的量体数据
+                <button class="btn btn-primary btn-sm" onclick="openMeasureModal()">新增量体</button>
+            </div>
+            <div class="measure-guide">
+                <h4>量体指引 · 各字段含义</h4>
+                <ul>
+                    <li><b>身高（cm）</b>：赤脚靠墙站立，自头顶至地面的垂直距离</li>
+                    <li><b>体重（kg）</b>：空腹称重，建议晨起测量</li>
+                    <li><b>颈围（cm）</b>：喉结下方绕颈一周，松紧以能放入一指为宜</li>
+                    <li><b>肩宽（cm）</b>：左右肩峰点之间的水平距离（后背测量）</li>
+                    <li><b>胸围（cm）</b>：乳头水平绕胸一周，保持自然呼吸</li>
+                    <li><b>腰围（cm）</b>：腰部最细处水平绕一周，自然放松</li>
+                    <li><b>臀围（cm）</b>：臀部最丰满处水平绕一周</li>
+                    <li><b>衣长（cm）</b>：自颈侧根点垂至所需衣摆位置</li>
+                    <li><b>袖长（cm）</b>：自肩峰点经手肘至手腕骨</li>
+                    <li><b>裤长（cm）</b>：自腰围线下垂至脚踝骨</li>
+                    <li><b>大腿围（cm）</b>：大腿根部最粗处水平绕一周</li>
+                </ul>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>名称</th><th>身高</th><th>体重</th><th>颈围</th><th>肩宽</th>
+                    <th>胸围</th><th>腰围</th><th>臀围</th><th>衣长</th><th>袖长</th>
+                    <th>裤长</th><th>大腿围</th><th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="measureTable">
+                <tr><td colspan="13" class="empty-tip">请先登录后查看</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== 我的订单 ===== -->
+    <div class="tab-content" id="tab-order">
+        <div class="card">
+            <div class="card-title">我的定制订单
+                <button class="btn btn-primary btn-sm" onclick="openOrderModal()">发起定制</button>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>订单号</th><th>款式</th><th>面料</th><th>量体</th>
+                    <th>总价</th><th>状态</th><th>下单时间</th><th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="orderTable">
+                <tr><td colspan="8" class="empty-tip">请先登录后查看</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== 登录弹窗 ===== -->
+<div class="modal-mask" id="loginModal">
+    <div class="modal">
+        <h3><span class="modal-close" onclick="closeModal('loginModal')">×</span>用户登录</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>用户名</label>
+            <input type="text" id="loginUsername" placeholder="用户名">
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+            <label>密码</label>
+            <input type="password" id="loginPassword" placeholder="密码">
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="doLogin()">登录</button>
+            <button class="btn" onclick="closeModal('loginModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 注册弹窗 ===== -->
+<div class="modal-mask" id="registerModal">
+    <div class="modal">
+        <h3><span class="modal-close" onclick="closeModal('registerModal')">×</span>用户注册</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="regUsername">
+            </div>
+            <div class="form-group">
+                <label>密码（≥6位）</label>
+                <input type="password" id="regPassword">
+            </div>
+            <div class="form-group">
+                <label>昵称</label>
+                <input type="text" id="regNickname">
+            </div>
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="text" id="regPhone">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="doRegister()">注册</button>
+            <button class="btn" onclick="closeModal('registerModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 量体弹窗 ===== -->
+<div class="modal-mask" id="measureModal">
+    <div class="modal" style="max-width:640px;">
+        <h3><span class="modal-close" onclick="closeModal('measureModal')">×</span>量体数据</h3>
+        <input type="hidden" id="measureId">
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>数据名称 <span class="hint">如：日常尺寸、修身版、宽松版</span></label>
+            <input type="text" id="measureName" placeholder="为这组数据起个名字">
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>身高（cm）</label>
+                <input type="number" step="0.1" id="mHeight">
+            </div>
+            <div class="form-group">
+                <label>体重（kg）</label>
+                <input type="number" step="0.1" id="mWeight">
+            </div>
+            <div class="form-group">
+                <label>颈围（cm）</label>
+                <input type="number" step="0.1" id="mNeck">
+            </div>
+            <div class="form-group">
+                <label>肩宽（cm）</label>
+                <input type="number" step="0.1" id="mShoulder">
+            </div>
+            <div class="form-group">
+                <label>胸围（cm）</label>
+                <input type="number" step="0.1" id="mChest">
+            </div>
+            <div class="form-group">
+                <label>腰围（cm）</label>
+                <input type="number" step="0.1" id="mWaist">
+            </div>
+            <div class="form-group">
+                <label>臀围（cm）</label>
+                <input type="number" step="0.1" id="mHip">
+            </div>
+            <div class="form-group">
+                <label>衣长（cm）</label>
+                <input type="number" step="0.1" id="mClothesLen">
+            </div>
+            <div class="form-group">
+                <label>袖长（cm）</label>
+                <input type="number" step="0.1" id="mSleeveLen">
+            </div>
+            <div class="form-group">
+                <label>裤长（cm）</label>
+                <input type="number" step="0.1" id="mPantsLen">
+            </div>
+            <div class="form-group">
+                <label>大腿围（cm）</label>
+                <input type="number" step="0.1" id="mThigh">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+            <label>备注</label>
+            <textarea id="mRemark" placeholder="特殊需求说明，如体型特征、习惯性着装松紧等"></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="saveMeasure()">保存</button>
+            <button class="btn" onclick="closeModal('measureModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 下单弹窗 ===== -->
+<div class="modal-mask" id="orderModal">
+    <div class="modal">
+        <h3><span class="modal-close" onclick="closeModal('orderModal')">×</span>发起定制</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>选择款式</label>
+            <select id="orderStyle"></select>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>选择面料</label>
+            <select id="orderFabric"></select>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>选择量体数据</label>
+            <select id="orderMeasure"></select>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>特殊需求</label>
+            <textarea id="orderRemark" placeholder="如：袖口绣字、内衬颜色等"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+            <label>预计总价（元）</label>
+            <input type="text" id="orderPrice" readonly>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="submitOrder()">提交订单</button>
+            <button class="btn" onclick="closeModal('orderModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 订单详情弹窗 ===== -->
+<div class="modal-mask" id="orderDetailModal">
+    <div class="modal" style="max-width:560px;">
+        <h3><span class="modal-close" onclick="closeModal('orderDetailModal')">×</span>订单详情</h3>
+        <div id="orderDetailBody"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // ===== 全局状态 =====
+    let currentUser = null;
+    // 量体字段顺序（用于表格渲染）
+    const MEASURE_FIELDS = ['height','weight','neckCircumference','shoulderWidth',
+        'chestCircumference','waistCircumference','hipCircumference','clothesLength',
+        'sleeveLength','pantsLength','thighCircumference'];
+    // 状态映射（中文）
+    const STATUS_MAP = {
+        PENDING: '待确认', MEASURING: '量体中', CUTTING: '裁剪中',
+        SEWING: '缝制中', FITTING: '试衣中', COMPLETED: '已完成'
+    };
+    // 状态流程顺序（用于进度条）
+    const STATUS_FLOW = ['PENDING','MEASURING','CUTTING','SEWING','FITTING','COMPLETED'];
+
+    // ===== 工具函数 =====
+    function toast(msg, isError) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show' + (isError ? ' error' : '');
+        setTimeout(() => t.className = 'toast' + (isError ? ' error' : ''), 2500);
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+
+    async function api(url, method = 'GET', body) {
+        const opt = { method, headers: { 'Content-Type': 'application/json' } };
+        if (body) opt.body = JSON.stringify(body);
+        const res = await fetch(url, opt);
+        if (res.status === 204) return null;
+        const text = await res.text();
+        let data = text ? JSON.parse(text) : null;
+        if (!res.ok) {
+            throw new Error((data && data.message) || '请求失败 ' + res.status);
+        }
+        return data;
+    }
+
+    // ===== Tab 切换 =====
+    function switchTab(name) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector(`.nav-tab[data-tab="${name}"]`).classList.add('active');
+        document.getElementById(`tab-${name}`).classList.add('active');
+
+        if (name === 'fabric') loadFabrics();
+        if (name === 'style') loadStyles();
+        if (name === 'measure') loadMeasures();
+        if (name === 'order') loadOrders();
+    }
+
+    // ===== 用户认证 =====
+    function openLoginModal() { openModal('loginModal'); }
+
+    function openRegisterModal() { openModal('registerModal'); }
+
+    async function doLogin() {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!username || !password) { toast('请填写完整', true); return; }
+        try {
+            const resp = await api('/api/auth/login', 'POST', { username, password });
+            currentUser = resp;
+            updateUserUI();
+            closeModal('loginModal');
+            toast('登录成功');
+        } catch (e) {
+            toast('登录失败：' + e.message, true);
+        }
+    }
+
+    async function doRegister() {
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const nickname = document.getElementById('regNickname').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        if (!username || !password || !nickname) { toast('请填写必填项', true); return; }
+        if (password.length < 6) { toast('密码至少6位', true); return; }
+        try {
+            await api('/api/users/register', 'POST', { username, password, nickname, phone });
+            closeModal('registerModal');
+            toast('注册成功，请登录');
+            document.getElementById('loginUsername').value = username;
+            openLoginModal();
+        } catch (e) {
+            toast('注册失败：' + e.message, true);
+        }
+    }
+
+    async function logout() {
+        try { await api('/api/auth/logout', 'POST'); } catch (e) {}
+        currentUser = null;
+        updateUserUI();
+        toast('已退出');
+    }
+
+    async function checkSession() {
+        try {
+            const resp = await api('/api/auth/me');
+            currentUser = resp;
+        } catch (e) { currentUser = null; }
+        updateUserUI();
+    }
+
+    function updateUserUI() {
+        const hello = document.getElementById('helloText');
+        const loginBtn = document.getElementById('loginBtn');
+        const regBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (currentUser) {
+            hello.textContent = `您好，${currentUser.nickname || currentUser.username}`;
+            hello.style.display = 'inline';
+            loginBtn.style.display = 'none';
+            regBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+        } else {
+            hello.style.display = 'none';
+            loginBtn.style.display = 'inline-block';
+            regBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+        }
+    }
+
+    // ===== 面料库 =====
+    async function loadFabrics() {
+        const material = document.getElementById('fabricMaterialFilter').value;
+        const color = document.getElementById('fabricColorFilter').value;
+        const price = document.getElementById('fabricPriceFilter').value;
+        const params = new URLSearchParams();
+        if (material) params.append('material', material);
+        if (color) params.append('color', color);
+        if (price) params.append('maxPrice', price);
+        const list = await api('/api/fabrics?' + params.toString());
+        renderFabrics(list || []);
+        // 加载材质/颜色筛选项
+        if (!material && !color) {
+            const materials = [...new Set(list.map(f => f.material))];
+            const colors = [...new Set(list.map(f => f.color))];
+            const matSel = document.getElementById('fabricMaterialFilter');
+            const colSel = document.getElementById('fabricColorFilter');
+            matSel.innerHTML = '<option value="">全部</option>' +
+                materials.map(m => `<option value="${m}">${m}</option>`).join('');
+            colSel.innerHTML = '<option value="">全部</option>' +
+                colors.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+    }
+
+    function renderFabrics(list) {
+        const grid = document.getElementById('fabricGrid');
+        if (!list.length) {
+            grid.innerHTML = '<div class="empty-tip">暂无面料</div>';
+            return;
+        }
+        grid.innerHTML = list.map(f => `
+            <div class="goods-card">
+                <div class="goods-thumb">${f.material.charAt(0)}</div>
+                <div class="goods-body">
+                    <h4>${f.name}</h4>
+                    <div class="goods-meta">
+                        <span class="tag">${f.material}</span>
+                        <span class="tag">${f.color}</span>
+                    </div>
+                    <div class="goods-desc">${f.description || ''}</div>
+                    <div class="goods-price">¥${f.unitPrice} <small>/ 米</small></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ===== 款式库 =====
+    async function loadStyles() {
+        const category = document.getElementById('styleCategoryFilter').value;
+        const keyword = document.getElementById('styleKeywordFilter').value;
+        const params = new URLSearchParams();
+        if (category) params.append('category', category);
+        if (keyword) params.append('keyword', keyword);
+        const list = await api('/api/styles?' + params.toString());
+        renderStyles(list || []);
+        if (!category && !keyword) {
+            const cats = [...new Set(list.map(s => s.category))];
+            const sel = document.getElementById('styleCategoryFilter');
+            sel.innerHTML = '<option value="">全部</option>' +
+                cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+    }
+
+    function renderStyles(list) {
+        const grid = document.getElementById('styleGrid');
+        if (!list.length) {
+            grid.innerHTML = '<div class="empty-tip">暂无款式</div>';
+            return;
+        }
+        grid.innerHTML = list.map(s => `
+            <div class="goods-card">
+                <div class="goods-thumb">${s.category.charAt(0)}</div>
+                <div class="goods-body">
+                    <h4>${s.name}</h4>
+                    <div class="goods-meta">
+                        <span class="tag">${s.category}</span>
+                        <span class="tag">工费 ¥${s.craftFee}</span>
+                    </div>
+                    <div class="goods-desc">${s.description || ''}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ===== 量体数据 =====
+    async function loadMeasures() {
+        if (!currentUser) {
+            document.getElementById('measureTable').innerHTML =
+                '<tr><td colspan="13" class="empty-tip">请先登录后查看</td></tr>';
+            return;
+        }
+        const list = await api('/api/measurements');
+        const tbody = document.getElementById('measureTable');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="13" class="empty-tip">暂无量体数据</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(m => `
+            <tr>
+                <td>${m.name}</td>
+                <td>${m.height || '-'}</td>
+                <td>${m.weight || '-'}</td>
+                <td>${m.neckCircumference || '-'}</td>
+                <td>${m.shoulderWidth || '-'}</td>
+                <td>${m.chestCircumference || '-'}</td>
+                <td>${m.waistCircumference || '-'}</td>
+                <td>${m.hipCircumference || '-'}</td>
+                <td>${m.clothesLength || '-'}</td>
+                <td>${m.sleeveLength || '-'}</td>
+                <td>${m.pantsLength || '-'}</td>
+                <td>${m.thighCircumference || '-'}</td>
+                <td>
+                    <button class="btn btn-sm" onclick="editMeasure(${m.id})">编辑</button>
+                    <button class="btn btn-sm" onclick="deleteMeasure(${m.id})">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function openMeasureModal() {
+        if (!currentUser) { toast('请先登录', true); return; }
+        ['measureId','measureName','mHeight','mWeight','mNeck','mShoulder','mChest',
+         'mWaist','mHip','mClothesLen','mSleeveLen','mPantsLen','mThigh','mRemark']
+            .forEach(id => document.getElementById(id).value = '');
+        openModal('measureModal');
+    }
+
+    async function editMeasure(id) {
+        const list = await api('/api/measurements');
+        const m = list.find(x => x.id === id);
+        if (!m) return;
+        document.getElementById('measureId').value = m.id;
+        document.getElementById('measureName').value = m.name || '';
+        document.getElementById('mHeight').value = m.height || '';
+        document.getElementById('mWeight').value = m.weight || '';
+        document.getElementById('mNeck').value = m.neckCircumference || '';
+        document.getElementById('mShoulder').value = m.shoulderWidth || '';
+        document.getElementById('mChest').value = m.chestCircumference || '';
+        document.getElementById('mWaist').value = m.waistCircumference || '';
+        document.getElementById('mHip').value = m.hipCircumference || '';
+        document.getElementById('mClothesLen').value = m.clothesLength || '';
+        document.getElementById('mSleeveLen').value = m.sleeveLength || '';
+        document.getElementById('mPantsLen').value = m.pantsLength || '';
+        document.getElementById('mThigh').value = m.thighCircumference || '';
+        document.getElementById('mRemark').value = m.remark || '';
+        openModal('measureModal');
+    }
+
+    async function saveMeasure() {
+        const id = document.getElementById('measureId').value;
+        const body = {
+            name: document.getElementById('measureName').value.trim(),
+            height: parseFloat(document.getElementById('mHeight').value) || null,
+            weight: parseFloat(document.getElementById('mWeight').value) || null,
+            neckCircumference: parseFloat(document.getElementById('mNeck').value) || null,
+            shoulderWidth: parseFloat(document.getElementById('mShoulder').value) || null,
+            chestCircumference: parseFloat(document.getElementById('mChest').value) || null,
+            waistCircumference: parseFloat(document.getElementById('mWaist').value) || null,
+            hipCircumference: parseFloat(document.getElementById('mHip').value) || null,
+            clothesLength: parseFloat(document.getElementById('mClothesLen').value) || null,
+            sleeveLength: parseFloat(document.getElementById('mSleeveLen').value) || null,
+            pantsLength: parseFloat(document.getElementById('mPantsLen').value) || null,
+            thighCircumference: parseFloat(document.getElementById('mThigh').value) || null,
+            remark: document.getElementById('mRemark').value.trim()
+        };
+        if (!body.name) { toast('请填写名称', true); return; }
+        try {
+            if (id) {
+                await api('/api/measurements/' + id, 'PUT', body);
+            } else {
+                await api('/api/measurements', 'POST', body);
+            }
+            closeModal('measureModal');
+            loadMeasures();
+            toast('保存成功');
+        } catch (e) { toast('保存失败：' + e.message, true); }
+    }
+
+    async function deleteMeasure(id) {
+        if (!confirm('确定删除该量体数据？')) return;
+        try {
+            await api('/api/measurements/' + id, 'DELETE');
+            loadMeasures();
+            toast('已删除');
+        } catch (e) { toast('删除失败：' + e.message, true); }
+    }
+
+    // ===== 订单 =====
+    async function loadOrders() {
+        if (!currentUser) {
+            document.getElementById('orderTable').innerHTML =
+                '<tr><td colspan="8" class="empty-tip">请先登录后查看</td></tr>';
+            return;
+        }
+        const list = await api('/api/orders/my');
+        const tbody = document.getElementById('orderTable');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="8" class="empty-tip">暂无订单</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(o => `
+            <tr>
+                <td>#${o.id}</td>
+                <td>${o.styleName}</td>
+                <td>${o.fabricName}</td>
+                <td>${o.measurementName || '-'}</td>
+                <td>¥${o.totalPrice}</td>
+                <td><span class="status-${o.status}">${STATUS_MAP[o.status]}</span></td>
+                <td>${formatTime(o.createTime)}</td>
+                <td>
+                    <button class="btn btn-sm" onclick="viewOrder(${o.id})">详情</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function openOrderModal() {
+        if (!currentUser) { toast('请先登录', true); return; }
+        // 拉取款式、面料、量体数据填充下拉
+        const [styles, fabrics, measures] = await Promise.all([
+            api('/api/styles'), api('/api/fabrics'), api('/api/measurements')
+        ]);
+        if (!measures.length) { toast('请先添加量体数据', true); return; }
+        document.getElementById('orderStyle').innerHTML = styles.map(s =>
+            `<option value="${s.id}" data-fee="${s.craftFee}">${s.name}（${s.category}）</option>`).join('');
+        document.getElementById('orderFabric').innerHTML = fabrics.map(f =>
+            `<option value="${f.id}" data-price="${f.unitPrice}">${f.name}（${f.material}）</option>`).join('');
+        document.getElementById('orderMeasure').innerHTML = measures.map(m =>
+            `<option value="${m.id}">${m.name}</option>`).join('');
+        document.getElementById('orderRemark').value = '';
+        calcOrderPrice();
+        openModal('orderModal');
+    }
+
+    function calcOrderPrice() {
+        const styleSel = document.getElementById('orderStyle');
+        const fabricSel = document.getElementById('orderFabric');
+        if (!styleSel.value || !fabricSel.value) return;
+        // 默认按 3 米用料估算
+        const fee = parseFloat(styleSel.options[styleSel.selectedIndex].dataset.fee) || 0;
+        const price = parseFloat(fabricSel.options[fabricSel.selectedIndex].dataset.price) || 0;
+        const total = fee + price * 3;
+        document.getElementById('orderPrice').value = total.toFixed(2);
+    }
+
+    async function submitOrder() {
+        const body = {
+            styleId: parseInt(document.getElementById('orderStyle').value),
+            fabricId: parseInt(document.getElementById('orderFabric').value),
+            measurementId: parseInt(document.getElementById('orderMeasure').value),
+            remark: document.getElementById('orderRemark').value.trim()
+        };
+        if (!body.styleId || !body.fabricId || !body.measurementId) {
+            toast('请完整选择', true); return;
+        }
+        try {
+            await api('/api/orders', 'POST', body);
+            closeModal('orderModal');
+            loadOrders();
+            toast('下单成功');
+        } catch (e) { toast('下单失败：' + e.message, true); }
+    }
+
+    async function viewOrder(id) {
+        const list = await api('/api/orders/my');
+        const o = list.find(x => x.id === id);
+        if (!o) return;
+        const currentIdx = STATUS_FLOW.indexOf(o.status);
+        const flowHtml = `
+            <div class="progress-flow">
+                ${STATUS_FLOW.map((s, i) => `
+                    <div class="progress-step ${i < currentIdx ? 'done' : ''} ${i === currentIdx ? 'current' : ''}">
+                        <div class="step-dot">${i + 1}</div>
+                        <div class="step-label">${STATUS_MAP[s]}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        document.getElementById('orderDetailBody').innerHTML = `
+            ${flowHtml}
+            <table>
+                <tr><th>订单号</th><td>#${o.id}</td></tr>
+                <tr><th>款式</th><td>${o.styleName}</td></tr>
+                <tr><th>面料</th><td>${o.fabricName}</td></tr>
+                <tr><th>量体</th><td>${o.measurementName || '-'}</td></tr>
+                <tr><th>总价</th><td>¥${o.totalPrice}</td></tr>
+                <tr><th>状态</th><td><span class="status-${o.status}">${STATUS_MAP[o.status]}</span></td></tr>
+                <tr><th>备注</th><td>${o.remark || '-'}</td></tr>
+                <tr><th>下单时间</th><td>${formatTime(o.createTime)}</td></tr>
+            </table>
+        `;
+        openModal('orderDetailModal');
+    }
+
+    function formatTime(t) {
+        if (!t) return '-';
+        return t.replace('T', ' ').substring(0, 16);
+    }
+
+    // 选项变化时重算总价
+    document.addEventListener('change', e => {
+        if (e.target.id === 'orderStyle' || e.target.id === 'orderFabric') calcOrderPrice();
+    });
+
+    // ===== 初始化 =====
+    (async function init() {
+        await checkSession();
+        await loadFabrics();
+        await loadStyles();
+    })();
+</script>
+
+</body>
+</html>

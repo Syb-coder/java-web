@@ -1,4 +1,4 @@
-package com.example.java6.model;
+package com.example.java6.model; // 定义枚举类所在包,与实体类同属 model 包便于统一管理
 
 /**
  * 安全知识分类枚举
@@ -9,14 +9,14 @@ package com.example.java6.model;
 public enum KnowledgeCategory {
 
     /** 防护技巧：日常上网、移动终端防护实用技巧 */
-    PROTECTION_TIPS,
+    PROTECTION_TIPS, // 防护技巧:分享日常上网与移动终端防护的实用技巧,贴近公众生活场景
 
     /** 科普文章：网络安全基础知识普及 */
-    POPULAR_SCIENCE,
+    POPULAR_SCIENCE, // 科普文章:普及网络安全基础知识,帮助公众建立安全意识与认知框架
 
     /** 案例分析：典型网络安全事件案例剖析 */
-    CASE_ANALYSIS,
+    CASE_ANALYSIS, // 案例分析:剖析典型网络安全事件案例,以案说法提升公众防范能力
 
     /** 应急响应：安全事件应急处置方法与流程 */
-    EMERGENCY_RESPONSE
+    EMERGENCY_RESPONSE // 应急响应:介绍安全事件应急处置方法与流程,指导公众科学应对
 }

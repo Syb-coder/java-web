@@ -1,49 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Maven 项目描述文件：定义项目坐标、依赖、构建方式 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- POM 模型版本，4.0.0 是 Maven 2/3 的稳定版本 -->
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 继承 Spring Boot 父项目：统一管理 Spring Boot 全家桶版本号与插件配置 -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
+		<!-- 选用 Spring Boot 4.1.0：最新稳定版，支持 JDK 25 与 Jakarta EE 规范 -->
 		<version>4.1.0</version>
 		<relativePath/>
 	</parent>
+
+	<!-- 项目坐标：本项目的唯一标识 -->
 	<groupId>com.example</groupId>
 	<artifactId>java-6</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>java-6</name>
 	<description>国家网络安全宣传官网</description>
+
+	<!-- 项目自定义属性 -->
 	<properties>
+		<!-- 指定 JDK 版本为 25：使用最新 LTS 版本以获得最新语言特性与性能优化 -->
 		<java.version>25</java.version>
 	</properties>
+
+	<!-- 项目依赖列表 -->
 	<dependencies>
+		<!-- Spring Boot H2 控制台自动配置：开启 H2 Web Console 自动装配 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-h2console</artifactId>
 		</dependency>
+
+		<!-- Spring Data JPA Starter：集成 Hibernate + JPA，提供 Repository 数据访问层 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!-- Spring WebMVC Starter：构建 RESTful API 与 MVC Web 应用（内嵌 Tomcat） -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- H2 数据库驱动：纯 Java 实现的轻量级内存/文件数据库，用于开发演示 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<!-- runtime 作用域：仅在运行期需要，编译期不依赖 -->
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Spring Security 加密工具：提供 BCrypt 等密码加密算法，用于管理员密码哈希存储 -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
+
+		<!-- JPA 测试 Starter：提供 DataJpaTest 等切片测试支持，验证 Repository 层 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
+			<!-- test 作用域：仅测试代码使用，不打入生产包 -->
 			<scope>test</scope>
 		</dependency>
+
+		<!-- WebMVC 测试 Starter：提供 MockMvc 等测试支持，验证 Controller 层接口 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
@@ -51,8 +77,10 @@
 		</dependency>
 	</dependencies>
 
+	<!-- 构建配置 -->
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven 插件：支持打包可执行 jar、运行 spring-boot:run 启动项目 -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

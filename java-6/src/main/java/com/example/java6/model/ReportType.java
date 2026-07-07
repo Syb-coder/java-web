@@ -1,4 +1,4 @@
-package com.example.java6.model;
+package com.example.java6.model; // 定义枚举类所在包,与实体类同属 model 包便于统一管理
 
 /**
  * 举报类型枚举
@@ -9,20 +9,20 @@ package com.example.java6.model;
 public enum ReportType {
 
     /** 色情低俗：淫秽色情、低俗庸俗内容 */
-    PORNOGRAPHY,
+    PORNOGRAPHY, // 色情低俗:举报淫秽色情、低俗庸俗内容,净化网络环境
 
     /** 赌博诈骗：网络赌博、电信网络诈骗 */
-    GAMBLING_FRAUD,
+    GAMBLING_FRAUD, // 赌博诈骗:举报网络赌博、电信网络诈骗等违法犯罪行为
 
     /** 网络暴力：人身攻击、侮辱诽谤、人肉搜索 */
-    CYBER_VIOLENCE,
+    CYBER_VIOLENCE, // 网络暴力:举报人身攻击、侮辱诽谤、人肉搜索等侵害他人权益行为
 
     /** 谣言信息：编造传播虚假信息 */
-    RUMOR,
+    RUMOR, // 谣言信息:举报编造传播虚假信息,维护网络信息真实性
 
     /** 违法违规：其他违法违规内容 */
-    ILLEGAL_CONTENT,
+    ILLEGAL_CONTENT, // 违法违规:举报其他不属于上述分类的违法违规内容
 
     /** 其他：不属于上述分类的举报 */
-    OTHER
+    OTHER // 其他:不属于上述任何分类的举报,作为兜底分类
 }

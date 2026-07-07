@@ -1,4 +1,4 @@
-package com.example.java6.model;
+package com.example.java6.model; // 定义枚举类所在包,与实体类同属 model 包便于统一管理
 
 /**
  * 举报处理状态枚举
@@ -9,14 +9,14 @@ package com.example.java6.model;
 public enum ReportStatus {
 
     /** 待处理：举报已受理，尚未开始处置 */
-    PENDING,
+    PENDING, // 待处理:举报已受理入库,尚未开始处置,为举报记录的初始状态
 
     /** 处理中：举报正在核查处置中 */
-    PROCESSING,
+    PROCESSING, // 处理中:举报正在核查处置中,工作人员已介入调查
 
     /** 已处理：举报处置完成 */
-    RESOLVED,
+    RESOLVED, // 已处理:举报处置完成,已采取下架、封禁等措施
 
     /** 已忽略：经核实属于无效举报，不予处置 */
-    IGNORED
+    IGNORED // 已忽略:经核实属于无效举报,不予处置,如重复举报、误报等
 }

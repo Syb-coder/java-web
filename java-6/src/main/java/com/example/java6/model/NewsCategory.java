@@ -1,4 +1,4 @@
-package com.example.java6.model;
+package com.example.java6.model; // 定义枚举类所在包,与实体类同属 model 包便于统一管理
 
 /**
  * 新闻资讯分类枚举
@@ -9,14 +9,14 @@ package com.example.java6.model;
 public enum NewsCategory {
 
     /** 安全新闻：网络安全领域重大事件报道 */
-    SECURITY_NEWS,
+    SECURITY_NEWS, // 安全新闻:报道网络安全领域重大事件,如数据泄露、APT 攻击等
 
     /** 行业动态：网络安全行业发展趋势、企业动向 */
-    INDUSTRY_TREND,
+    INDUSTRY_TREND, // 行业动态:报道网络安全行业发展趋势与企业动向,如产业政策、市场格局
 
     /** 政策解读：国家网络安全政策法规权威解读 */
-    POLICY_INTERPRETATION,
+    POLICY_INTERPRETATION, // 政策解读:对国家网络安全政策法规进行权威解读,帮助公众理解法规要义
 
     /** 漏洞预警：重大漏洞通报与安全预警 */
-    VULNERABILITY_ALERT
+    VULNERABILITY_ALERT // 漏洞预警:发布重大漏洞通报与安全预警,提醒公众及时修补防护
 }

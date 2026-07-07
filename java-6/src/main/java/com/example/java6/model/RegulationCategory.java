@@ -1,4 +1,4 @@
-package com.example.java6.model;
+package com.example.java6.model; // 定义枚举类所在包,与实体类同属 model 包便于统一管理
 
 /**
  * 政策法规分类枚举
@@ -9,14 +9,14 @@ package com.example.java6.model;
 public enum RegulationCategory {
 
     /** 法律：全国人大及其常委会制定的法律 */
-    LAW,
+    LAW, // 法律:由全国人大及其常委会制定,效力层级最高,如《网络安全法》《数据安全法》
 
     /** 行政法规：国务院制定的行政法规 */
-    ADMINISTRATIVE_REGULATION,
+    ADMINISTRATIVE_REGULATION, // 行政法规:由国务院制定,效力次于法律,如《关键信息基础设施安全保护条例》
 
     /** 部门规章：国务院各部委制定的规章 */
-    DEPARTMENTAL_RULE,
+    DEPARTMENTAL_RULE, // 部门规章:由国务院各部委制定,如《网络安全审查办法》
 
     /** 规范性文件：行政机关发布的规范性文件 */
-    NORMATIVE_DOCUMENT
+    NORMATIVE_DOCUMENT // 规范性文件:由行政机关发布的规范性文件,如通知、意见等指导性文件
 }
