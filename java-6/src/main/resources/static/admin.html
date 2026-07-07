@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容管理后台 - 国家网络安全宣传官网</title>
+    <style>
+        :root {
+            --color-red: #B71C1C;
+            --color-red-dark: #8B0000;
+            --color-blue: #0D47A1;
+            --color-blue-dark: #082A6B;
+            --color-gold: #D4A017;
+            --color-bg: #F0F2F5;
+            --color-text: #222;
+            --color-text-light: #666;
+            --color-border: #E0E0E0;
+            --color-white: #FFFFFF;
+            --color-success: #2E7D32;
+            --color-warning: #ED6C02;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* ===== 顶部栏 ===== */
+        .top-bar {
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            padding: 14px 0;
+            border-bottom: 3px solid var(--color-gold);
+        }
+
+        .top-bar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar .title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .top-bar .actions a {
+            color: var(--color-white);
+            text-decoration: none;
+            margin-left: 16px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .top-bar .actions a:hover { opacity: 1; text-decoration: underline; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== Tab 导航 ===== */
+        .tab-nav {
+            background: var(--color-white);
+            margin-top: 20px;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .tab-nav button {
+            background: none;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            color: var(--color-text-light);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .tab-nav button:hover {
+            color: var(--color-blue);
+            background: #FAFAFA;
+        }
+
+        .tab-nav button.active {
+            color: var(--color-red);
+            border-bottom-color: var(--color-red);
+            font-weight: 500;
+        }
+
+        /* ===== 内容区 ===== */
+        .content-area {
+            background: var(--color-white);
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            min-height: 600px;
+        }
+
+        .tab-panel { display: none; padding: 20px; }
+        .tab-panel.active { display: block; }
+
+        /* ===== 工具栏 ===== */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-left select,
+        .toolbar-left input {
+            padding: 7px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .toolbar-left select:focus,
+        .toolbar-left input:focus {
+            outline: none;
+            border-color: var(--color-blue);
+        }
+
+        .btn {
+            padding: 7px 18px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-blue);
+            color: var(--color-white);
+        }
+        .btn-primary:hover { background: var(--color-blue-dark); }
+
+        .btn-danger {
+            background: var(--color-red);
+            color: var(--color-white);
+        }
+        .btn-danger:hover { background: var(--color-red-dark); }
+
+        .btn-success {
+            background: var(--color-success);
+            color: var(--color-white);
+        }
+        .btn-success:hover { background: #1B5E20; }
+
+        .btn-default {
+            background: #F5F5F5;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        .btn-default:hover { background: #E0E0E0; }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        /* ===== 数据表格 ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            background: #FAFAFA;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+            color: var(--color-text);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background: #FAFAFA;
+        }
+
+        .data-table .col-id { width: 60px; color: var(--color-text-light); }
+        .data-table .col-actions { width: 180px; text-align: center; white-space: nowrap; }
+        .data-table .col-time { width: 150px; color: var(--color-text-light); font-size: 13px; }
+
+        .title-cell {
+            max-width: 360px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== 标签 ===== */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 12px;
+            color: var(--color-white);
+            background: var(--color-blue);
+        }
+
+        .tag.red { background: var(--color-red); }
+        .tag.gold { background: var(--color-gold); }
+        .tag.gray { background: #999; }
+        .tag.green { background: var(--color-success); }
+        .tag.orange { background: var(--color-warning); }
+
+        /* ===== 模态框 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px;
+        }
+        .modal-mask.show { display: flex; }
+
+        .modal {
+            background: var(--color-white);
+            border-radius: 4px;
+            width: 100%;
+            max-width: 720px;
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: var(--color-blue);
+            color: var(--color-white);
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .modal-header h3 { font-size: 16px; font-weight: 500; }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body { padding: 22px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group label .required { color: var(--color-red); }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-blue);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-footer {
+            padding: 14px 22px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #FAFAFA;
+            position: sticky;
+            bottom: 0;
+        }
+
+        /* ===== 统计卡片 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--color-white);
+            border-radius: 4px;
+            padding: 18px;
+            border-left: 4px solid var(--color-blue);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card.red { border-left-color: var(--color-red); }
+        .stat-card.gold { border-left-color: var(--color-gold); }
+        .stat-card.green { border-left-color: var(--color-success); }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 6px;
+        }
+
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--color-text);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-blue);
+            color: var(--color-white);
+            padding: 11px 26px;
+            border-radius: 3px;
+            font-size: 14px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast.success { background: var(--color-success); }
+        .toast.error { background: var(--color-red); }
+
+        .empty-tip {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-text-light);
+            font-size: 14px;
+        }
+
+        .report-desc {
+            max-width: 280px;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-size: 13px;
+            color: var(--color-text-light);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部栏 -->
+    <header class="top-bar">
+        <div class="container">
+            <div class="title">内容管理后台 · 国家网络安全宣传官网</div>
+            <div class="actions">
+                <a href="index.html">返回前台</a>
+                <a href="/h2-console" target="_blank">H2 控制台</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Tab 导航 -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="news">新闻管理</button>
+            <button class="tab-btn" data-tab="knowledge">知识管理</button>
+            <button class="tab-btn" data-tab="regulation">法规管理</button>
+            <button class="tab-btn" data-tab="report">举报管理</button>
+        </div>
+
+        <div class="content-area">
+            <!-- 新闻管理 -->
+            <div class="tab-panel active" id="panel-news">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <select id="news-filter">
+                            <option value="">全部分类</option>
+                            <option value="SECURITY_NEWS">安全新闻</option>
+                            <option value="INDUSTRY_TREND">行业动态</option>
+                            <option value="POLICY_INTERPRETATION">政策解读</option>
+                            <option value="VULNERABILITY_ALERT">漏洞预警</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="editNews()">+ 新增新闻</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="col-id">ID</th>
+                            <th>标题</th>
+                            <th>分类</th>
+                            <th>来源</th>
+                            <th class="col-time">发布时间</th>
+                            <th>阅读</th>
+                            <th class="col-actions">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="news-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- 知识管理 -->
+            <div class="tab-panel" id="panel-knowledge">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <select id="knowledge-filter">
+                            <option value="">全部分类</option>
+                            <option value="PROTECTION_TIPS">防护技巧</option>
+                            <option value="POPULAR_SCIENCE">科普文章</option>
+                            <option value="CASE_ANALYSIS">案例分析</option>
+                            <option value="EMERGENCY_RESPONSE">应急响应</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="editKnowledge()">+ 新增文章</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="col-id">ID</th>
+                            <th>标题</th>
+                            <th>分类</th>
+                            <th>编者</th>
+                            <th class="col-time">创建时间</th>
+                            <th>阅读</th>
+                            <th class="col-actions">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="knowledge-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- 法规管理 -->
+            <div class="tab-panel" id="panel-regulation">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <select id="regulation-filter">
+                            <option value="">全部分类</option>
+                            <option value="LAW">法律</option>
+                            <option value="ADMINISTRATIVE_REGULATION">行政法规</option>
+                            <option value="DEPARTMENTAL_RULE">部门规章</option>
+                            <option value="NORMATIVE_DOCUMENT">规范性文件</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="editRegulation()">+ 新增法规</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="col-id">ID</th>
+                            <th>标题</th>
+                            <th>分类</th>
+                            <th>颁布机构</th>
+                            <th class="col-time">发布日期</th>
+                            <th class="col-time">生效日期</th>
+                            <th class="col-actions">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="regulation-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- 举报管理 -->
+            <div class="tab-panel" id="panel-report">
+                <div class="stats-grid" id="report-stats"></div>
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <select id="report-filter">
+                            <option value="">全部状态</option>
+                            <option value="PENDING">待处理</option>
+                            <option value="PROCESSING">处理中</option>
+                            <option value="RESOLVED">已处理</option>
+                            <option value="IGNORED">已忽略</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-default" onclick="loadReports()">刷新</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="col-id">ID</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                            <th>举报人</th>
+                            <th class="col-time">提交时间</th>
+                            <th>状态</th>
+                            <th class="col-actions">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑模态框 -->
+    <div class="modal-mask" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">编辑</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" id="modal-save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== 分类映射 =====
+        const NEWS_CATEGORY = {
+            SECURITY_NEWS: '安全新闻', INDUSTRY_TREND: '行业动态',
+            POLICY_INTERPRETATION: '政策解读', VULNERABILITY_ALERT: '漏洞预警'
+        };
+        const KNOWLEDGE_CATEGORY = {
+            PROTECTION_TIPS: '防护技巧', POPULAR_SCIENCE: '科普文章',
+            CASE_ANALYSIS: '案例分析', EMERGENCY_RESPONSE: '应急响应'
+        };
+        const REGULATION_CATEGORY = {
+            LAW: '法律', ADMINISTRATIVE_REGULATION: '行政法规',
+            DEPARTMENTAL_RULE: '部门规章', NORMATIVE_DOCUMENT: '规范性文件'
+        };
+        const REPORT_TYPE = {
+            PORNOGRAPHY: '色情低俗', GAMBLING_FRAUD: '赌博诈骗',
+            CYBER_VIOLENCE: '网络暴力', RUMOR: '谣言信息',
+            ILLEGAL_CONTENT: '违法违规', OTHER: '其他'
+        };
+        const REPORT_STATUS = {
+            PENDING: '待处理', PROCESSING: '处理中',
+            RESOLVED: '已处理', IGNORED: '已忽略'
+        };
+        const STATUS_TAG_CLASS = {
+            PENDING: 'gold', PROCESSING: 'orange',
+            RESOLVED: 'green', IGNORED: 'gray'
+        };
+
+        // ===== 工具方法 =====
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + (type || '');
+            setTimeout(() => t.className = 'toast', 2200);
+        }
+
+        function formatDate(s) { return s ? s.substring(0, 10) : ''; }
+        function formatDateTime(s) { return s ? s.substring(0, 16).replace('T', ' ') : ''; }
+
+        async function fetchJson(url, opts) {
+            const resp = await fetch(url, opts);
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            return resp.json();
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        async function apiCall(url, method, data) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (data) opts.body = JSON.stringify(data);
+            const resp = await fetch(url, opts);
+            if (resp.status === 204) return null;
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            return resp.json();
+        }
+
+        // ===== Tab 切换 =====
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+                refreshCurrentTab();
+            });
+        });
+
+        function refreshCurrentTab() {
+            const active = document.querySelector('.tab-btn.active').dataset.tab;
+            if (active === 'news') loadNews();
+            else if (active === 'knowledge') loadKnowledge();
+            else if (active === 'regulation') loadRegulations();
+            else if (active === 'report') { loadReportStats(); loadReports(); }
+        }
+
+        // ===== 新闻管理 =====
+        document.getElementById('news-filter').addEventListener('change', loadNews);
+
+        async function loadNews() {
+            const filter = document.getElementById('news-filter').value;
+            const url = filter ? '/api/news?category=' + filter : '/api/news';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('news-tbody').innerHTML = list.length ? list.map(n => `
+                    <tr>
+                        <td class="col-id">${n.id}</td>
+                        <td class="title-cell">${escapeHtml(n.title)}</td>
+                        <td><span class="tag blue">${NEWS_CATEGORY[n.category] || n.category}</span></td>
+                        <td>${escapeHtml(n.source || '-')}</td>
+                        <td class="col-time">${formatDateTime(n.publishTime)}</td>
+                        <td>${n.viewCount || 0}</td>
+                        <td class="col-actions">
+                            <button class="btn btn-default btn-sm" onclick="editNews(${n.id})">编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteNews(${n.id})">删除</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无新闻数据</td></tr>';
+            } catch (err) { showToast('加载新闻失败', 'error'); }
+        }
+
+        async function editNews(id) {
+            let n = { category: 'SECURITY_NEWS', top: false };
+            if (id) {
+                n = await fetchJson('/api/news/' + id);
+            }
+            openModal(id ? '编辑新闻' : '新增新闻', `
+                <div class="form-group">
+                    <label>标题 <span class="required">*</span></label>
+                    <input type="text" id="f-news-title" value="${escapeHtml(n.title || '')}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>分类 <span class="required">*</span></label>
+                        <select id="f-news-category">
+                            <option value="SECURITY_NEWS">安全新闻</option>
+                            <option value="INDUSTRY_TREND">行业动态</option>
+                            <option value="POLICY_INTERPRETATION">政策解读</option>
+                            <option value="VULNERABILITY_ALERT">漏洞预警</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>来源</label>
+                        <input type="text" id="f-news-source" value="${escapeHtml(n.source || '')}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>摘要</label>
+                    <textarea id="f-news-summary">${escapeHtml(n.summary || '')}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>正文内容 <span class="required">*</span></label>
+                    <textarea id="f-news-content" style="min-height:160px;">${escapeHtml(n.content || '')}</textarea>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="f-news-top" ${n.top ? 'checked' : ''}> 设为置顶</label>
+                </div>
+            `);
+            document.getElementById('f-news-category').value = n.category;
+            document.getElementById('modal-save').onclick = async () => {
+                const data = {
+                    title: document.getElementById('f-news-title').value.trim(),
+                    category: document.getElementById('f-news-category').value,
+                    source: document.getElementById('f-news-source').value.trim() || null,
+                    summary: document.getElementById('f-news-summary').value.trim() || null,
+                    content: document.getElementById('f-news-content').value.trim(),
+                    top: document.getElementById('f-news-top').checked,
+                    publishTime: n.publishTime || null
+                };
+                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }
+                try {
+                    if (id) await apiCall('/api/news/' + id, 'PUT', data);
+                    else await apiCall('/api/news', 'POST', data);
+                    showToast('保存成功', 'success');
+                    closeModal();
+                    loadNews();
+                } catch (err) { showToast('保存失败', 'error'); }
+            };
+        }
+
+        async function deleteNews(id) {
+            if (!confirm('确认删除该新闻？')) return;
+            try {
+                await apiCall('/api/news/' + id, 'DELETE');
+                showToast('删除成功', 'success');
+                loadNews();
+            } catch (err) { showToast('删除失败', 'error'); }
+        }
+
+        // ===== 知识管理 =====
+        document.getElementById('knowledge-filter').addEventListener('change', loadKnowledge);
+
+        async function loadKnowledge() {
+            const filter = document.getElementById('knowledge-filter').value;
+            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('knowledge-tbody').innerHTML = list.length ? list.map(k => `
+                    <tr>
+                        <td class="col-id">${k.id}</td>
+                        <td class="title-cell">${escapeHtml(k.title)}</td>
+                        <td><span class="tag gold">${KNOWLEDGE_CATEGORY[k.category] || k.category}</span></td>
+                        <td>${escapeHtml(k.author || '-')}</td>
+                        <td class="col-time">${formatDateTime(k.createdAt)}</td>
+                        <td>${k.viewCount || 0}</td>
+                        <td class="col-actions">
+                            <button class="btn btn-default btn-sm" onclick="editKnowledge(${k.id})">编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteKnowledge(${k.id})">删除</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无文章数据</td></tr>';
+            } catch (err) { showToast('加载知识失败', 'error'); }
+        }
+
+        async function editKnowledge(id) {
+            let k = { category: 'PROTECTION_TIPS' };
+            if (id) k = await fetchJson('/api/knowledge/' + id);
+            openModal(id ? '编辑文章' : '新增文章', `
+                <div class="form-group">
+                    <label>标题 <span class="required">*</span></label>
+                    <input type="text" id="f-k-title" value="${escapeHtml(k.title || '')}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>分类 <span class="required">*</span></label>
+                        <select id="f-k-category">
+                            <option value="PROTECTION_TIPS">防护技巧</option>
+                            <option value="POPULAR_SCIENCE">科普文章</option>
+                            <option value="CASE_ANALYSIS">案例分析</option>
+                            <option value="EMERGENCY_RESPONSE">应急响应</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>编者</label>
+                        <input type="text" id="f-k-author" value="${escapeHtml(k.author || '')}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>摘要</label>
+                    <textarea id="f-k-summary">${escapeHtml(k.summary || '')}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>正文内容 <span class="required">*</span></label>
+                    <textarea id="f-k-content" style="min-height:160px;">${escapeHtml(k.content || '')}</textarea>
+                </div>
+            `);
+            document.getElementById('f-k-category').value = k.category;
+            document.getElementById('modal-save').onclick = async () => {
+                const data = {
+                    title: document.getElementById('f-k-title').value.trim(),
+                    category: document.getElementById('f-k-category').value,
+                    author: document.getElementById('f-k-author').value.trim() || null,
+                    summary: document.getElementById('f-k-summary').value.trim() || null,
+                    content: document.getElementById('f-k-content').value.trim()
+                };
+                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }
+                try {
+                    if (id) await apiCall('/api/knowledge/' + id, 'PUT', data);
+                    else await apiCall('/api/knowledge', 'POST', data);
+                    showToast('保存成功', 'success');
+                    closeModal();
+                    loadKnowledge();
+                } catch (err) { showToast('保存失败', 'error'); }
+            };
+        }
+
+        async function deleteKnowledge(id) {
+            if (!confirm('确认删除该文章？')) return;
+            try {
+                await apiCall('/api/knowledge/' + id, 'DELETE');
+                showToast('删除成功', 'success');
+                loadKnowledge();
+            } catch (err) { showToast('删除失败', 'error'); }
+        }
+
+        // ===== 法规管理 =====
+        document.getElementById('regulation-filter').addEventListener('change', loadRegulations);
+
+        async function loadRegulations() {
+            const filter = document.getElementById('regulation-filter').value;
+            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('regulation-tbody').innerHTML = list.length ? list.map(r => `
+                    <tr>
+                        <td class="col-id">${r.id}</td>
+                        <td class="title-cell">${escapeHtml(r.title)}</td>
+                        <td><span class="tag red">${REGULATION_CATEGORY[r.category] || r.category}</span></td>
+                        <td>${escapeHtml(r.issuingAuthority || '-')}</td>
+                        <td class="col-time">${formatDate(r.publishDate)}</td>
+                        <td class="col-time">${formatDate(r.effectiveDate) || '-'}</td>
+                        <td class="col-actions">
+                            <button class="btn btn-default btn-sm" onclick="editRegulation(${r.id})">编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRegulation(${r.id})">删除</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无法规数据</td></tr>';
+            } catch (err) { showToast('加载法规失败', 'error'); }
+        }
+
+        async function editRegulation(id) {
+            let r = { category: 'LAW' };
+            if (id) r = await fetchJson('/api/regulations/' + id);
+            openModal(id ? '编辑法规' : '新增法规', `
+                <div class="form-group">
+                    <label>标题 <span class="required">*</span></label>
+                    <input type="text" id="f-r-title" value="${escapeHtml(r.title || '')}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>颁布机构 <span class="required">*</span></label>
+                        <input type="text" id="f-r-authority" value="${escapeHtml(r.issuingAuthority || '')}">
+                    </div>
+                    <div class="form-group">
+                        <label>分类 <span class="required">*</span></label>
+                        <select id="f-r-category">
+                            <option value="LAW">法律</option>
+                            <option value="ADMINISTRATIVE_REGULATION">行政法规</option>
+                            <option value="DEPARTMENTAL_RULE">部门规章</option>
+                            <option value="NORMATIVE_DOCUMENT">规范性文件</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>发布日期 <span class="required">*</span></label>
+                        <input type="date" id="f-r-publish" value="${formatDate(r.publishDate)}">
+                    </div>
+                    <div class="form-group">
+                        <label>生效日期</label>
+                        <input type="date" id="f-r-effective" value="${formatDate(r.effectiveDate)}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>文号</label>
+                    <input type="text" id="f-r-docnum" value="${escapeHtml(r.documentNumber || '')}">
+                </div>
+                <div class="form-group">
+                    <label>法规正文 <span class="required">*</span></label>
+                    <textarea id="f-r-content" style="min-height:160px;">${escapeHtml(r.content || '')}</textarea>
+                </div>
+            `);
+            document.getElementById('f-r-category').value = r.category;
+            document.getElementById('modal-save').onclick = async () => {
+                const data = {
+                    title: document.getElementById('f-r-title').value.trim(),
+                    issuingAuthority: document.getElementById('f-r-authority').value.trim(),
+                    category: document.getElementById('f-r-category').value,
+                    publishDate: document.getElementById('f-r-publish').value || null,
+                    effectiveDate: document.getElementById('f-r-effective').value || null,
+                    documentNumber: document.getElementById('f-r-docnum').value.trim() || null,
+                    content: document.getElementById('f-r-content').value.trim()
+                };
+                if (!data.title || !data.issuingAuthority || !data.publishDate || !data.content) {
+                    showToast('请填写必填项', 'error'); return;
+                }
+                try {
+                    if (id) await apiCall('/api/regulations/' + id, 'PUT', data);
+                    else await apiCall('/api/regulations', 'POST', data);
+                    showToast('保存成功', 'success');
+                    closeModal();
+                    loadRegulations();
+                } catch (err) { showToast('保存失败', 'error'); }
+            };
+        }
+
+        async function deleteRegulation(id) {
+            if (!confirm('确认删除该法规？')) return;
+            try {
+                await apiCall('/api/regulations/' + id, 'DELETE');
+                showToast('删除成功', 'success');
+                loadRegulations();
+            } catch (err) { showToast('删除失败', 'error'); }
+        }
+
+        // ===== 举报管理 =====
+        document.getElementById('report-filter').addEventListener('change', loadReports);
+
+        async function loadReportStats() {
+            try {
+                const s = await fetchJson('/api/reports/stats');
+                document.getElementById('report-stats').innerHTML = `
+                    <div class="stat-card red">
+                        <div class="label">举报总数</div>
+                        <div class="value">${s.total}</div>
+                    </div>
+                    <div class="stat-card gold">
+                        <div class="label">待处理</div>
+                        <div class="value">${s.byStatus.PENDING || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">处理中</div>
+                        <div class="value">${s.byStatus.PROCESSING || 0}</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="label">已处理</div>
+                        <div class="value">${s.byStatus.RESOLVED || 0}</div>
+                    </div>
+                `;
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadReports() {
+            const filter = document.getElementById('report-filter').value;
+            const url = filter ? '/api/reports?status=' + filter : '/api/reports';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('report-tbody').innerHTML = list.length ? list.map(r => `
+                    <tr>
+                        <td class="col-id">${r.id}</td>
+                        <td><span class="tag red">${REPORT_TYPE[r.reportType] || r.reportType}</span></td>
+                        <td><div class="report-desc">${escapeHtml(r.description)}</div></td>
+                        <td>${escapeHtml(r.reporterName || '-')}<br><span style="font-size:12px;color:#999;">${escapeHtml(r.reporterContact || '')}</span></td>
+                        <td class="col-time">${formatDateTime(r.createdAt)}</td>
+                        <td><span class="tag ${STATUS_TAG_CLASS[r.status]}">${REPORT_STATUS[r.status] || r.status}</span></td>
+                        <td class="col-actions">
+                            <button class="btn btn-default btn-sm" onclick="handleReport(${r.id})">处置</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteReport(${r.id})">删除</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无举报记录</td></tr>';
+            } catch (err) { showToast('加载举报失败', 'error'); }
+        }
+
+        async function handleReport(id) {
+            const r = await fetchJson('/api/reports/' + id);
+            openModal('处置举报 #' + id, `
+                <div class="form-group">
+                    <label>举报类型</label>
+                    <div style="padding:8px 0;">${REPORT_TYPE[r.reportType] || r.reportType}</div>
+                </div>
+                ${r.targetUrl ? `<div class="form-group"><label>举报链接</label><div style="padding:8px 0;word-break:break-all;">${escapeHtml(r.targetUrl)}</div></div>` : ''}
+                <div class="form-group">
+                    <label>举报描述</label>
+                    <div style="padding:8px 0;background:#FAFAFA;border-radius:3px;">${escapeHtml(r.description)}</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>举报人</label>
+                        <div style="padding:8px 0;">${escapeHtml(r.reporterName || '-')}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>联系方式</label>
+                        <div style="padding:8px 0;">${escapeHtml(r.reporterContact || '-')}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>处置状态 <span class="required">*</span></label>
+                    <select id="f-rep-status">
+                        <option value="PENDING">待处理</option>
+                        <option value="PROCESSING">处理中</option>
+                        <option value="RESOLVED">已处理</option>
+                        <option value="IGNORED">已忽略</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>处置备注</label>
+                    <textarea id="f-rep-note">${escapeHtml(r.handleNote || '')}</textarea>
+                </div>
+            `);
+            document.getElementById('f-rep-status').value = r.status;
+            document.getElementById('modal-save').onclick = async () => {
+                const data = {
+                    status: document.getElementById('f-rep-status').value,
+                    handleNote: document.getElementById('f-rep-note').value.trim() || null
+                };
+                try {
+                    await apiCall('/api/reports/' + id, 'PUT', data);
+                    showToast('处置成功', 'success');
+                    closeModal();
+                    loadReportStats();
+                    loadReports();
+                } catch (err) { showToast('处置失败', 'error'); }
+            };
+        }
+
+        async function deleteReport(id) {
+            if (!confirm('确认删除该举报记录？')) return;
+            try {
+                await apiCall('/api/reports/' + id, 'DELETE');
+                showToast('删除成功', 'success');
+                loadReportStats();
+                loadReports();
+            } catch (err) { showToast('删除失败', 'error'); }
+        }
+
+        // ===== Modal =====
+        function openModal(title, html) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        document.getElementById('modal').addEventListener('click', e => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ===== 初始化 =====
+        loadNews();
+    </script>
+</body>
+</html>

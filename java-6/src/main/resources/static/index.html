@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国家网络安全宣传官网</title>
+    <style>
+        :root {
+            --color-red: #B71C1C;
+            --color-red-dark: #8B0000;
+            --color-blue: #0D47A1;
+            --color-blue-dark: #082A6B;
+            --color-gold: #D4A017;
+            --color-bg: #F5F5F5;
+            --color-text: #222;
+            --color-text-light: #666;
+            --color-border: #E0E0E0;
+            --color-white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* ===== 顶部红色 Header ===== */
+        .top-header {
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            padding: 18px 0;
+            border-bottom: 3px solid var(--color-gold);
+        }
+
+        .top-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .emblem {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--color-gold) 0%, #B8860B 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: var(--color-red-dark);
+            font-weight: bold;
+            border: 2px solid var(--color-white);
+            box-shadow: 0 0 8px rgba(212, 160, 23, 0.6);
+        }
+
+        .site-title {
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .site-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            font-size: 13px;
+            text-align: right;
+        }
+
+        .header-right a {
+            color: var(--color-white);
+            text-decoration: none;
+            margin-left: 14px;
+            opacity: 0.9;
+        }
+
+        .header-right a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* ===== 主导航（深蓝） ===== */
+        .main-nav {
+            background: var(--color-blue);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .main-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .main-nav a {
+            display: block;
+            color: var(--color-white);
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            background: var(--color-blue-dark);
+        }
+
+        .main-nav a.active {
+            border-bottom: 3px solid var(--color-gold);
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== Hero Banner ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--color-red) 0%, var(--color-blue) 100%);
+            color: var(--color-white);
+            padding: 50px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(212, 160, 23, 0.15) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            letter-spacing: 6px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.95;
+            letter-spacing: 2px;
+        }
+
+        .hero-meta {
+            margin-top: 18px;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        /* ===== 主体内容 ===== */
+        .main-content {
+            padding: 30px 0 50px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-red);
+        }
+
+        .section-title h2 {
+            font-size: 22px;
+            color: var(--color-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 22px;
+            background: var(--color-red);
+        }
+
+        .section-title .more {
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .section-title .more:hover {
+            color: var(--color-red);
+        }
+
+        /* ===== 首页三栏 ===== */
+        .home-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .home-card {
+            background: var(--color-white);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border-top: 3px solid var(--color-blue);
+        }
+
+        .home-card.red {
+            border-top-color: var(--color-red);
+        }
+
+        .home-card h3 {
+            font-size: 17px;
+            color: var(--color-blue-dark);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .home-card h3 a {
+            font-size: 12px;
+            color: var(--color-text-light);
+            text-decoration: none;
+        }
+
+        .home-card ul {
+            list-style: none;
+        }
+
+        .home-card li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--color-border);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-card li:last-child {
+            border-bottom: none;
+        }
+
+        .home-card li .dot {
+            color: var(--color-red);
+            font-size: 10px;
+        }
+
+        .home-card li a {
+            color: var(--color-text);
+            text-decoration: none;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .home-card li a:hover {
+            color: var(--color-red);
+        }
+
+        .home-card li .date {
+            color: var(--color-text-light);
+            font-size: 12px;
+        }
+
+        /* ===== 列表页 ===== */
+        .filter-bar {
+            background: var(--color-white);
+            padding: 14px 20px;
+            margin-bottom: 18px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .filter-bar label {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .filter-bar select {
+            padding: 6px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            font-size: 14px;
+            background: var(--color-white);
+            cursor: pointer;
+        }
+
+        .filter-bar select:focus {
+            outline: none;
+            border-color: var(--color-blue);
+        }
+
+        .list-container {
+            background: var(--color-white);
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .list-item {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .list-item:hover {
+            background: #FAFAFA;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .list-item-title .tag {
+            background: var(--color-red);
+            color: var(--color-white);
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 2px;
+            font-weight: normal;
+        }
+
+        .list-item-title .tag.blue {
+            background: var(--color-blue);
+        }
+
+        .list-item-title .tag.gold {
+            background: var(--color-gold);
+        }
+
+        .list-item-summary {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .list-item-meta {
+            font-size: 12px;
+            color: var(--color-text-light);
+            display: flex;
+            gap: 18px;
+        }
+
+        .empty-tip {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--color-text-light);
+            font-size: 14px;
+        }
+
+        /* ===== 举报表单 ===== */
+        .report-box {
+            background: var(--color-white);
+            border-radius: 4px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .report-box h3 {
+            color: var(--color-red);
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .report-box .tip {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+            padding: 10px 14px;
+            background: #FFF8E1;
+            border-left: 3px solid var(--color-gold);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--color-text);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-group label .required {
+            color: var(--color-red);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-blue);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .btn-submit {
+            background: var(--color-red);
+            color: var(--color-white);
+            border: none;
+            padding: 11px 36px;
+            font-size: 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover {
+            background: var(--color-red-dark);
+        }
+
+        /* ===== Modal 详情 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .modal-mask.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--color-white);
+            border-radius: 4px;
+            width: 100%;
+            max-width: 800px;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: var(--color-blue);
+            color: var(--color-white);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body h1 {
+            font-size: 22px;
+            color: var(--color-text);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .modal-meta {
+            font-size: 13px;
+            color: var(--color-text-light);
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 18px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-content {
+            font-size: 15px;
+            line-height: 1.9;
+            color: var(--color-text);
+            white-space: pre-wrap;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: var(--color-blue-dark);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 26px 0;
+            text-align: center;
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== 提示框 ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-blue);
+            color: var(--color-white);
+            padding: 12px 28px;
+            border-radius: 3px;
+            font-size: 14px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            background: #2E7D32;
+        }
+
+        .toast.error {
+            background: var(--color-red);
+        }
+
+        @media (max-width: 768px) {
+            .home-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .main-nav ul { flex-wrap: wrap; }
+            .main-nav li { flex: 1 0 33%; }
+            .hero h1 { font-size: 26px; }
+            .site-title { font-size: 18px; }
+            .header-right { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部红色 Header -->
+    <header class="top-header">
+        <div class="container">
+            <div class="logo-area">
+                <div class="emblem">徽</div>
+                <div>
+                    <div class="site-title">国家网络安全宣传官网</div>
+                    <div class="site-subtitle">National Cybersecurity Awareness</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div>2026年国家网络安全宣传周</div>
+                <div style="margin-top: 4px;">
+                    <a href="admin.html">管理后台</a>
+                    <a href="/h2-console" target="_blank">数据库</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主导航 -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#" class="nav-link active" data-section="home">首页</a></li>
+                <li><a href="#" class="nav-link" data-section="news">新闻资讯</a></li>
+                <li><a href="#" class="nav-link" data-section="knowledge">安全知识</a></li>
+                <li><a href="#" class="nav-link" data-section="regulation">政策法规</a></li>
+                <li><a href="#" class="nav-link" data-section="report">举报中心</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>网络安全为人民 网络安全靠人民</h1>
+            <p>共同筑牢国家网络安全防线 · 携手共建清朗网络空间</p>
+            <div class="hero-meta">2026年国家网络安全宣传周 · 官方宣传平台</div>
+        </div>
+    </section>
+
+    <!-- 主体内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 首页 -->
+            <section class="section active" id="section-home">
+                <div class="home-grid">
+                    <div class="home-card red">
+                        <h3>要闻动态 <a href="#" data-jump="news">更多 &gt;</a></h3>
+                        <ul id="home-news"></ul>
+                    </div>
+                    <div class="home-card">
+                        <h3>安全知识 <a href="#" data-jump="knowledge">更多 &gt;</a></h3>
+                        <ul id="home-knowledge"></ul>
+                    </div>
+                    <div class="home-card">
+                        <h3>政策法规 <a href="#" data-jump="regulation">更多 &gt;</a></h3>
+                        <ul id="home-regulation"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 新闻资讯 -->
+            <section class="section" id="section-news">
+                <div class="section-title">
+                    <h2>新闻资讯</h2>
+                </div>
+                <div class="filter-bar">
+                    <label>分类筛选：</label>
+                    <select id="news-filter">
+                        <option value="">全部分类</option>
+                        <option value="SECURITY_NEWS">安全新闻</option>
+                        <option value="INDUSTRY_TREND">行业动态</option>
+                        <option value="POLICY_INTERPRETATION">政策解读</option>
+                        <option value="VULNERABILITY_ALERT">漏洞预警</option>
+                    </select>
+                </div>
+                <div class="list-container" id="news-list"></div>
+            </section>
+
+            <!-- 安全知识 -->
+            <section class="section" id="section-knowledge">
+                <div class="section-title">
+                    <h2>安全知识</h2>
+                </div>
+                <div class="filter-bar">
+                    <label>分类筛选：</label>
+                    <select id="knowledge-filter">
+                        <option value="">全部分类</option>
+                        <option value="PROTECTION_TIPS">防护技巧</option>
+                        <option value="POPULAR_SCIENCE">科普文章</option>
+                        <option value="CASE_ANALYSIS">案例分析</option>
+                        <option value="EMERGENCY_RESPONSE">应急响应</option>
+                    </select>
+                </div>
+                <div class="list-container" id="knowledge-list"></div>
+            </section>
+
+            <!-- 政策法规 -->
+            <section class="section" id="section-regulation">
+                <div class="section-title">
+                    <h2>政策法规</h2>
+                </div>
+                <div class="filter-bar">
+                    <label>分类筛选：</label>
+                    <select id="regulation-filter">
+                        <option value="">全部分类</option>
+                        <option value="LAW">法律</option>
+                        <option value="ADMINISTRATIVE_REGULATION">行政法规</option>
+                        <option value="DEPARTMENTAL_RULE">部门规章</option>
+                        <option value="NORMATIVE_DOCUMENT">规范性文件</option>
+                    </select>
+                </div>
+                <div class="list-container" id="regulation-list"></div>
+            </section>
+
+            <!-- 举报中心 -->
+            <section class="section" id="section-report">
+                <div class="section-title">
+                    <h2>违法和不良信息举报中心</h2>
+                </div>
+                <div class="report-box">
+                    <h3>欢迎广大网民举报网络违法和不良信息</h3>
+                    <div class="tip">
+                        举报人的个人信息将严格保密。请如实填写举报内容，配合我们共同维护清朗网络空间。
+                    </div>
+                    <form id="report-form">
+                        <div class="form-group">
+                            <label>举报类型 <span class="required">*</span></label>
+                            <select id="report-type" required>
+                                <option value="">请选择举报类型</option>
+                                <option value="PORNOGRAPHY">色情低俗</option>
+                                <option value="GAMBLING_FRAUD">赌博诈骗</option>
+                                <option value="CYBER_VIOLENCE">网络暴力</option>
+                                <option value="RUMOR">谣言信息</option>
+                                <option value="ILLEGAL_CONTENT">违法违规</option>
+                                <option value="OTHER">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>举报对象链接</label>
+                            <input type="url" id="report-url" placeholder="https://（选填）">
+                        </div>
+                        <div class="form-group">
+                            <label>举报描述 <span class="required">*</span></label>
+                            <textarea id="report-desc" required placeholder="请详细描述举报内容、违规事实及相关证据..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>举报人姓名</label>
+                                <input type="text" id="report-name" placeholder="选填">
+                            </div>
+                            <div class="form-group">
+                                <label>联系方式</label>
+                                <input type="text" id="report-contact" placeholder="手机/邮箱（选填）">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit">提交举报</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 详情 Modal -->
+    <div class="modal-mask" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-tag">详情</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div>
+                <a href="#">关于我们</a> |
+                <a href="#">联系方式</a> |
+                <a href="#">网站声明</a> |
+                <a href="admin.html">管理后台</a>
+            </div>
+            <div>主办单位：国家网络安全宣传周组委会 · 技术支持：网络安全信息化办公室</div>
+            <div>© 2026 国家网络安全宣传官网 · 京ICP备2026000001号 · 京公网安备 11010102060001号</div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== 分类标签映射 =====
+        const NEWS_CATEGORY = {
+            SECURITY_NEWS: '安全新闻',
+            INDUSTRY_TREND: '行业动态',
+            POLICY_INTERPRETATION: '政策解读',
+            VULNERABILITY_ALERT: '漏洞预警'
+        };
+        const KNOWLEDGE_CATEGORY = {
+            PROTECTION_TIPS: '防护技巧',
+            POPULAR_SCIENCE: '科普文章',
+            CASE_ANALYSIS: '案例分析',
+            EMERGENCY_RESPONSE: '应急响应'
+        };
+        const REGULATION_CATEGORY = {
+            LAW: '法律',
+            ADMINISTRATIVE_REGULATION: '行政法规',
+            DEPARTMENTAL_RULE: '部门规章',
+            NORMATIVE_DOCUMENT: '规范性文件'
+        };
+
+        // ===== 通用工具 =====
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show ' + (type || '');
+            setTimeout(() => toast.className = 'toast', 2500);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            return dateStr.substring(0, 10);
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr) return '';
+            return dateStr.substring(0, 16).replace('T', ' ');
+        }
+
+        async function fetchJson(url) {
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('请求失败：' + resp.status);
+            return resp.json();
+        }
+
+        // ===== 导航切换 =====
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                switchSection(link.dataset.section);
+            });
+        });
+
+        document.querySelectorAll('[data-jump]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                switchSection(link.dataset.jump);
+            });
+        });
+
+        function switchSection(name) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('.nav-link[data-section="' + name + '"]').classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + name).classList.add('active');
+            window.scrollTo({ top: 180, behavior: 'smooth' });
+            // 懒加载各模块
+            if (name === 'news') loadNews();
+            else if (name === 'knowledge') loadKnowledge();
+            else if (name === 'regulation') loadRegulations();
+        }
+
+        // ===== 首页加载 =====
+        async function loadHome() {
+            try {
+                const [news, knowledge, regulations] = await Promise.all([
+                    fetchJson('/api/news/latest'),
+                    fetchJson('/api/knowledge/latest'),
+                    fetchJson('/api/regulations/latest')
+                ]);
+                document.getElementById('home-news').innerHTML = news.slice(0, 6).map(n => `
+                    <li>
+                        <span class="dot">●</span>
+                        <a href="#" onclick="showNews(${n.id});return false;">${escapeHtml(n.title)}</a>
+                        <span class="date">${formatDate(n.publishTime)}</span>
+                    </li>
+                `).join('') || '<li class="empty-tip">暂无新闻</li>';
+
+                document.getElementById('home-knowledge').innerHTML = knowledge.slice(0, 6).map(k => `
+                    <li>
+                        <span class="dot">●</span>
+                        <a href="#" onclick="showKnowledge(${k.id});return false;">${escapeHtml(k.title)}</a>
+                        <span class="date">${formatDate(k.createdAt)}</span>
+                    </li>
+                `).join('') || '<li class="empty-tip">暂无文章</li>';
+
+                document.getElementById('home-regulation').innerHTML = regulations.slice(0, 6).map(r => `
+                    <li>
+                        <span class="dot">●</span>
+                        <a href="#" onclick="showRegulation(${r.id});return false;">${escapeHtml(r.title)}</a>
+                        <span class="date">${formatDate(r.publishDate)}</span>
+                    </li>
+                `).join('') || '<li class="empty-tip">暂无法规</li>';
+            } catch (err) {
+                console.error('加载首页失败', err);
+            }
+        }
+
+        // ===== 新闻 =====
+        document.getElementById('news-filter').addEventListener('change', loadNews);
+
+        async function loadNews() {
+            const filter = document.getElementById('news-filter').value;
+            const url = filter ? '/api/news?category=' + filter : '/api/news';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('news-list').innerHTML = list.length ? list.map(n => `
+                    <div class="list-item" onclick="showNews(${n.id})">
+                        <div class="list-item-title">
+                            ${n.top ? '<span class="tag">置顶</span>' : ''}
+                            <span class="tag blue">${NEWS_CATEGORY[n.category] || n.category}</span>
+                            ${escapeHtml(n.title)}
+                        </div>
+                        <div class="list-item-summary">${escapeHtml(n.summary || '')}</div>
+                        <div class="list-item-meta">
+                            <span>来源：${escapeHtml(n.source || '本站')}</span>
+                            <span>发布：${formatDateTime(n.publishTime)}</span>
+                            <span>阅读：${n.viewCount || 0}</span>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-tip">暂无新闻数据</div>';
+            } catch (err) {
+                showToast('加载新闻失败', 'error');
+            }
+        }
+
+        async function showNews(id) {
+            try {
+                const n = await fetchJson('/api/news/' + id);
+                openModal('新闻详情', `
+                    <h1>${escapeHtml(n.title)}</h1>
+                    <div class="modal-meta">
+                        <span>分类：${NEWS_CATEGORY[n.category] || n.category}</span>
+                        <span>来源：${escapeHtml(n.source || '本站')}</span>
+                        <span>发布：${formatDateTime(n.publishTime)}</span>
+                        <span>阅读：${n.viewCount || 0}</span>
+                    </div>
+                    <div class="modal-content">${escapeHtml(n.content || '')}</div>
+                `);
+            } catch (err) {
+                showToast('加载详情失败', 'error');
+            }
+        }
+
+        // ===== 知识 =====
+        document.getElementById('knowledge-filter').addEventListener('change', loadKnowledge);
+
+        async function loadKnowledge() {
+            const filter = document.getElementById('knowledge-filter').value;
+            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('knowledge-list').innerHTML = list.length ? list.map(k => `
+                    <div class="list-item" onclick="showKnowledge(${k.id})">
+                        <div class="list-item-title">
+                            <span class="tag gold">${KNOWLEDGE_CATEGORY[k.category] || k.category}</span>
+                            ${escapeHtml(k.title)}
+                        </div>
+                        <div class="list-item-summary">${escapeHtml(k.summary || '')}</div>
+                        <div class="list-item-meta">
+                            <span>编者：${escapeHtml(k.author || '本站')}</span>
+                            <span>发布：${formatDateTime(k.createdAt)}</span>
+                            <span>阅读：${k.viewCount || 0}</span>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-tip">暂无文章数据</div>';
+            } catch (err) {
+                showToast('加载知识文章失败', 'error');
+            }
+        }
+
+        async function showKnowledge(id) {
+            try {
+                const k = await fetchJson('/api/knowledge/' + id);
+                openModal('知识详情', `
+                    <h1>${escapeHtml(k.title)}</h1>
+                    <div class="modal-meta">
+                        <span>分类：${KNOWLEDGE_CATEGORY[k.category] || k.category}</span>
+                        <span>编者：${escapeHtml(k.author || '本站')}</span>
+                        <span>发布：${formatDateTime(k.createdAt)}</span>
+                        <span>阅读：${k.viewCount || 0}</span>
+                    </div>
+                    <div class="modal-content">${escapeHtml(k.content || '')}</div>
+                `);
+            } catch (err) {
+                showToast('加载详情失败', 'error');
+            }
+        }
+
+        // ===== 法规 =====
+        document.getElementById('regulation-filter').addEventListener('change', loadRegulations);
+
+        async function loadRegulations() {
+            const filter = document.getElementById('regulation-filter').value;
+            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';
+            try {
+                const list = await fetchJson(url);
+                document.getElementById('regulation-list').innerHTML = list.length ? list.map(r => `
+                    <div class="list-item" onclick="showRegulation(${r.id})">
+                        <div class="list-item-title">
+                            <span class="tag">${REGULATION_CATEGORY[r.category] || r.category}</span>
+                            ${escapeHtml(r.title)}
+                        </div>
+                        <div class="list-item-summary">${escapeHtml(r.content.substring(0, 100))}...</div>
+                        <div class="list-item-meta">
+                            <span>颁布：${escapeHtml(r.issuingAuthority || '')}</span>
+                            <span>发布：${formatDate(r.publishDate)}</span>
+                            ${r.effectiveDate ? '<span>生效：' + formatDate(r.effectiveDate) + '</span>' : ''}
+                            ${r.documentNumber ? '<span>文号：' + escapeHtml(r.documentNumber) + '</span>' : ''}
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-tip">暂无法规数据</div>';
+            } catch (err) {
+                showToast('加载法规失败', 'error');
+            }
+        }
+
+        async function showRegulation(id) {
+            try {
+                const r = await fetchJson('/api/regulations/' + id);
+                openModal('法规详情', `
+                    <h1>${escapeHtml(r.title)}</h1>
+                    <div class="modal-meta">
+                        <span>分类：${REGULATION_CATEGORY[r.category] || r.category}</span>
+                        <span>颁布：${escapeHtml(r.issuingAuthority || '')}</span>
+                        <span>发布：${formatDate(r.publishDate)}</span>
+                        ${r.effectiveDate ? '<span>生效：' + formatDate(r.effectiveDate) + '</span>' : ''}
+                        ${r.documentNumber ? '<span>文号：' + escapeHtml(r.documentNumber) + '</span>' : ''}
+                    </div>
+                    <div class="modal-content">${escapeHtml(r.content || '')}</div>
+                `);
+            } catch (err) {
+                showToast('加载详情失败', 'error');
+            }
+        }
+
+        // ===== 举报提交 =====
+        document.getElementById('report-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const data = {
+                reportType: document.getElementById('report-type').value,
+                targetUrl: document.getElementById('report-url').value || null,
+                description: document.getElementById('report-desc').value,
+                reporterName: document.getElementById('report-name').value || null,
+                reporterContact: document.getElementById('report-contact').value || null
+            };
+            if (!data.reportType || !data.description) {
+                showToast('请填写举报类型和描述', 'error');
+                return;
+            }
+            try {
+                const resp = await fetch('/api/reports', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (resp.ok) {
+                    showToast('举报提交成功，感谢您的支持！', 'success');
+                    document.getElementById('report-form').reset();
+                } else {
+                    showToast('提交失败，请稍后重试', 'error');
+                }
+            } catch (err) {
+                showToast('网络错误，提交失败', 'error');
+            }
+        });
+
+        // ===== Modal =====
+        function openModal(tag, html) {
+            document.getElementById('modal-tag').textContent = tag;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        document.getElementById('modal').addEventListener('click', e => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ===== HTML 转义 =====
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str).replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+        }
+
+        // ===== 初始化 =====
+        loadHome();
+    </script>
+</body>
+</html>
