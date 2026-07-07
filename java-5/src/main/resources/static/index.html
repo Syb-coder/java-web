@@ -1,190 +1,297 @@
 <!DOCTYPE html>
+<!-- HTML5 文档类型声明，触发浏览器标准模式渲染，避免怪异模式 -->
 <html lang="zh-CN">
+<!-- lang 属性声明文档语言为简体中文，便于搜索引擎收录与无障碍读屏器识别 -->
 <head>
+    <!-- 文档头：存放元信息、样式与外部资源引用，浏览器解析但不直接渲染给用户 -->
     <meta charset="UTF-8">
+    <!-- 字符编码统一为 UTF-8，确保中文与特殊符号正确显示，避免乱码 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 移动端适配：视口宽度等于设备宽度，初始缩放 1.0，保证手机端不出现横向滚动条 -->
     <title>求职信息管理平台 · Java-5</title>
+    <!-- 浏览器标签页标题，同时作为 SEO 与无障碍的重要标识 -->
     <style>
+        /* 内联样式表：单页应用为减少 HTTP 请求，将样式直接嵌入 HTML，便于一体化部署 */
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* 全局重置：box-sizing:border-box 让 width 包含 padding 与 border，避免盒模型计算偏差；清零默认外边距与内边距以统一起跑线 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            /* 系统字体栈：优先使用各平台原生字体（macOS 用苹方、Windows 用微软雅黑），避免网络字体加载耗时，同时保证视觉一致 */
             background: #f5f7fa;
+            /* 浅灰底色：与卡片白色形成层次感，降低长时间浏览的视觉疲劳 */
             color: #2c3e50;
+            /* 主文字色：深蓝灰比纯黑更柔和，符合现代设计趋势 */
             line-height: 1.6;
+            /* 行高 1.6：中文阅读的舒适区间，过密累眼、过疏松散 */
         }
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* 135° 渐变背景：从蓝紫到深紫，营造品牌质感；纯色易显廉价，渐变增加层次 */
             color: white;
+            /* 顶栏文字白色，与深色渐变背景形成高对比 */
             padding: 28px 40px;
+            /* 上下 28px、左右 40px：横向留白更多以适配宽屏标题布局 */
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            /* 顶栏投影：让头部与下方内容产生"悬浮"层次分离 */
         }
         header h1 { font-size: 24px; margin-bottom: 4px; }
+        /* 主标题字号 24px，下边距 4px 与副标题保持紧凑关联 */
         header p { opacity: 0.9; font-size: 14px; }
+        /* 副标题透明度 0.9 弱化层级，字号 14px 与主标题形成主次 */
         .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+        /* 内容容器：最大宽度 1200px 居中，避免超宽屏拉伸过散；左右 padding 防止小屏贴边 */
 
         .stats {
+            /* 统计卡片容器 */
             display: grid;
+            /* 使用 grid 而非 flex，便于二维规则布局 */
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            /* auto-fit + minmax：卡片最小 220px，剩余空间均分；窗口缩放时自动换行，无需媒体查询 */
             gap: 16px;
+            /* 卡片间距 16px，视觉透气不拥挤 */
             margin-bottom: 24px;
+            /* 与下方工具栏保持距离 */
         }
         .stat-card {
+            /* 单个统计卡片 */
             background: white;
+            /* 白底与页面灰背景对比，突出卡片 */
             border-radius: 12px;
+            /* 12px 圆角：现代 UI 风格，过大显幼稚、过小显生硬 */
             padding: 18px 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            /* 轻投影：0.05 透明度极淡，营造卡片浮起感而不喧宾夺主 */
         }
         .stat-card .label { font-size: 13px; color: #909399; margin-bottom: 6px; }
+        /* 卡片标签：小字号灰色，弱化以突出数值 */
         .stat-card .value { font-size: 22px; font-weight: 600; color: #303133; }
+        /* 卡片数值：大字号加粗，作为视觉焦点 */
         .stat-card .breakdown { margin-top: 8px; font-size: 12px; color: #606266; }
+        /* 明细行：12px 小字，展示分类/城市分布等次级信息 */
         .stat-card .breakdown span { display: inline-block; margin-right: 10px; }
+        /* 明细项：inline-block 以便设置 margin，右侧 10px 间距与下一项分离 */
 
         .toolbar {
+            /* 工具栏：承载搜索/筛选/操作按钮 */
             background: white;
             border-radius: 12px;
             padding: 18px 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             display: flex;
+            /* flex 布局便于控件横向排列 */
             flex-wrap: wrap;
+            /* 允许换行：窗口过窄时控件自动折行，避免挤压 */
             gap: 12px;
+            /* 控件间距 12px */
             align-items: center;
+            /* 垂直居中对齐，让 input 与 button 高度统一视觉线 */
         }
         .toolbar input, .toolbar select {
+            /* 输入框与下拉框统一样式，保证视觉一致 */
             padding: 8px 12px;
             border: 1px solid #dcdfe6;
+            /* 浅灰边框，不抢眼 */
             border-radius: 6px;
             font-size: 14px;
             background: #fff;
             color: #303133;
         }
         .toolbar input { flex: 1; min-width: 180px; }
+        /* 输入框弹性拉伸填充剩余空间，但最小 180px 保证可输入 */
         .toolbar button {
+            /* 按钮基础样式 */
             padding: 8px 18px;
             border: none;
+            /* 去除默认边框，由 background 主导视觉 */
             border-radius: 6px;
             background: #667eea;
+            /* 主按钮色与顶栏渐变起始色呼应，形成品牌统一 */
             color: white;
             cursor: pointer;
+            /* 手型指针提示可点击 */
             font-size: 14px;
             transition: background 0.2s;
+            /* 0.2s 背景过渡：hover 时颜色变化平滑，提升交互质感 */
         }
         .toolbar button:hover { background: #5a6fd6; }
+        /* hover 加深色调，给用户即时反馈 */
         .toolbar button.sync {
+            /* 同步 V2EX 按钮：危险/强调操作，用红色区分 */
             background: #f56c6c;
         }
         .toolbar button.sync:hover { background: #e64949; }
         .toolbar button.secondary {
+            /* 次要按钮（重置）：白底灰边，弱化以突出主操作 */
             background: #fff;
             color: #606266;
             border: 1px solid #dcdfe6;
         }
         .toolbar button.secondary:hover { background: #f5f7fa; }
+        /* hover 浅灰底，保持次要操作的低调反馈 */
 
         .job-list { display: grid; gap: 14px; }
+        /* 岗位列表：grid 单列布局，14px 间距分隔每张卡片 */
         .job-card {
+            /* 单个岗位卡片 */
             background: white;
             border-radius: 12px;
             padding: 20px 22px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             border-left: 4px solid #667eea;
+            /* 左侧 4px 强调色边框：本地岗位用紫色，作为来源标识的视觉锚点 */
             transition: transform 0.15s;
+            /* transform 过渡：hover 上浮动画用 transform 而非 top，性能更优（不触发布局重排） */
         }
         .job-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* hover 上浮 2px 并加深投影，模拟"抬起"的物理反馈 */
         .job-card.v2ex { border-left-color: #f56c6c; }
+        /* V2EX 来源岗位：左边框改红色，与本地岗位快速区分 */
         .job-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        /* 卡片头部：两端对齐让标题在左、薪资在右；flex-wrap 防止窄屏挤压 */
         .job-title { font-size: 17px; font-weight: 600; color: #303133; }
+        /* 岗位标题：加粗突出，作为卡片主信息 */
         .job-salary { font-size: 16px; font-weight: 600; color: #f56c6c; }
+        /* 薪资：红色加粗，吸引用户注意力（薪资是求职者最关心的字段） */
         .job-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: #606266; margin-bottom: 8px; }
+        /* 元信息行（公司/城市/经验等）：flex-wrap 允许换行，gap 6px/14px 行列间距不同 */
         .job-meta .company { color: #409eff; font-weight: 500; }
+        /* 公司名：蓝色加粗，与其它元信息区分 */
         .job-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 8px; }
+        /* 标签容器：技能标签横向排列，溢出自动换行 */
         .tag {
+            /* 通用标签样式 */
             display: inline-block;
             padding: 2px 8px;
             background: #ecf0f1;
+            /* 默认浅灰底 */
             color: #606266;
             border-radius: 4px;
             font-size: 12px;
         }
         .tag.category { background: #e0e7ff; color: #4338ca; }
+        /* 分类标签：蓝紫色调，与品牌主色呼应 */
         .tag.source-local { background: #d1fae5; color: #065f46; }
+        /* 本地来源标签：绿色调，象征"自有数据" */
         .tag.source-v2ex { background: #fee2e2; color: #991b1b; }
+        /* V2EX 来源标签：红色调，与卡片左边框颜色语义一致 */
         .job-detail { margin-top: 8px; font-size: 13px; color: #606266; }
+        /* 详情段落（职责/要求/福利） */
         .job-detail p { margin-bottom: 4px; }
         .job-detail .field-label { color: #909399; margin-right: 4px; }
+        /* 字段标签（"职责：""要求："）：灰色弱化，突出内容本身 */
         .external-link { color: #409eff; text-decoration: none; font-size: 12px; margin-left: 8px; }
+        /* 外链（V2EX 原帖）：默认无下划线保持简洁，hover 才显示下划线 */
         .external-link:hover { text-decoration: underline; }
 
         .empty { text-align: center; padding: 60px 20px; color: #909399; }
+        /* 空状态：大留白居中灰字，柔化"无数据"的失落感 */
         .toast {
+            /* 全局提示条：用于成功/失败反馈 */
             position: fixed; top: 20px; right: 20px;
+            /* fixed 定位脱离文档流，始终悬浮在右上角 */
             background: #2c3e50; color: white;
             padding: 12px 20px; border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             opacity: 0; transform: translateY(-10px);
+            /* 初始隐藏：opacity 0 + 上移 10px，配合下方 .show 触发滑入动画 */
             transition: all 0.3s; z-index: 1000;
+            /* z-index 1000 确保提示条在最上层，不被遮挡 */
         }
         .toast.show { opacity: 1; transform: translateY(0); }
+        /* 显示状态：恢复透明度与位置，触发滑入动画 */
         .toast.error { background: #f56c6c; }
+        /* 错误提示：红色背景 */
         .toast.success { background: #67c23a; }
+        /* 成功提示：绿色背景 */
 
         /* 发布表单弹窗 */
         .modal-mask {
+            /* 模态遮罩层 */
             display: none; position: fixed; inset: 0;
+            /* inset:0 等价于 top/right/bottom/left 全 0，全屏覆盖 */
             background: rgba(0,0,0,0.5); z-index: 999;
+            /* 半透明黑遮罩 + z-index 999 低于 toast(1000)，让提示条仍可见 */
             align-items: center; justify-content: center;
+            /* flex 居中弹窗内容 */
         }
         .modal-mask.show { display: flex; }
+        /* 显示时切换为 flex，触发居中布局 */
         .modal {
+            /* 模态弹窗主体 */
             background: white; border-radius: 12px;
             width: 560px; max-width: 92vw; max-height: 88vh;
+            /* 固定 560px 宽度，但用 vw/vh 限制最大值以适配小屏 */
             overflow-y: auto; padding: 24px 28px;
+            /* 内容超出时纵向滚动，避免表单过长被截断 */
             box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            /* 较强投影突出弹窗层级 */
         }
         .modal h2 { font-size: 18px; margin-bottom: 16px; color: #303133; }
         .modal .form-grid {
+            /* 表单网格：双列布局 */
             display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px;
+            /* 两等分列，行列间距不同（行 12px、列 16px） */
         }
         .modal .form-grid .full { grid-column: 1 / -1; }
+        /* full 类：跨满两列，用于标题、textarea 等长字段 */
         .modal .form-grid label {
             font-size: 13px; color: #606266; margin-bottom: 4px; display: block;
+            /* label 独占一行，便于与输入框上下对齐 */
         }
         .modal .form-grid input,
         .modal .form-grid select,
         .modal .form-grid textarea {
+            /* 表单控件统一样式 */
             width: 100%; padding: 7px 10px;
             border: 1px solid #dcdfe6; border-radius: 6px;
             font-size: 14px; font-family: inherit; color: #303133;
+            /* font-family:inherit 继承 body 字体，避免 textarea 默认等宽字体 */
         }
         .modal .form-grid textarea { resize: vertical; min-height: 60px; }
+        /* textarea 仅允许纵向缩放，防止横向拖动破坏布局 */
         .modal .form-actions {
             margin-top: 18px; text-align: right;
+            /* 操作按钮右对齐，符合"取消在左、确认在右"的常规交互习惯 */
         }
         .modal .form-actions button { margin-left: 8px; }
+        /* 按钮间距 8px */
 
         .contact-block {
+            /* 联系方式区块：浅蓝底突出，便于求职者快速找到联系入口 */
             margin-top: 8px; padding: 8px 12px;
             background: #f0f9ff; border-radius: 6px;
             font-size: 13px; color: #0369a1;
             border-left: 3px solid #0ea5e9;
+            /* 左侧蓝色强调边，呼应信息提示语义 */
         }
         .contact-block .field-label { color: #0c4a6e; font-weight: 500; margin-right: 6px; }
+        /* 联系区块字段标签：深蓝加粗 */
 
         footer { text-align: center; padding: 24px; color: #909399; font-size: 12px; }
+        /* 页脚：居中灰色小字，弱化为辅助信息 */
     </style>
 </head>
 <body>
+    <!-- 页面顶部横幅：展示平台名称与核心技术栈说明 -->
     <header>
         <h1>求职信息管理平台</h1>
         <p>Spring Boot 4 + H2 · 多条件检索 · 接入 V2EX 酷工作节点</p>
+        <!-- 副标题说明技术栈与数据源，便于开发者快速了解项目背景 -->
     </header>
 
+    <!-- 主内容容器：统计卡片 + 工具栏 + 岗位列表 -->
     <div class="container">
+        <!-- 统计区：由 JS 动态渲染岗位总数、分类、城市、来源分布 -->
         <div class="stats" id="stats"></div>
 
+        <!-- 工具栏：承载所有筛选条件与操作按钮，onclick 直接绑定全局函数便于单文件维护 -->
         <div class="toolbar">
+            <!-- 关键词输入框：用于岗位/公司/技能模糊搜索 -->
             <input id="keyword" type="text" placeholder="搜索关键词（岗位/公司/技能）" />
+            <!-- 城市输入框：限制最大宽度避免过长挤压其它控件 -->
             <input id="city" type="text" placeholder="城市" style="max-width:140px" />
+            <!-- 分类下拉框：value 为后端枚举值，文本为中文展示 -->
             <select id="category">
                 <option value="">全部分类</option>
                 <option value="DEVELOPMENT">研发类</option>
@@ -196,6 +303,7 @@
                 <option value="DATA">数据类</option>
                 <option value="ALGORITHM">算法类</option>
             </select>
+            <!-- 经验要求下拉框：value 对应后端 Experience 枚举 -->
             <select id="experience">
                 <option value="">经验不限</option>
                 <option value="NONE">经验不限</option>
@@ -205,6 +313,7 @@
                 <option value="FIVE_TO_TEN">5-10年</option>
                 <option value="TEN_PLUS">10年以上</option>
             </select>
+            <!-- 学历下拉框：value 对应后端 Education 枚举 -->
             <select id="education">
                 <option value="">学历不限</option>
                 <option value="NONE">学历不限</option>
@@ -214,33 +323,44 @@
                 <option value="MASTER">硕士</option>
                 <option value="PHD">博士</option>
             </select>
+            <!-- 最低薪资输入框：单位为 K（千元），后端接收时再换算为元 -->
             <input id="salaryMin" type="number" placeholder="最低薪资(K)" style="max-width:140px" />
+            <!-- 搜索按钮：触发 search() 拉取列表 -->
             <button onclick="search()">搜索</button>
+            <!-- 重置按钮：清空所有筛选条件后重新搜索 -->
             <button class="secondary" onclick="resetFilters()">重置</button>
+            <!-- 同步 V2EX 按钮：拉取 V2EX 酷工作节点新数据，红色提示为远程操作 -->
             <button class="sync" onclick="syncV2ex()">同步 V2EX</button>
+            <!-- 发布岗位按钮：打开模态弹窗，绿色突出主操作 -->
             <button style="background:#67c23a" onclick="openPublishModal()">发布岗位</button>
         </div>
 
+        <!-- 岗位列表容器：由 JS renderJobs() 动态填充卡片 HTML -->
         <div class="job-list" id="jobList"></div>
     </div>
 
-    <!-- 发布岗位弹窗 -->
+    <!-- 发布岗位弹窗：默认隐藏，点击"发布岗位"按钮后显示 -->
     <div class="modal-mask" id="publishModal">
         <div class="modal">
             <h2>发布招聘信息</h2>
+            <!-- 表单网格：双列布局，full 类字段跨满两列 -->
             <div class="form-grid">
+                <!-- 岗位标题：必填项，跨满两列以容纳较长标题 -->
                 <div class="full">
                     <label>岗位标题 *</label>
                     <input id="f-title" type="text" placeholder="如：高级 Java 后端工程师" />
                 </div>
+                <!-- 公司名称 -->
                 <div>
                     <label>公司名称</label>
                     <input id="f-company" type="text" placeholder="如：字节跳动" />
                 </div>
+                <!-- 城市 -->
                 <div>
                     <label>城市</label>
                     <input id="f-city" type="text" placeholder="如：北京" />
                 </div>
+                <!-- 分类下拉框：默认研发类 -->
                 <div>
                     <label>分类</label>
                     <select id="f-category">
@@ -254,6 +374,7 @@
                         <option value="ALGORITHM">算法类</option>
                     </select>
                 </div>
+                <!-- 经验要求下拉框 -->
                 <div>
                     <label>经验要求</label>
                     <select id="f-experience">
@@ -265,6 +386,7 @@
                         <option value="TEN_PLUS">10年以上</option>
                     </select>
                 </div>
+                <!-- 学历要求下拉框 -->
                 <div>
                     <label>学历要求</label>
                     <select id="f-education">
@@ -276,47 +398,58 @@
                         <option value="PHD">博士</option>
                     </select>
                 </div>
+                <!-- 薪资下限：单位 K，提交时由 JS 换算为元 -->
                 <div>
                     <label>薪资下限（K）</label>
                     <input id="f-salaryMin" type="number" placeholder="如：20" />
                 </div>
+                <!-- 薪资上限：单位 K，提交时由 JS 换算为元 -->
                 <div>
                     <label>薪资上限（K）</label>
                     <input id="f-salaryMax" type="number" placeholder="如：40" />
                 </div>
+                <!-- 薪资描述：自由文本，便于展示"20-40K·14薪"等复合信息 -->
                 <div class="full">
                     <label>薪资描述</label>
                     <input id="f-salaryDesc" type="text" placeholder="如：20-40K" />
                 </div>
+                <!-- 技能标签：用 / 分隔，后端按字符串存储，前端按 / 切分渲染 -->
                 <div class="full">
                     <label>技能标签（用 / 分隔）</label>
                     <input id="f-skills" type="text" placeholder="如：Java/Spring/MySQL" />
                 </div>
+                <!-- 岗位职责：textarea 支持多行输入 -->
                 <div class="full">
                     <label>岗位职责</label>
                     <textarea id="f-responsibilities" placeholder="负责核心服务设计与开发..."></textarea>
                 </div>
+                <!-- 任职要求 -->
                 <div class="full">
                     <label>任职要求</label>
                     <textarea id="f-requirements" placeholder="3 年以上后端经验..."></textarea>
                 </div>
+                <!-- 福利待遇 -->
                 <div class="full">
                     <label>福利待遇</label>
                     <input id="f-benefits" type="text" placeholder="如：免费三餐/房补/期权" />
                 </div>
+                <!-- 公司简介 -->
                 <div class="full">
                     <label>公司简介</label>
                     <input id="f-companyDesc" type="text" placeholder="一句话介绍公司" />
                 </div>
+                <!-- 发布人姓名：必填，便于后续追溯与联系 -->
                 <div>
                     <label>发布人姓名 *</label>
                     <input id="f-publisherName" type="text" placeholder="如：张三" />
                 </div>
+                <!-- 联系方式：必填，支持邮箱/电话/微信多种格式 -->
                 <div>
                     <label>联系方式 *</label>
                     <input id="f-contact" type="text" placeholder="邮箱/电话/微信" />
                 </div>
             </div>
+            <!-- 表单操作区：取消在左、发布在右，符合常规交互预期 -->
             <div class="form-actions">
                 <button class="secondary" onclick="closePublishModal()">取消</button>
                 <button style="background:#67c23a" onclick="submitPublish()">发布</button>
@@ -324,34 +457,67 @@
         </div>
     </div>
 
+    <!-- 页脚：说明数据来源 -->
     <footer>Java-5 求职信息管理平台 · 本地种子 + V2EX API 数据源</footer>
+    <!-- 全局提示条：由 showToast() 动态控制显示内容与状态类 -->
     <div class="toast" id="toast"></div>
 
     <script>
+        // ===== 脚本区：所有前端逻辑集中在此，单文件便于部署与维护 =====
+
+        // API 基础路径：使用相对路径，确保前后端同源部署时无需配置跨域
+        // 用 const 而非 var：常量不可重新赋值，避免误改；const 是块级作用域，不会污染全局
         const API = '/api/jobs';
 
+        /**
+         * 加载统计数据
+         * 职责：从后端 /api/jobs/stats 拉取岗位分布统计，并交由 renderStats 渲染
+         * 参数：无
+         * 返回值：Promise<void>，异步函数始终返回 Promise
+         * 异常：捕获网络/解析错误并打印到控制台，不阻断后续流程
+         *
+         * 设计决策：使用 async/await 而非 .then() 链，代码线性可读，错误处理用 try/catch 更直观
+         */
         async function loadStats() {
             try {
+                // await 暂停函数执行直到 fetch 返回 Response 对象；模板字面量拼接 URL 比字符串 + 更清晰
                 const resp = await fetch(`${API}/stats`);
+                // 将 Response 体解析为 JSON 对象
                 const data = await resp.json();
+                // 渲染统计卡片
                 renderStats(data);
             } catch (e) {
+                // 统计失败不影响主列表展示，仅打印日志，降级处理保证页面可用
                 console.error(e);
             }
         }
 
+        /**
+         * 渲染统计卡片
+         * 职责：将后端返回的统计对象渲染为 4 张卡片 HTML
+         * 参数：s - 后端返回的统计对象，包含 total/byCategory/byCity/bySource 字段
+         * 返回值：无
+         *
+         * 设计决策：使用 innerHTML 一次性插入而非多次 appendChild，减少 DOM 重排次数，性能更优
+         */
         function renderStats(s) {
             const container = document.getElementById('stats');
+            // 卫语句提前返回：数据为空时清空容器，避免后续逻辑处理空值
             if (!s) { container.innerHTML = ''; return; }
+            // 按分类统计：Object.entries 将对象转为 [key, value] 数组，便于排序与 map
+            // sort((a,b)=>b[1]-a[1]) 按数量降序，让热门分类排在前面
             const catHtml = Object.entries(s.byCategory || {})
                 .sort((a, b) => b[1] - a[1])
                 .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            // 按城市统计：同上排序后 slice(0,5) 只取 Top 5，避免城市过多撑爆卡片
             const cityHtml = Object.entries(s.byCity || {})
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 5)
                 .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            // 按来源统计：来源数量有限，无需截断
             const srcHtml = Object.entries(s.bySource || {})
                 .map(([k, v]) => `<span>${k}: ${v}</span>`).join('');
+            // 模板字面量拼接：比字符串拼接更易读，且支持多行；|| '—' 兜底空数据展示占位符
             container.innerHTML = `
                 <div class="stat-card"><div class="label">岗位总数</div><div class="value">${s.total || 0}</div></div>
                 <div class="stat-card"><div class="label">按分类</div><div class="breakdown">${catHtml || '—'}</div></div>
@@ -360,36 +526,65 @@
             `;
         }
 
+        /**
+         * 执行搜索
+         * 职责：收集工具栏所有筛选条件，拼接查询参数后请求列表接口并渲染
+         * 参数：无（从 DOM 读取筛选值）
+         * 返回值：Promise<void>
+         * 异常：捕获网络错误并 showToast 提示用户
+         *
+         * 设计决策：URLSearchParams 自动处理 URL 编码，避免手动拼接出错；
+         *          仅追加非空参数，减少后端空值判断
+         */
         async function search() {
+            // URLSearchParams：内置 API，自动处理特殊字符转义，append 自动加 & 分隔
             const params = new URLSearchParams();
+            // .trim() 去除首尾空格，避免用户误输入空格导致匹配失败
             const kw = document.getElementById('keyword').value.trim();
             const city = document.getElementById('city').value.trim();
             const cat = document.getElementById('category').value;
             const exp = document.getElementById('experience').value;
             const edu = document.getElementById('education').value;
             const sal = document.getElementById('salaryMin').value.trim();
+            // 仅追加非空参数：减少 URL 长度，后端可省略空值判断
             if (kw) params.append('keyword', kw);
             if (city) params.append('city', city);
             if (cat) params.append('category', cat);
             if (exp) params.append('experience', exp);
             if (edu) params.append('education', edu);
+            // 薪资 K→元 转换：前端输入单位为 K（千元），后端按元存储与比较，*1000 换算保证查询一致性
             if (sal) params.append('salaryMin', sal * 1000);
 
             try {
+                // params.toString() 生成 a=1&b=2 形式的查询串
                 const resp = await fetch(`${API}?${params.toString()}`);
                 const list = await resp.json();
                 renderJobs(list);
             } catch (e) {
+                // 用户可感知的错误反馈，比静默失败体验更好
                 showToast('查询失败：' + e.message, 'error');
             }
         }
 
+        /**
+         * 渲染岗位列表
+         * 职责：将后端返回的岗位数组渲染为卡片 HTML
+         * 参数：list - 岗位数组，每项包含 title/salaryDesc/company/skills 等字段
+         * 返回值：无
+         *
+         * 设计决策：
+         * 1. escapeHtml 对所有用户输入字段转义，防止 XSS 注入（V2EX 数据不可信，必须转义）
+         * 2. 使用模板字面量 + map 拼接，比 DOM API 逐个创建元素更简洁
+         * 3. 空数组展示友好提示，而非空白页面
+         */
         function renderJobs(list) {
             const container = document.getElementById('jobList');
+            // 空数据卫语句：展示空状态提示，提升用户体验
             if (!list || list.length === 0) {
                 container.innerHTML = '<div class="empty">没有符合条件的岗位</div>';
                 return;
             }
+            // map 逐个生成卡片 HTML，join('') 拼接为完整字符串一次性写入
             container.innerHTML = list.map(j => `
                 <div class="job-card ${j.source === 'V2EX' ? 'v2ex' : ''}">
                     <div class="job-head">
@@ -406,55 +601,115 @@
                     <div class="job-tags">
                         <span class="tag category">${escapeHtml(j.categoryLabel || '未分类')}</span>
                         <span class="tag ${j.source === 'V2EX' ? 'source-v2ex' : 'source-local'}">${escapeHtml(j.sourceLabel || '本地')}</span>
+                        ${/* 技能标签切分：按 / 分隔后 filter 过滤空值，避免渲染空白标签 */ ''}
                         ${(j.skills || '').split('/').filter(s => s.trim()).map(s => `<span class="tag">${escapeHtml(s.trim())}</span>`).join('')}
                     </div>
+                    ${/* 条件渲染：仅当字段存在时才生成对应区块，避免空段落 */ ''}
                     ${j.responsibilities ? `<div class="job-detail"><p><span class="field-label">职责：</span>${escapeHtml(j.responsibilities)}</p></div>` : ''}
                     ${j.requirements ? `<div class="job-detail"><p><span class="field-label">要求：</span>${escapeHtml(j.requirements)}</p></div>` : ''}
                     ${j.benefits ? `<div class="job-detail"><p><span class="field-label">福利：</span>${escapeHtml(j.benefits)}</p></div>` : ''}
+                    ${/* 联系方式区块：发布人或联系方式任一存在即渲染 */ ''}
                     ${(j.publisherName || j.contact) ? `<div class="contact-block">${j.publisherName ? `<span class="field-label">发布人：</span>${escapeHtml(j.publisherName)}` : ''}${j.contact ? `<span class="field-label" style="margin-left:12px">联系方式：</span>${escapeHtml(j.contact)}` : ''}</div>` : ''}
+                    ${/* 外链：仅 V2EX 来源岗位有 externalUrl，target="_blank" 新窗口打开，rel="noopener" 防止新窗口通过 window.opener 篡改原页面（安全考虑） */ ''}
                     ${j.externalUrl ? `<a class="external-link" href="${escapeHtml(j.externalUrl)}" target="_blank" rel="noopener">查看原帖 ↗</a>` : ''}
                 </div>
             `).join('');
         }
 
+        /**
+         * 重置筛选条件
+         * 职责：清空工具栏所有输入控件，并重新触发搜索展示全部数据
+         * 参数：无
+         * 返回值：无
+         *
+         * 设计决策：遍历 id 数组统一清空，避免逐个赋值的重复代码（DRY 原则）
+         */
         function resetFilters() {
+            // 收集所有筛选控件 id，遍历统一置空
             ['keyword', 'city', 'category', 'experience', 'education', 'salaryMin']
                 .forEach(id => document.getElementById(id).value = '');
+            // 重置后立即重新搜索，反馈"已恢复全量数据"的状态
             search();
         }
 
+        /**
+         * 同步 V2EX 酷工作数据
+         * 职责：调用后端 /api/jobs/sync-v2ex 接口拉取 V2EX 新数据，成功后刷新统计与列表
+         * 参数：无（通过 event.target 获取触发按钮）
+         * 返回值：Promise<void>
+         * 异常：捕获错误并 toast 提示
+         *
+         * 设计决策：
+         * 1. 按钮置灰 + 文案切换为"同步中..."，防止用户重复点击导致重复请求
+         * 2. finally 块确保无论成功失败都恢复按钮状态，避免按钮永久禁用
+         * 3. await 串行执行 loadStats 与 search，保证统计与列表同步更新
+         */
         async function syncV2ex() {
+            // event.target 是触发点击的按钮元素，用于切换状态
             const btn = event.target;
+            // 禁用按钮防止重复提交
             btn.disabled = true;
+            // 切换文案给用户即时反馈
             btn.textContent = '同步中...';
             try {
+                // POST 请求触发后端抓取 V2EX 数据
                 const resp = await fetch(`${API}/sync-v2ex`, { method: 'POST' });
                 const data = await resp.json();
+                // 成功提示新增数量，让用户感知操作效果
                 showToast(`同步成功，新增 ${data.inserted || 0} 条 V2EX 岗位`, 'success');
+                // 同步成功后刷新统计与列表，展示新数据
                 await loadStats();
                 await search();
             } catch (e) {
                 showToast('同步失败：' + e.message, 'error');
             } finally {
+                // 无论成功失败都恢复按钮，避免永久禁用
                 btn.disabled = false;
                 btn.textContent = '同步 V2EX';
             }
         }
 
         // ===== 发布岗位 =====
+        /**
+         * 打开发布岗位弹窗
+         * 职责：为模态遮罩添加 show 类触发显示
+         * 参数：无
+         * 返回值：无
+         */
         function openPublishModal() {
+            // 通过 class 控制 display 切换，比直接操作 style 更易维护
             document.getElementById('publishModal').classList.add('show');
         }
 
+        /**
+         * 关闭发布岗位弹窗
+         * 职责：移除 show 类隐藏模态
+         * 参数：无
+         * 返回值：无
+         */
         function closePublishModal() {
             document.getElementById('publishModal').classList.remove('show');
         }
 
+        /**
+         * 提交发布岗位表单
+         * 职责：校验必填项 → 组装 payload → POST 后端 → 成功后刷新页面
+         * 参数：无（从 DOM 表单读取数据）
+         * 返回值：Promise<void>
+         * 异常：校验失败 toast 提示并 return；网络/服务端错误 toast 提示
+         *
+         * 设计决策：
+         * 1. 必填校验前端先行，减少无效请求
+         * 2. 空字符串转 null：后端 Optional 字段接收 null 更语义化，避免空串污染数据库
+         * 3. 薪资 K→元 换算：前端输入 K，后端按元存储，统一单位
+         * 4. resp.ok 判断：fetch 不会因 4xx/5xx 抛错，需手动检查状态码
+         */
         async function submitPublish() {
             // 必填校验：标题、发布人、联系方式
             const title = document.getElementById('f-title').value.trim();
             const publisherName = document.getElementById('f-publisherName').value.trim();
             const contact = document.getElementById('f-contact').value.trim();
+            // 卫语句提前返回：必填项缺失时立即提示，避免后续无意义请求
             if (!title) { showToast('请填写岗位标题', 'error'); return; }
             if (!publisherName) { showToast('请填写发布人姓名', 'error'); return; }
             if (!contact) { showToast('请填写联系方式', 'error'); return; }
@@ -463,13 +718,16 @@
             const salaryMinK = document.getElementById('f-salaryMin').value.trim();
             const salaryMaxK = document.getElementById('f-salaryMax').value.trim();
 
+            // 组装请求体：空值统一转 null，便于后端 Optional 接收与数据库 NULL 存储
             const payload = {
                 title: title,
+                // || null：空字符串转 null，避免后端存入空串污染数据
                 company: document.getElementById('f-company').value.trim() || null,
                 city: document.getElementById('f-city').value.trim() || null,
                 category: document.getElementById('f-category').value || null,
                 experience: document.getElementById('f-experience').value || null,
                 education: document.getElementById('f-education').value || null,
+                // 薪资 K→元 换算：parseInt 解析为整数再 *1000，与后端存储单位（元）保持一致
                 salaryMin: salaryMinK ? parseInt(salaryMinK) * 1000 : null,
                 salaryMax: salaryMaxK ? parseInt(salaryMaxK) * 1000 : null,
                 salaryDesc: document.getElementById('f-salaryDesc').value.trim() || null,
@@ -478,6 +736,7 @@
                 requirements: document.getElementById('f-requirements').value.trim() || null,
                 benefits: document.getElementById('f-benefits').value.trim() || null,
                 companyDesc: document.getElementById('f-companyDesc').value.trim() || null,
+                // 发布日期：取 ISO 日期串前 10 位（YYYY-MM-DD），与后端 LocalDate 格式匹配
                 publishedDate: new Date().toISOString().slice(0, 10),
                 publisherName: publisherName,
                 contact: contact
@@ -487,16 +746,22 @@
                 const resp = await fetch(API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    // JSON.stringify 将对象序列化为 JSON 字符串作为请求体
                     body: JSON.stringify(payload)
                 });
+                // fetch 不会因 HTTP 状态码抛错，需手动检查 resp.ok（2xx 为 true）
                 if (!resp.ok) {
+                    // 读取错误响应体作为异常信息
                     const err = await resp.text();
                     throw new Error(err);
                 }
                 const data = await resp.json();
                 showToast(`发布成功：${data.title}`, 'success');
+                // 关闭弹窗
                 closePublishModal();
+                // 清空表单为下次发布做准备
                 clearPublishForm();
+                // 刷新统计与列表，展示新增岗位
                 await loadStats();
                 await search();
             } catch (e) {
@@ -504,35 +769,77 @@
             }
         }
 
+        /**
+         * 清空发布表单
+         * 职责：重置所有输入控件为空，下拉框恢复默认值
+         * 参数：无
+         * 返回值：无
+         *
+         * 设计决策：文本输入框统一置空，下拉框恢复默认枚举值，比 form.reset() 更精确可控
+         */
         function clearPublishForm() {
+            // 文本类控件统一置空
             ['f-title','f-company','f-city','f-salaryMin','f-salaryMax',
              'f-salaryDesc','f-skills','f-responsibilities','f-requirements',
              'f-benefits','f-companyDesc','f-publisherName','f-contact']
                 .forEach(id => document.getElementById(id).value = '');
+            // 下拉框恢复默认值
             document.getElementById('f-category').value = 'DEVELOPMENT';
             document.getElementById('f-experience').value = 'NONE';
             document.getElementById('f-education').value = 'NONE';
         }
 
+        /**
+         * 显示全局提示条
+         * 职责：在右上角显示提示消息，3 秒后自动消失
+         * 参数：msg - 提示文本；type - 类型（'success'|'error'|空），决定背景色
+         * 返回值：无
+         *
+         * 设计决策：
+         * 1. 用 textContent 而非 innerHTML 设置文本，天然防 XSS
+         * 2. className 拼接 type 类，复用 CSS 已定义的 success/error 样式
+         * 3. setTimeout 3 秒后移除 show 类，实现自动消失，无需用户手动关闭
+         */
         function showToast(msg, type) {
             const t = document.getElementById('toast');
+            // textContent 设置文本内容，避免 HTML 注入风险
             t.textContent = msg;
+            // 拼接类名：'toast show' + type（如 'success'），触发对应背景色样式
             t.className = 'toast show ' + (type || '');
+            // 3 秒后移除 show 类，提示条滑出消失
             setTimeout(() => t.className = 'toast', 3000);
         }
 
+        /**
+         * HTML 转义防 XSS
+         * 职责：将 & < > " ' 五个特殊字符转义为 HTML 实体，防止恶意脚本注入
+         * 参数：s - 待转义的任意值（可能为 null/undefined/非字符串）
+         * 返回值：string - 转义后的安全字符串
+         *
+         * 设计决策：
+         * 1. null/undefined 直接返回空串，避免后续 String(null) 输出 "null"
+         * 2. String(s) 强制转为字符串，兼容数字/布尔等非字符串输入
+         * 3. 正则 + 字典替换：一次性匹配五个字符，比 5 次 replace 更高效
+         *
+         * 安全说明：V2EX 数据来自外部 API，内容不可信，必须转义后才能插入 innerHTML，
+         *           否则攻击者可构造 <script> 标签执行任意代码（XSS 攻击）
+         */
         function escapeHtml(s) {
+            // null/undefined 兜底返回空串
             if (s == null) return '';
+            // String() 强制转字符串；replace 配合正则全局匹配五个危险字符
             return String(s).replace(/[&<>"']/g, c =>
+                // 字典映射：将每个匹配字符替换为对应 HTML 实体
                 ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
         }
 
-        // 回车触发搜索
+        // 回车触发搜索：监听关键词输入框的 keydown 事件，按 Enter 即搜索，提升键盘操作体验
         document.getElementById('keyword').addEventListener('keydown', e => {
+            // e.key === 'Enter' 判断是否按下回车键
             if (e.key === 'Enter') search();
         });
 
-        // 初始化加载
+        // 初始化加载：页面就绪后立即拉取统计与列表，让用户首屏即看到数据
         loadStats();
         search();
     </script>
