@@ -1,54 +1,64 @@
 <!DOCTYPE html>
+<!-- 文档类型声明：HTML5 标准 -->
 <html lang="zh-CN">
 <head>
+    <!-- 字符编码：UTF-8 支持中文等多语言字符 -->
     <meta charset="UTF-8">
+    <!-- 视口设置：适配移动端 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 后台管理页面标题 -->
     <title>内容管理后台 - 国家网络安全宣传官网</title>
     <style>
+        /* ===== CSS 变量定义：后台配色方案（与前台保持政务严肃风格） ===== */
         :root {
-            --color-red: #B71C1C;
-            --color-red-dark: #8B0000;
-            --color-blue: #0D47A1;
-            --color-blue-dark: #082A6B;
-            --color-gold: #D4A017;
-            --color-bg: #F0F2F5;
-            --color-text: #222;
-            --color-text-light: #666;
-            --color-border: #E0E0E0;
-            --color-white: #FFFFFF;
-            --color-success: #2E7D32;
-            --color-warning: #ED6C02;
+            --color-red: #B71C1C;        /* 主红色：用于危险按钮、强调标题 */
+            --color-red-dark: #8B0000;   /* 深红色：顶部栏渐变深色端 */
+            --color-blue: #0D47A1;       /* 主蓝色：用于主操作按钮、Modal 头部 */
+            --color-blue-dark: #082A6B;  /* 深蓝色：按钮 hover */
+            --color-gold: #D4A017;       /* 金色：装饰色，待处理状态标签 */
+            --color-bg: #F0F2F5;         /* 后台背景色：略灰，区分前台 */
+            --color-text: #222;          /* 主文本色 */
+            --color-text-light: #666;    /* 次要文本色 */
+            --color-border: #E0E0E0;     /* 边框色 */
+            --color-white: #FFFFFF;      /* 白色 */
+            --color-success: #2E7D32;    /* 成功色：成功按钮、已处理标签 */
+            --color-warning: #ED6C02;    /* 警告色：处理中状态标签 */
         }
 
+        /* ===== 全局重置：清除默认外边距内边距，统一盒模型 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* ===== body 基础样式 ===== */
         body {
-            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;  /* 微软雅黑优先 */
             background: var(--color-bg);
             color: var(--color-text);
             line-height: 1.6;
         }
 
-        /* ===== 顶部栏 ===== */
+        /* ===== 顶部栏：红色渐变，含标题与用户操作区 ===== */
         .top-bar {
-            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);  /* 红色对角渐变 */
             color: var(--color-white);
             padding: 14px 0;
-            border-bottom: 3px solid var(--color-gold);
+            border-bottom: 3px solid var(--color-gold);   /* 金色底边 */
         }
 
+        /* ===== 顶部栏容器：左右两端对齐 ===== */
         .top-bar .container {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
+        /* ===== 顶部栏标题 ===== */
         .top-bar .title {
             font-size: 18px;
             font-weight: bold;
             letter-spacing: 1px;
         }
 
+        /* ===== 顶部栏操作区链接 ===== */
         .top-bar .actions a {
             color: var(--color-white);
             text-decoration: none;
@@ -57,15 +67,17 @@
             opacity: 0.9;
         }
 
+        /* ===== 顶部栏操作区链接 hover ===== */
         .top-bar .actions a:hover { opacity: 1; text-decoration: underline; }
 
+        /* ===== Container：内容容器，最大宽度 1280px 居中 ===== */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* ===== Tab 导航 ===== */
+        /* ===== Tab 导航栏：横向排列的栏目切换按钮 ===== */
         .tab-nav {
             background: var(--color-white);
             margin-top: 20px;
@@ -75,6 +87,7 @@
             border-bottom: 1px solid var(--color-border);
         }
 
+        /* ===== Tab 按钮：无背景，下划线指示激活态 ===== */
         .tab-nav button {
             background: none;
             border: none;
@@ -82,23 +95,25 @@
             font-size: 15px;
             color: var(--color-text-light);
             cursor: pointer;
-            border-bottom: 3px solid transparent;
+            border-bottom: 3px solid transparent;    /* 透明下划线，激活时变红 */
             font-family: inherit;
-            transition: all 0.2s;
+            transition: all 0.2s;                    /* 全属性过渡 0.2s */
         }
 
+        /* ===== Tab 按钮 hover 效果 ===== */
         .tab-nav button:hover {
             color: var(--color-blue);
             background: #FAFAFA;
         }
 
+        /* ===== Tab 激活按钮：红色文字 + 红色下划线 ===== */
         .tab-nav button.active {
             color: var(--color-red);
             border-bottom-color: var(--color-red);
             font-weight: 500;
         }
 
-        /* ===== 内容区 ===== */
+        /* ===== 内容区域：白色卡片，承载各 Tab 面板 ===== */
         .content-area {
             background: var(--color-white);
             border-radius: 0 0 4px 4px;
@@ -106,19 +121,21 @@
             min-height: 600px;
         }
 
+        /* ===== Tab 面板：默认隐藏，激活时显示 ===== */
         .tab-panel { display: none; padding: 20px; }
         .tab-panel.active { display: block; }
 
-        /* ===== 工具栏 ===== */
+        /* ===== 工具栏：左右两端对齐，含筛选与操作按钮 ===== */
         .toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-            flex-wrap: wrap;
+            flex-wrap: wrap;            /* 允许换行 */
             gap: 12px;
         }
 
+        /* ===== 工具栏左侧：筛选控件组 ===== */
         .toolbar-left {
             display: flex;
             gap: 10px;
@@ -126,6 +143,7 @@
             flex-wrap: wrap;
         }
 
+        /* ===== 工具栏左侧输入控件 ===== */
         .toolbar-left select,
         .toolbar-left input {
             padding: 7px 12px;
@@ -135,12 +153,14 @@
             font-family: inherit;
         }
 
+        /* ===== 工具栏左侧输入控件聚焦 ===== */
         .toolbar-left select:focus,
         .toolbar-left input:focus {
             outline: none;
             border-color: var(--color-blue);
         }
 
+        /* ===== 按钮基础样式 ===== */
         .btn {
             padding: 7px 18px;
             border: none;
@@ -151,24 +171,28 @@
             transition: all 0.2s;
         }
 
+        /* ===== 主操作按钮：蓝色 ===== */
         .btn-primary {
             background: var(--color-blue);
             color: var(--color-white);
         }
         .btn-primary:hover { background: var(--color-blue-dark); }
 
+        /* ===== 危险按钮：红色（删除操作） ===== */
         .btn-danger {
             background: var(--color-red);
             color: var(--color-white);
         }
         .btn-danger:hover { background: var(--color-red-dark); }
 
+        /* ===== 成功按钮：绿色 ===== */
         .btn-success {
             background: var(--color-success);
             color: var(--color-white);
         }
         .btn-success:hover { background: #1B5E20; }
 
+        /* ===== 默认按钮：浅灰背景（次要操作） ===== */
         .btn-default {
             background: #F5F5F5;
             color: var(--color-text);
@@ -176,18 +200,20 @@
         }
         .btn-default:hover { background: #E0E0E0; }
 
+        /* ===== 小尺寸按钮：用于表格行内操作 ===== */
         .btn-sm {
             padding: 4px 10px;
             font-size: 12px;
         }
 
-        /* ===== 数据表格 ===== */
+        /* ===== 数据表格：宽度 100%，边框合并 ===== */
         .data-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
         }
 
+        /* ===== 表头样式：浅灰背景，底部加粗边框 ===== */
         .data-table th {
             background: #FAFAFA;
             padding: 12px;
@@ -197,20 +223,26 @@
             border-bottom: 2px solid var(--color-border);
         }
 
+        /* ===== 表格单元格 ===== */
         .data-table td {
             padding: 12px;
             border-bottom: 1px solid var(--color-border);
             vertical-align: middle;
         }
 
+        /* ===== 表格行 hover 效果 ===== */
         .data-table tr:hover td {
             background: #FAFAFA;
         }
 
+        /* ===== ID 列：固定宽度，灰色文字 ===== */
         .data-table .col-id { width: 60px; color: var(--color-text-light); }
+        /* ===== 操作列：固定宽度，居中不换行 ===== */
         .data-table .col-actions { width: 180px; text-align: center; white-space: nowrap; }
+        /* ===== 时间列：固定宽度，灰色小字 ===== */
         .data-table .col-time { width: 150px; color: var(--color-text-light); font-size: 13px; }
 
+        /* ===== 标题单元格：省略号截断超长标题 ===== */
         .title-cell {
             max-width: 360px;
             overflow: hidden;
@@ -218,7 +250,7 @@
             white-space: nowrap;
         }
 
-        /* ===== 标签 ===== */
+        /* ===== 标签样式：用于分类、状态展示 ===== */
         .tag {
             display: inline-block;
             padding: 2px 8px;
@@ -228,18 +260,19 @@
             background: var(--color-blue);
         }
 
-        .tag.red { background: var(--color-red); }
-        .tag.gold { background: var(--color-gold); }
-        .tag.gray { background: #999; }
-        .tag.green { background: var(--color-success); }
-        .tag.orange { background: var(--color-warning); }
+        /* ===== 各色标签变体 ===== */
+        .tag.red { background: var(--color-red); }        /* 红色标签：法规分类、危险操作 */
+        .tag.gold { background: var(--color-gold); }      /* 金色标签：待处理状态 */
+        .tag.gray { background: #999; }                   /* 灰色标签：已忽略状态 */
+        .tag.green { background: var(--color-success); }  /* 绿色标签：已处理状态 */
+        .tag.orange { background: var(--color-warning); } /* 橙色标签：处理中状态 */
 
-        /* ===== 模态框 ===== */
+        /* ===== 模态框遮罩：默认隐藏 ===== */
         .modal-mask {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5);     /* 半透明黑色遮罩 */
             z-index: 1000;
             justify-content: center;
             align-items: flex-start;
@@ -247,6 +280,7 @@
         }
         .modal-mask.show { display: flex; }
 
+        /* ===== 模态框主体：白色卡片，可滚动 ===== */
         .modal {
             background: var(--color-white);
             border-radius: 4px;
@@ -256,6 +290,7 @@
             overflow-y: auto;
         }
 
+        /* ===== 模态框头部：蓝色背景，吸顶 ===== */
         .modal-header {
             background: var(--color-blue);
             color: var(--color-white);
@@ -268,8 +303,10 @@
             z-index: 1;
         }
 
+        /* ===== 模态框标题 ===== */
         .modal-header h3 { font-size: 16px; font-weight: 500; }
 
+        /* ===== 模态框关闭按钮 ===== */
         .modal-close {
             background: none;
             border: none;
@@ -279,8 +316,10 @@
             line-height: 1;
         }
 
+        /* ===== 模态框内容区 ===== */
         .modal-body { padding: 22px; }
 
+        /* ===== 表单分组 ===== */
         .form-group { margin-bottom: 14px; }
         .form-group label {
             display: block;
@@ -288,8 +327,9 @@
             margin-bottom: 5px;
             font-weight: 500;
         }
-        .form-group label .required { color: var(--color-red); }
+        .form-group label .required { color: var(--color-red); }    /* 必填星号 */
 
+        /* ===== 表单输入控件统一样式 ===== */
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -301,6 +341,7 @@
             font-family: inherit;
         }
 
+        /* ===== 表单控件聚焦 ===== */
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
@@ -308,17 +349,20 @@
             border-color: var(--color-blue);
         }
 
+        /* ===== 文本域：垂直拉伸，最小高度 90px ===== */
         .form-group textarea {
             resize: vertical;
             min-height: 90px;
         }
 
+        /* ===== 表单行：两列网格 ===== */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
+        /* ===== 模态框底部：操作按钮区，吸底 ===== */
         .modal-footer {
             padding: 14px 22px;
             border-top: 1px solid var(--color-border);
@@ -330,7 +374,7 @@
             bottom: 0;
         }
 
-        /* ===== 统计卡片 ===== */
+        /* ===== 统计卡片网格：四列等分 ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -338,36 +382,40 @@
             margin-bottom: 20px;
         }
 
+        /* ===== 统计卡片：左侧彩色边框 ===== */
         .stat-card {
             background: var(--color-white);
             border-radius: 4px;
             padding: 18px;
-            border-left: 4px solid var(--color-blue);
+            border-left: 4px solid var(--color-blue);    /* 默认蓝色左边框 */
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         }
 
+        /* ===== 统计卡片颜色变体 ===== */
         .stat-card.red { border-left-color: var(--color-red); }
         .stat-card.gold { border-left-color: var(--color-gold); }
         .stat-card.green { border-left-color: var(--color-success); }
 
+        /* ===== 统计卡片标签文字 ===== */
         .stat-card .label {
             font-size: 13px;
             color: var(--color-text-light);
             margin-bottom: 6px;
         }
 
+        /* ===== 统计卡片数值：大号加粗 ===== */
         .stat-card .value {
             font-size: 26px;
             font-weight: bold;
             color: var(--color-text);
         }
 
-        /* ===== Toast ===== */
+        /* ===== Toast 提示框：顶部居中悬浮 ===== */
         .toast {
             position: fixed;
             top: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%);   /* 水平居中 */
             background: var(--color-blue);
             color: var(--color-white);
             padding: 11px 26px;
@@ -381,6 +429,7 @@
         .toast.success { background: var(--color-success); }
         .toast.error { background: var(--color-red); }
 
+        /* ===== 空数据提示 ===== */
         .empty-tip {
             text-align: center;
             padding: 40px 20px;
@@ -388,45 +437,50 @@
             font-size: 14px;
         }
 
+        /* ===== 举报描述单元格：限宽两行截断 ===== */
         .report-desc {
             max-width: 280px;
             max-height: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 2;      /* 最多两行 */
             -webkit-box-orient: vertical;
             font-size: 13px;
             color: var(--color-text-light);
         }
 
+        /* ===== 移动端响应式适配 ===== */
         @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .form-row { grid-template-columns: 1fr; }
-            .toolbar { flex-direction: column; align-items: stretch; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }    /* 统计卡片两列 */
+            .form-row { grid-template-columns: 1fr; }          /* 表单项单列 */
+            .toolbar { flex-direction: column; align-items: stretch; }  /* 工具栏垂直排列 */
         }
 
-        /* ===== 登录遮罩 ===== */
+        /* ===== 登录遮罩：全屏覆盖，红蓝渐变背景 ===== */
         .login-overlay {
             position: fixed;
-            inset: 0;
+            inset: 0;                  /* 等同 top/right/bottom/left:0 */
             background: linear-gradient(135deg, var(--color-blue-dark) 0%, var(--color-blue) 50%, var(--color-red-dark) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 9999;             /* 最高层级，覆盖一切 */
         }
 
+        /* ===== 登录遮罩隐藏状态 ===== */
         .login-overlay.hidden { display: none; }
 
+        /* ===== 登录卡片：白色，固定宽度 360px ===== */
         .login-card {
             background: var(--color-white);
             width: 360px;
             border-radius: 6px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0,  0, 0.3);    /* 大阴影，悬浮感 */
             overflow: hidden;
         }
 
+        /* ===== 登录卡片头部：红色渐变 ===== */
         .login-card .login-header {
             background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
             color: var(--color-white);
@@ -435,27 +489,32 @@
             border-bottom: 3px solid var(--color-gold);
         }
 
+        /* ===== 登录卡片头部徽标 ===== */
         .login-card .login-header .badge {
             font-size: 28px;
             margin-bottom: 6px;
         }
 
+        /* ===== 登录卡片标题 ===== */
         .login-card .login-header h2 {
             font-size: 18px;
             font-weight: bold;
             letter-spacing: 1px;
         }
 
+        /* ===== 登录卡片副标题 ===== */
         .login-card .login-header p {
             font-size: 12px;
             opacity: 0.85;
             margin-top: 4px;
         }
 
+        /* ===== 登录卡片主体 ===== */
         .login-card .login-body {
             padding: 28px 28px 32px;
         }
 
+        /* ===== 登录表单分组 ===== */
         .login-card .form-group {
             margin-bottom: 18px;
         }
@@ -467,6 +526,7 @@
             margin-bottom: 6px;
         }
 
+        /* ===== 登录输入框 ===== */
         .login-card .form-group input {
             width: 100%;
             padding: 10px 12px;
@@ -477,12 +537,14 @@
             transition: border-color 0.2s;
         }
 
+        /* ===== 登录输入框聚焦：蓝色边框 + 蓝色光晕 ===== */
         .login-card .form-group input:focus {
             outline: none;
             border-color: var(--color-blue);
             box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
         }
 
+        /* ===== 登录按钮：红色渐变，全宽 ===== */
         .login-card .btn-login {
             width: 100%;
             padding: 11px;
@@ -497,9 +559,11 @@
             transition: opacity 0.2s;
         }
 
+        /* ===== 登录按钮状态 ===== */
         .login-card .btn-login:hover { opacity: 0.9; }
-        .login-card .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-card .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }   /* 禁用态：提交中 */
 
+        /* ===== 登录提示框：金色左边框，浅黄背景 ===== */
         .login-card .login-tip {
             margin-top: 16px;
             padding: 10px 12px;
@@ -510,25 +574,29 @@
             border-radius: 2px;
         }
 
+        /* ===== 登录错误提示：红色文字 ===== */
         .login-card .login-error {
             margin-top: 12px;
             color: var(--color-red);
             font-size: 13px;
             text-align: center;
-            min-height: 18px;
+            min-height: 18px;          /* 最小高度避免布局抖动 */
         }
 
+        /* ===== 顶部栏用户信息区 ===== */
         .top-bar .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
+        /* ===== 用户名显示 ===== */
         .top-bar .user-info .username {
             font-size: 13px;
             opacity: 0.95;
         }
 
+        /* ===== 退出/修改密码按钮 ===== */
         .top-bar .user-info .logout-btn {
             background: rgba(255, 255, 255, 0.15);
             color: var(--color-white);
@@ -540,21 +608,24 @@
             font-family: inherit;
         }
 
+        /* ===== 退出/修改密码按钮 hover ===== */
         .top-bar .user-info .logout-btn:hover {
             background: rgba(255, 255, 255, 0.25);
         }
     </style>
 </head>
 <body>
-    <!-- 登录遮罩（未登录时显示） -->
+    <!-- 登录遮罩（未登录时显示）：覆盖全屏的登录卡片 -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
+            <!-- 登录卡片头部：徽标 + 标题 -->
             <div class="login-header">
                 <div class="badge">🛡️</div>
                 <h2>国家网络安全宣传官网</h2>
                 <p>内容管理后台 · 管理员登录</p>
             </div>
             <div class="login-body">
+                <!-- 登录表单：提交时调用 doLogin -->
                 <form id="login-form" onsubmit="return doLogin(event)">
                     <div class="form-group">
                         <label for="login-username">用户名</label>
@@ -567,6 +638,7 @@
                     <button type="submit" class="btn-login" id="login-btn">登 录</button>
                     <div class="login-error" id="login-error"></div>
                 </form>
+                <!-- 默认账号提示（仅开发演示环境） -->
                 <div class="login-tip">
                     默认账号：<strong>admin</strong> / <strong>admin@123</strong><br>
                     请登录后及时修改密码。
@@ -575,7 +647,7 @@
         </div>
     </div>
 
-    <!-- 顶部栏 -->
+    <!-- 顶部栏：标题 + 用户操作区 -->
     <header class="top-bar">
         <div class="container">
             <div class="title">内容管理后台 · 国家网络安全宣传官网</div>
@@ -590,7 +662,7 @@
     </header>
 
     <div class="container">
-        <!-- Tab 导航 -->
+        <!-- Tab 导航：4 个管理栏目切换 -->
         <div class="tab-nav">
             <button class="tab-btn active" data-tab="news">新闻管理</button>
             <button class="tab-btn" data-tab="knowledge">知识管理</button>
@@ -599,10 +671,11 @@
         </div>
 
         <div class="content-area">
-            <!-- 新闻管理 -->
+            <!-- 新闻管理面板：筛选 + 新增 + 数据表格 -->
             <div class="tab-panel active" id="panel-news">
                 <div class="toolbar">
                     <div class="toolbar-left">
+                        <!-- 新闻分类筛选下拉框 -->
                         <select id="news-filter">
                             <option value="">全部分类</option>
                             <option value="SECURITY_NEWS">安全新闻</option>
@@ -629,10 +702,11 @@
                 </table>
             </div>
 
-            <!-- 知识管理 -->
+            <!-- 知识管理面板 -->
             <div class="tab-panel" id="panel-knowledge">
                 <div class="toolbar">
                     <div class="toolbar-left">
+                        <!-- 知识分类筛选下拉框 -->
                         <select id="knowledge-filter">
                             <option value="">全部分类</option>
                             <option value="PROTECTION_TIPS">防护技巧</option>
@@ -659,10 +733,11 @@
                 </table>
             </div>
 
-            <!-- 法规管理 -->
+            <!-- 法规管理面板 -->
             <div class="tab-panel" id="panel-regulation">
                 <div class="toolbar">
                     <div class="toolbar-left">
+                        <!-- 法规分类筛选下拉框 -->
                         <select id="regulation-filter">
                             <option value="">全部分类</option>
                             <option value="LAW">法律</option>
@@ -689,11 +764,13 @@
                 </table>
             </div>
 
-            <!-- 举报管理 -->
+            <!-- 举报管理面板：统计卡片 + 筛选 + 数据表格 -->
             <div class="tab-panel" id="panel-report">
+                <!-- 统计卡片区域：举报总数、待处理、处理中、已处理 -->
                 <div class="stats-grid" id="report-stats"></div>
                 <div class="toolbar">
                     <div class="toolbar-left">
+                        <!-- 举报状态筛选下拉框 -->
                         <select id="report-filter">
                             <option value="">全部状态</option>
                             <option value="PENDING">待处理</option>
@@ -722,7 +799,7 @@
         </div>
     </div>
 
-    <!-- 编辑模态框 -->
+    <!-- 编辑模态框：用于新增/编辑新闻、知识、法规、处置举报 -->
     <div class="modal-mask" id="modal">
         <div class="modal">
             <div class="modal-header">
@@ -745,18 +822,22 @@
                 <button class="modal-close" onclick="closePwdModal()">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- 旧密码输入 -->
                 <div class="form-group">
                     <label>旧密码</label>
                     <input type="password" id="pwd-old" autocomplete="current-password" placeholder="请输入当前密码">
                 </div>
+                <!-- 新密码输入 -->
                 <div class="form-group">
                     <label>新密码</label>
                     <input type="password" id="pwd-new" autocomplete="new-password" placeholder="至少 6 位，不能与旧密码相同">
                 </div>
+                <!-- 确认新密码 -->
                 <div class="form-group">
                     <label>确认新密码</label>
                     <input type="password" id="pwd-confirm" autocomplete="new-password" placeholder="请再次输入新密码">
                 </div>
+                <!-- 错误提示区域 -->
                 <div id="pwd-error" style="color: var(--color-red); font-size: 13px; min-height: 18px; margin-top: 4px;"></div>
             </div>
             <div class="modal-footer">
@@ -766,264 +847,281 @@
         </div>
     </div>
 
+    <!-- 全局 Toast 提示框 -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // ===== 分类映射 =====
-        const NEWS_CATEGORY = {
+        // ===== 分类枚举映射：后端枚举值 -> 中文显示文本 =====
+        const NEWS_CATEGORY = {                          // 新闻分类
             SECURITY_NEWS: '安全新闻', INDUSTRY_TREND: '行业动态',
             POLICY_INTERPRETATION: '政策解读', VULNERABILITY_ALERT: '漏洞预警'
         };
-        const KNOWLEDGE_CATEGORY = {
+        const KNOWLEDGE_CATEGORY = {                     // 知识分类
             PROTECTION_TIPS: '防护技巧', POPULAR_SCIENCE: '科普文章',
             CASE_ANALYSIS: '案例分析', EMERGENCY_RESPONSE: '应急响应'
         };
-        const REGULATION_CATEGORY = {
+        const REGULATION_CATEGORY = {                    // 法规分类
             LAW: '法律', ADMINISTRATIVE_REGULATION: '行政法规',
             DEPARTMENTAL_RULE: '部门规章', NORMATIVE_DOCUMENT: '规范性文件'
         };
-        const REPORT_TYPE = {
+        const REPORT_TYPE = {                            // 举报类型
             PORNOGRAPHY: '色情低俗', GAMBLING_FRAUD: '赌博诈骗',
             CYBER_VIOLENCE: '网络暴力', RUMOR: '谣言信息',
             ILLEGAL_CONTENT: '违法违规', OTHER: '其他'
         };
-        const REPORT_STATUS = {
+        const REPORT_STATUS = {                          // 举报状态
             PENDING: '待处理', PROCESSING: '处理中',
             RESOLVED: '已处理', IGNORED: '已忽略'
         };
+        // 状态对应的标签 CSS 类名（用于颜色区分）
         const STATUS_TAG_CLASS = {
             PENDING: 'gold', PROCESSING: 'orange',
             RESOLVED: 'green', IGNORED: 'gray'
         };
 
         // ===== 工具方法 =====
+        // 显示 Toast 提示：msg-文案，type-类型(success/error)
         function showToast(msg, type) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show ' + (type || '');
-            setTimeout(() => t.className = 'toast', 2200);
+            const t = document.getElementById('toast');           // 获取 toast 元素
+            t.textContent = msg;                                  // 设置文案
+            t.className = 'toast show ' + (type || '');           // 添加 show 与类型类名
+            setTimeout(() => t.className = 'toast', 2200);        // 2.2s 后自动隐藏
         }
 
+        // 日期格式化：截取前 10 位得到 YYYY-MM-DD
         function formatDate(s) { return s ? s.substring(0, 10) : ''; }
+        // 日期时间格式化：截取前 16 位并替换 T 为空格
         function formatDateTime(s) { return s ? s.substring(0, 16).replace('T', ' ') : ''; }
 
+        // 通用 GET 请求封装（不带认证处理，用于公开接口）
         async function fetchJson(url, opts) {
-            const resp = await fetch(url, opts);
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            return resp.json();
+            const resp = await fetch(url, opts);                  // 发起请求
+            if (!resp.ok) throw new Error('HTTP ' + resp.status); // 非 2xx 抛出异常
+            return resp.json();                                   // 返回 JSON
         }
 
+        // HTML 转义：防止 XSS 攻击
         function escapeHtml(str) {
-            if (str == null) return '';
-            return String(str).replace(/[&<>"']/g, c => ({
+            if (str == null) return '';                           // 空值返回空字符串
+            return String(str).replace(/[&<>"']/g, c => ({        // 匹配 5 个特殊字符
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
             }[c]));
         }
 
+        // 带认证的 API 调用封装：处理 401 未登录、204 无内容等情况
         async function apiCall(url, method, data) {
-            const opts = { method, headers: { 'Content-Type': 'application/json' } };
-            if (data) opts.body = JSON.stringify(data);
-            const resp = await fetch(url, opts);
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };  // 构造请求选项
+            if (data) opts.body = JSON.stringify(data);           // 有数据则序列化为 JSON
+            const resp = await fetch(url, opts);                  // 发起请求
             // 401 未登录或会话过期，跳转登录
             if (resp.status === 401) {
-                showLoginOverlay();
-                throw new Error('未登录或登录已过期');
+                showLoginOverlay();                               // 显示登录遮罩
+                throw new Error('未登录或登录已过期');             // 抛出异常中断调用
             }
-            if (resp.status === 204) return null;
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            return resp.json();
+            if (resp.status === 204) return null;                 // 204 无内容返回 null
+            if (!resp.ok) throw new Error('HTTP ' + resp.status); // 其他错误抛出异常
+            return resp.json();                                   // 返回 JSON
         }
 
         // ===== 认证相关 =====
         /**
-         * 显示登录遮罩
+         * 显示登录遮罩：清空用户名显示
          */
         function showLoginOverlay() {
-            document.getElementById('login-overlay').classList.remove('hidden');
-            document.getElementById('current-user').textContent = '';
+            document.getElementById('login-overlay').classList.remove('hidden');  // 移除 hidden 类显示遮罩
+            document.getElementById('current-user').textContent = '';             // 清空顶部用户名
         }
 
         /**
          * 隐藏登录遮罩
          */
         function hideLoginOverlay() {
-            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('login-overlay').classList.add('hidden');     // 添加 hidden 类隐藏遮罩
         }
 
         /**
          * 处理登录表单提交
+         * @param {Event} event 表单提交事件
+         * @returns {boolean} 始终返回 false 阻止默认提交
          */
         async function doLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errEl = document.getElementById('login-error');
-            const btn = document.getElementById('login-btn');
-            errEl.textContent = '';
-            btn.disabled = true;
-            btn.textContent = '登录中...';
+            event.preventDefault();                               // 阻止表单默认提交
+            const username = document.getElementById('login-username').value.trim();  // 获取用户名并去空格
+            const password = document.getElementById('login-password').value;         // 获取密码
+            const errEl = document.getElementById('login-error');  // 错误提示元素
+            const btn = document.getElementById('login-btn');      // 登录按钮
+            errEl.textContent = '';                               // 清空错误提示
+            btn.disabled = true;                                  // 禁用按钮防止重复提交
+            btn.textContent = '登录中...';                        // 按钮显示登录中
             try {
+                // 调用 POST /api/auth/login 登录接口
                 const resp = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                if (resp.status === 401) {
+                if (resp.status === 401) {                        // 401 用户名或密码错误
                     errEl.textContent = '用户名或密码错误';
                     return;
                 }
-                if (!resp.ok) {
+                if (!resp.ok) {                                   // 其他错误
                     errEl.textContent = '登录失败（HTTP ' + resp.status + '）';
                     return;
                 }
-                const user = await resp.json();
-                document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);
-                hideLoginOverlay();
+                const user = await resp.json();                  // 解析返回的用户信息
+                document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);  // 显示用户名
+                hideLoginOverlay();                               // 隐藏登录遮罩
                 // 登录成功后加载首个面板数据
-                loadNews();
-                showToast('登录成功', 'success');
-            } catch (e) {
+                loadNews();                                       // 加载新闻列表
+                showToast('登录成功', 'success');                 // 成功提示
+            } catch (e) {                                         // 网络异常
                 errEl.textContent = '网络错误：' + e.message;
             } finally {
-                btn.disabled = false;
+                btn.disabled = false;                             // 恢复按钮
                 btn.textContent = '登 录';
             }
         }
 
         /**
-         * 退出登录
+         * 退出登录：调用后端登出接口并显示登录遮罩
          */
         async function doLogout() {
             try {
-                await fetch('/api/auth/logout', { method: 'POST' });
+                await fetch('/api/auth/logout', { method: 'POST' });  // 调用 POST /api/auth/logout
             } catch (e) { /* 忽略 */ }
-            showLoginOverlay();
-            showToast('已退出登录');
+            showLoginOverlay();                                   // 显示登录遮罩
+            showToast('已退出登录');                              // 提示
         }
 
         // ===== 修改密码 =====
         /**
-         * 打开修改密码模态框
+         * 打开修改密码模态框：清空输入并显示
          */
         function openChangePassword() {
-            document.getElementById('pwd-old').value = '';
-            document.getElementById('pwd-new').value = '';
-            document.getElementById('pwd-confirm').value = '';
-            document.getElementById('pwd-error').textContent = '';
-            document.getElementById('pwd-modal').classList.add('show');
+            document.getElementById('pwd-old').value = '';        // 清空旧密码
+            document.getElementById('pwd-new').value = '';        // 清空新密码
+            document.getElementById('pwd-confirm').value = '';    // 清空确认密码
+            document.getElementById('pwd-error').textContent = '';// 清空错误提示
+            document.getElementById('pwd-modal').classList.add('show');  // 显示模态框
         }
 
         /**
          * 关闭修改密码模态框
          */
         function closePwdModal() {
-            document.getElementById('pwd-modal').classList.remove('show');
+            document.getElementById('pwd-modal').classList.remove('show');  // 隐藏模态框
         }
 
         /**
-         * 提交修改密码
+         * 提交修改密码：前端校验 + 调用后端接口
          */
         async function submitChangePassword() {
-            const oldPwd = document.getElementById('pwd-old').value;
-            const newPwd = document.getElementById('pwd-new').value;
-            const confirmPwd = document.getElementById('pwd-confirm').value;
-            const errEl = document.getElementById('pwd-error');
-            const btn = document.getElementById('pwd-save');
-            errEl.textContent = '';
+            const oldPwd = document.getElementById('pwd-old').value;        // 旧密码
+            const newPwd = document.getElementById('pwd-new').value;        // 新密码
+            const confirmPwd = document.getElementById('pwd-confirm').value; // 确认新密码
+            const errEl = document.getElementById('pwd-error');             // 错误提示元素
+            const btn = document.getElementById('pwd-save');                // 提交按钮
+            errEl.textContent = '';                                          // 清空错误提示
 
             // 前端校验
-            if (!oldPwd || !newPwd || !confirmPwd) {
+            if (!oldPwd || !newPwd || !confirmPwd) {              // 必填校验
                 errEl.textContent = '请填写所有字段';
                 return;
             }
-            if (newPwd.length < 6) {
+            if (newPwd.length < 6) {                              // 新密码长度校验
                 errEl.textContent = '新密码至少 6 位';
                 return;
             }
-            if (newPwd !== confirmPwd) {
+            if (newPwd !== confirmPwd) {                          // 两次密码一致性校验
                 errEl.textContent = '两次输入的新密码不一致';
                 return;
             }
-            if (newPwd === oldPwd) {
+            if (newPwd === oldPwd) {                              // 新旧密码不能相同
                 errEl.textContent = '新密码不能与旧密码相同';
                 return;
             }
 
-            btn.disabled = true;
-            btn.textContent = '提交中...';
+            btn.disabled = true;                                  // 禁用按钮
+            btn.textContent = '提交中...';                        // 按钮显示提交中
             try {
+                // 调用 POST /api/auth/change-password 修改密码
                 const resp = await fetch('/api/auth/change-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
                 });
-                if (resp.status === 200) {
-                    closePwdModal();
+                if (resp.status === 200) {                        // 修改成功
+                    closePwdModal();                              // 关闭模态框
                     showToast('密码修改成功，请重新登录', 'success');
                     // 密码修改成功后退出登录，要求重新登录
-                    setTimeout(() => doLogout(), 1500);
-                } else if (resp.status === 422) {
+                    setTimeout(() => doLogout(), 1500);           // 1.5s 后自动退出
+                } else if (resp.status === 422) {                 // 422 旧密码错误
                     errEl.textContent = '旧密码错误';
-                } else if (resp.status === 400) {
+                } else if (resp.status === 400) {                 // 400 新密码不合规
                     errEl.textContent = '新密码不合规';
-                } else if (resp.status === 401) {
+                } else if (resp.status === 401) {                 // 401 未登录
                     errEl.textContent = '未登录或会话过期';
-                    setTimeout(() => showLoginOverlay(), 1500);
-                } else {
+                    setTimeout(() => showLoginOverlay(), 1500);   // 1.5s 后显示登录遮罩
+                } else {                                         // 其他错误
                     errEl.textContent = '修改失败（HTTP ' + resp.status + '）';
                 }
-            } catch (e) {
+            } catch (e) {                                         // 网络异常
                 errEl.textContent = '网络错误：' + e.message;
             } finally {
-                btn.disabled = false;
+                btn.disabled = false;                             // 恢复按钮
                 btn.textContent = '确认修改';
             }
         }
 
         /**
          * 校验当前登录态（页面加载时调用）
+         * @returns {Promise<boolean>} 已登录返回 true，未登录返回 false
          */
         async function checkAuth() {
             try {
-                const resp = await fetch('/api/auth/me');
-                if (resp.ok) {
-                    const user = await resp.json();
-                    document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);
-                    hideLoginOverlay();
+                const resp = await fetch('/api/auth/me');         // 调用 GET /api/auth/me 检查登录态
+                if (resp.ok) {                                    // 200 已登录
+                    const user = await resp.json();               // 获取用户信息
+                    document.getElementById('current-user').textContent = '欢迎，' + (user.displayName || user.username);  // 显示用户名
+                    hideLoginOverlay();                           // 隐藏登录遮罩
                     return true;
                 }
             } catch (e) { /* 忽略 */ }
-            showLoginOverlay();
+            showLoginOverlay();                                   // 未登录则显示登录遮罩
             return false;
         }
 
-        // ===== Tab 切换 =====
+        // ===== Tab 切换逻辑 =====
+        // 为所有 Tab 按钮绑定点击事件
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-                refreshCurrentTab();
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));  // 移除所有按钮激活态
+                btn.classList.add('active');                      // 激活当前按钮
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));  // 隐藏所有面板
+                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');  // 显示对应面板
+                refreshCurrentTab();                              // 刷新当前面板数据
             });
         });
 
+        // 刷新当前激活的 Tab 面板数据
         function refreshCurrentTab() {
-            const active = document.querySelector('.tab-btn.active').dataset.tab;
-            if (active === 'news') loadNews();
-            else if (active === 'knowledge') loadKnowledge();
-            else if (active === 'regulation') loadRegulations();
-            else if (active === 'report') { loadReportStats(); loadReports(); }
+            const active = document.querySelector('.tab-btn.active').dataset.tab;  // 获取当前激活的 Tab
+            if (active === 'news') loadNews();                    // 新闻面板：加载新闻
+            else if (active === 'knowledge') loadKnowledge();     // 知识面板：加载知识
+            else if (active === 'regulation') loadRegulations();  // 法规面板：加载法规
+            else if (active === 'report') { loadReportStats(); loadReports(); }  // 举报面板：加载统计与列表
         }
 
         // ===== 新闻管理 =====
+        // 监听新闻分类筛选变化
         document.getElementById('news-filter').addEventListener('change', loadNews);
 
+        // 加载新闻列表并渲染表格
         async function loadNews() {
-            const filter = document.getElementById('news-filter').value;
-            const url = filter ? '/api/news?category=' + filter : '/api/news';
+            const filter = document.getElementById('news-filter').value;  // 获取筛选值
+            const url = filter ? '/api/news?category=' + filter : '/api/news';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);                // 请求新闻列表
                 document.getElementById('news-tbody').innerHTML = list.length ? list.map(n => `
                     <tr>
                         <td class="col-id">${n.id}</td>
@@ -1041,12 +1139,13 @@
             } catch (err) { showToast('加载新闻失败', 'error'); }
         }
 
+        // 编辑/新增新闻：id 为空表示新增，有 id 表示编辑
         async function editNews(id) {
-            let n = { category: 'SECURITY_NEWS', top: false };
-            if (id) {
+            let n = { category: 'SECURITY_NEWS', top: false };    // 新增默认值
+            if (id) {                                             // 编辑模式：先获取详情
                 n = await fetchJson('/api/news/' + id);
             }
-            openModal(id ? '编辑新闻' : '新增新闻', `
+            openModal(id ? '编辑新闻' : '新增新闻', `             // 打开编辑模态框
                 <div class="form-group">
                     <label>标题 <span class="required">*</span></label>
                     <input type="text" id="f-news-title" value="${escapeHtml(n.title || '')}">
@@ -1078,45 +1177,50 @@
                     <label><input type="checkbox" id="f-news-top" ${n.top ? 'checked' : ''}> 设为置顶</label>
                 </div>
             `);
-            document.getElementById('f-news-category').value = n.category;
+            document.getElementById('f-news-category').value = n.category;  // 设置分类下拉框选中值
+            // 绑定保存按钮点击事件
             document.getElementById('modal-save').onclick = async () => {
+                // 收集表单数据
                 const data = {
-                    title: document.getElementById('f-news-title').value.trim(),
-                    category: document.getElementById('f-news-category').value,
-                    source: document.getElementById('f-news-source').value.trim() || null,
-                    summary: document.getElementById('f-news-summary').value.trim() || null,
-                    content: document.getElementById('f-news-content').value.trim(),
-                    top: document.getElementById('f-news-top').checked,
-                    publishTime: n.publishTime || null
+                    title: document.getElementById('f-news-title').value.trim(),         // 标题
+                    category: document.getElementById('f-news-category').value,          // 分类
+                    source: document.getElementById('f-news-source').value.trim() || null,  // 来源（选填）
+                    summary: document.getElementById('f-news-summary').value.trim() || null,  // 摘要（选填）
+                    content: document.getElementById('f-news-content').value.trim(),     // 正文
+                    top: document.getElementById('f-news-top').checked,                  // 是否置顶
+                    publishTime: n.publishTime || null                                   // 发布时间（编辑时保留原值）
                 };
-                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }
+                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }  // 必填校验
                 try {
-                    if (id) await apiCall('/api/news/' + id, 'PUT', data);
-                    else await apiCall('/api/news', 'POST', data);
-                    showToast('保存成功', 'success');
-                    closeModal();
-                    loadNews();
+                    if (id) await apiCall('/api/news/' + id, 'PUT', data);   // 编辑：PUT /api/news/{id}
+                    else await apiCall('/api/news', 'POST', data);           // 新增：POST /api/news
+                    showToast('保存成功', 'success');                        // 成功提示
+                    closeModal();                                            // 关闭模态框
+                    loadNews();                                              // 刷新列表
                 } catch (err) { showToast('保存失败', 'error'); }
             };
         }
 
+        // 删除新闻：id-新闻 ID
         async function deleteNews(id) {
-            if (!confirm('确认删除该新闻？')) return;
+            if (!confirm('确认删除该新闻？')) return;             // 二次确认
             try {
-                await apiCall('/api/news/' + id, 'DELETE');
-                showToast('删除成功', 'success');
-                loadNews();
+                await apiCall('/api/news/' + id, 'DELETE');       // 调用 DELETE /api/news/{id}
+                showToast('删除成功', 'success');                 // 成功提示
+                loadNews();                                       // 刷新列表
             } catch (err) { showToast('删除失败', 'error'); }
         }
 
         // ===== 知识管理 =====
+        // 监听知识分类筛选变化
         document.getElementById('knowledge-filter').addEventListener('change', loadKnowledge);
 
+        // 加载知识列表
         async function loadKnowledge() {
-            const filter = document.getElementById('knowledge-filter').value;
-            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';
+            const filter = document.getElementById('knowledge-filter').value;  // 获取筛选值
+            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);                // 请求知识列表
                 document.getElementById('knowledge-tbody').innerHTML = list.length ? list.map(k => `
                     <tr>
                         <td class="col-id">${k.id}</td>
@@ -1134,9 +1238,10 @@
             } catch (err) { showToast('加载知识失败', 'error'); }
         }
 
+        // 编辑/新增知识
         async function editKnowledge(id) {
-            let k = { category: 'PROTECTION_TIPS' };
-            if (id) k = await fetchJson('/api/knowledge/' + id);
+            let k = { category: 'PROTECTION_TIPS' };             // 新增默认分类
+            if (id) k = await fetchJson('/api/knowledge/' + id); // 编辑模式获取详情
             openModal(id ? '编辑文章' : '新增文章', `
                 <div class="form-group">
                     <label>标题 <span class="required">*</span></label>
@@ -1166,43 +1271,47 @@
                     <textarea id="f-k-content" style="min-height:160px;">${escapeHtml(k.content || '')}</textarea>
                 </div>
             `);
-            document.getElementById('f-k-category').value = k.category;
+            document.getElementById('f-k-category').value = k.category;  // 设置分类选中值
+            // 绑定保存按钮事件
             document.getElementById('modal-save').onclick = async () => {
                 const data = {
-                    title: document.getElementById('f-k-title').value.trim(),
-                    category: document.getElementById('f-k-category').value,
-                    author: document.getElementById('f-k-author').value.trim() || null,
-                    summary: document.getElementById('f-k-summary').value.trim() || null,
-                    content: document.getElementById('f-k-content').value.trim()
+                    title: document.getElementById('f-k-title').value.trim(),        // 标题
+                    category: document.getElementById('f-k-category').value,         // 分类
+                    author: document.getElementById('f-k-author').value.trim() || null,  // 编者（选填）
+                    summary: document.getElementById('f-k-summary').value.trim() || null,  // 摘要（选填）
+                    content: document.getElementById('f-k-content').value.trim()     // 正文
                 };
-                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }
+                if (!data.title || !data.content) { showToast('请填写标题和正文', 'error'); return; }  // 必填校验
                 try {
-                    if (id) await apiCall('/api/knowledge/' + id, 'PUT', data);
-                    else await apiCall('/api/knowledge', 'POST', data);
+                    if (id) await apiCall('/api/knowledge/' + id, 'PUT', data);  // 编辑：PUT /api/knowledge/{id}
+                    else await apiCall('/api/knowledge', 'POST', data);          // 新增：POST /api/knowledge
                     showToast('保存成功', 'success');
                     closeModal();
-                    loadKnowledge();
+                    loadKnowledge();                                            // 刷新列表
                 } catch (err) { showToast('保存失败', 'error'); }
             };
         }
 
+        // 删除知识
         async function deleteKnowledge(id) {
-            if (!confirm('确认删除该文章？')) return;
+            if (!confirm('确认删除该文章？')) return;             // 二次确认
             try {
-                await apiCall('/api/knowledge/' + id, 'DELETE');
+                await apiCall('/api/knowledge/' + id, 'DELETE');  // 调用 DELETE /api/knowledge/{id}
                 showToast('删除成功', 'success');
-                loadKnowledge();
+                loadKnowledge();                                  // 刷新列表
             } catch (err) { showToast('删除失败', 'error'); }
         }
 
         // ===== 法规管理 =====
+        // 监听法规分类筛选变化
         document.getElementById('regulation-filter').addEventListener('change', loadRegulations);
 
+        // 加载法规列表
         async function loadRegulations() {
-            const filter = document.getElementById('regulation-filter').value;
-            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';
+            const filter = document.getElementById('regulation-filter').value;  // 获取筛选值
+            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);                // 请求法规列表
                 document.getElementById('regulation-tbody').innerHTML = list.length ? list.map(r => `
                     <tr>
                         <td class="col-id">${r.id}</td>
@@ -1220,9 +1329,10 @@
             } catch (err) { showToast('加载法规失败', 'error'); }
         }
 
+        // 编辑/新增法规
         async function editRegulation(id) {
-            let r = { category: 'LAW' };
-            if (id) r = await fetchJson('/api/regulations/' + id);
+            let r = { category: 'LAW' };                          // 新增默认分类
+            if (id) r = await fetchJson('/api/regulations/' + id);  // 编辑模式获取详情
             openModal(id ? '编辑法规' : '新增法规', `
                 <div class="form-group">
                     <label>标题 <span class="required">*</span></label>
@@ -1262,45 +1372,49 @@
                     <textarea id="f-r-content" style="min-height:160px;">${escapeHtml(r.content || '')}</textarea>
                 </div>
             `);
-            document.getElementById('f-r-category').value = r.category;
+            document.getElementById('f-r-category').value = r.category;  // 设置分类选中值
+            // 绑定保存按钮事件
             document.getElementById('modal-save').onclick = async () => {
                 const data = {
-                    title: document.getElementById('f-r-title').value.trim(),
-                    issuingAuthority: document.getElementById('f-r-authority').value.trim(),
-                    category: document.getElementById('f-r-category').value,
-                    publishDate: document.getElementById('f-r-publish').value || null,
-                    effectiveDate: document.getElementById('f-r-effective').value || null,
-                    documentNumber: document.getElementById('f-r-docnum').value.trim() || null,
-                    content: document.getElementById('f-r-content').value.trim()
+                    title: document.getElementById('f-r-title').value.trim(),           // 标题
+                    issuingAuthority: document.getElementById('f-r-authority').value.trim(),  // 颁布机构
+                    category: document.getElementById('f-r-category').value,            // 分类
+                    publishDate: document.getElementById('f-r-publish').value || null,  // 发布日期
+                    effectiveDate: document.getElementById('f-r-effective').value || null,  // 生效日期（选填）
+                    documentNumber: document.getElementById('f-r-docnum').value.trim() || null,  // 文号（选填）
+                    content: document.getElementById('f-r-content').value.trim()        // 法规正文
                 };
-                if (!data.title || !data.issuingAuthority || !data.publishDate || !data.content) {
+                if (!data.title || !data.issuingAuthority || !data.publishDate || !data.content) {  // 必填校验
                     showToast('请填写必填项', 'error'); return;
                 }
                 try {
-                    if (id) await apiCall('/api/regulations/' + id, 'PUT', data);
-                    else await apiCall('/api/regulations', 'POST', data);
+                    if (id) await apiCall('/api/regulations/' + id, 'PUT', data);  // 编辑：PUT /api/regulations/{id}
+                    else await apiCall('/api/regulations', 'POST', data);          // 新增：POST /api/regulations
                     showToast('保存成功', 'success');
                     closeModal();
-                    loadRegulations();
+                    loadRegulations();                                           // 刷新列表
                 } catch (err) { showToast('保存失败', 'error'); }
             };
         }
 
+        // 删除法规
         async function deleteRegulation(id) {
-            if (!confirm('确认删除该法规？')) return;
+            if (!confirm('确认删除该法规？')) return;             // 二次确认
             try {
-                await apiCall('/api/regulations/' + id, 'DELETE');
+                await apiCall('/api/regulations/' + id, 'DELETE');  // 调用 DELETE /api/regulations/{id}
                 showToast('删除成功', 'success');
-                loadRegulations();
+                loadRegulations();                                // 刷新列表
             } catch (err) { showToast('删除失败', 'error'); }
         }
 
         // ===== 举报管理 =====
+        // 监听举报状态筛选变化
         document.getElementById('report-filter').addEventListener('change', loadReports);
 
+        // 加载举报统计数据：展示举报总数及各状态数量
         async function loadReportStats() {
             try {
-                const s = await fetchJson('/api/reports/stats');
+                const s = await fetchJson('/api/reports/stats');  // 调用 GET /api/reports/stats
                 document.getElementById('report-stats').innerHTML = `
                     <div class="stat-card red">
                         <div class="label">举报总数</div>
@@ -1322,11 +1436,12 @@
             } catch (err) { console.error(err); }
         }
 
+        // 加载举报列表
         async function loadReports() {
-            const filter = document.getElementById('report-filter').value;
-            const url = filter ? '/api/reports?status=' + filter : '/api/reports';
+            const filter = document.getElementById('report-filter').value;  // 获取筛选值
+            const url = filter ? '/api/reports?status=' + filter : '/api/reports';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);                // 请求举报列表
                 document.getElementById('report-tbody').innerHTML = list.length ? list.map(r => `
                     <tr>
                         <td class="col-id">${r.id}</td>
@@ -1344,8 +1459,9 @@
             } catch (err) { showToast('加载举报失败', 'error'); }
         }
 
+        // 处置举报：查看详情并修改状态/备注
         async function handleReport(id) {
-            const r = await fetchJson('/api/reports/' + id);
+            const r = await fetchJson('/api/reports/' + id);      // 调用 GET /api/reports/{id} 获取详情
             openModal('处置举报 #' + id, `
                 <div class="form-group">
                     <label>举报类型</label>
@@ -1380,60 +1496,66 @@
                     <textarea id="f-rep-note">${escapeHtml(r.handleNote || '')}</textarea>
                 </div>
             `);
-            document.getElementById('f-rep-status').value = r.status;
+            document.getElementById('f-rep-status').value = r.status;  // 设置当前状态选中值
+            // 绑定保存按钮：提交处置结果
             document.getElementById('modal-save').onclick = async () => {
                 const data = {
-                    status: document.getElementById('f-rep-status').value,
-                    handleNote: document.getElementById('f-rep-note').value.trim() || null
+                    status: document.getElementById('f-rep-status').value,           // 处置状态
+                    handleNote: document.getElementById('f-rep-note').value.trim() || null  // 处置备注（选填）
                 };
                 try {
-                    await apiCall('/api/reports/' + id, 'PUT', data);
+                    await apiCall('/api/reports/' + id, 'PUT', data);  // 调用 PUT /api/reports/{id} 更新处置
                     showToast('处置成功', 'success');
                     closeModal();
-                    loadReportStats();
-                    loadReports();
+                    loadReportStats();                            // 刷新统计
+                    loadReports();                                // 刷新列表
                 } catch (err) { showToast('处置失败', 'error'); }
             };
         }
 
+        // 删除举报记录
         async function deleteReport(id) {
-            if (!confirm('确认删除该举报记录？')) return;
+            if (!confirm('确认删除该举报记录？')) return;         // 二次确认
             try {
-                await apiCall('/api/reports/' + id, 'DELETE');
+                await apiCall('/api/reports/' + id, 'DELETE');    // 调用 DELETE /api/reports/{id}
                 showToast('删除成功', 'success');
-                loadReportStats();
-                loadReports();
+                loadReportStats();                                // 刷新统计
+                loadReports();                                    // 刷新列表
             } catch (err) { showToast('删除失败', 'error'); }
         }
 
-        // ===== Modal =====
+        // ===== Modal 模态框控制 =====
+        // 打开编辑模态框：title-标题，html-内容
         function openModal(title, html) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('modal').classList.add('show');
+            document.getElementById('modal-title').textContent = title;     // 设置标题
+            document.getElementById('modal-body').innerHTML = html;         // 注入内容
+            document.getElementById('modal').classList.add('show');         // 显示
         }
 
+        // 关闭编辑模态框
         function closeModal() {
-            document.getElementById('modal').classList.remove('show');
+            document.getElementById('modal').classList.remove('show');      // 隐藏
         }
 
+        // 点击遮罩空白区域关闭模态框
         document.getElementById('modal').addEventListener('click', e => {
-            if (e.target.id === 'modal') closeModal();
+            if (e.target.id === 'modal') closeModal();           // 仅当点击遮罩本身时关闭
         });
 
+        // 按 ESC 键关闭所有模态框
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeModal();
-                closePwdModal();
+            if (e.key === 'Escape') {                             // 检测 ESC 键
+                closeModal();                                     // 关闭编辑模态框
+                closePwdModal();                                  // 关闭密码模态框
             }
         });
 
         // ===== 初始化 =====
         // 页面加载时先校验登录态，已登录则加载首页数据，未登录则显示登录遮罩
         (async () => {
-            const loggedIn = await checkAuth();
-            if (loggedIn) {
-                loadNews();
+            const loggedIn = await checkAuth();                   // 校验登录态
+            if (loggedIn) {                                       // 已登录
+                loadNews();                                       // 加载新闻列表
             }
         })();
     </script>

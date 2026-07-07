@@ -1,61 +1,71 @@
 <!DOCTYPE html>
+<!-- 文档类型声明：HTML5 标准 -->
 <html lang="zh-CN">
 <head>
+    <!-- 字符编码：UTF-8 支持中文等多语言字符 -->
     <meta charset="UTF-8">
+    <!-- 视口设置：适配移动端，宽度等于设备宽度，初始缩放 1.0 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 浏览器标签页标题 -->
     <title>国家网络安全宣传官网</title>
     <style>
+        /* ===== CSS 变量定义：统一管理全站配色，方便主题维护 ===== */
         :root {
-            --color-red: #B71C1C;
-            --color-red-dark: #8B0000;
-            --color-blue: #0D47A1;
-            --color-blue-dark: #082A6B;
-            --color-gold: #D4A017;
-            --color-bg: #F5F5F5;
-            --color-text: #222;
-            --color-text-light: #666;
-            --color-border: #E0E0E0;
-            --color-white: #FFFFFF;
+            --color-red: #B71C1C;        /* 主红色：政务严肃红，用于标题、强调按钮 */
+            --color-red-dark: #8B0000;   /* 深红色：用于 header 渐变深色端、按钮 hover */
+            --color-blue: #0D47A1;       /* 主蓝色：用于导航栏、链接强调 */
+            --color-blue-dark: #082A6B;  /* 深蓝色：用于 footer、导航 hover */
+            --color-gold: #D4A017;       /* 金色：装饰色，用于徽章、分隔线、强调点缀 */
+            --color-bg: #F5F5F5;         /* 页面背景色：浅灰色，避免纯白刺眼 */
+            --color-text: #222;          /* 主文本色：深灰近黑，保证可读性 */
+            --color-text-light: #666;    /* 次要文本色：用于日期、来源等辅助信息 */
+            --color-border: #E0E0E0;     /* 边框色：用于卡片、列表项分隔 */
+            --color-white: #FFFFFF;      /* 白色：卡片背景、按钮文字 */
         }
 
+        /* ===== 全局重置：清除浏览器默认外边距和内边距，统一盒模型 ===== */
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box;     /* 边框和内边距计入元素宽度，避免布局溢出 */
         }
 
+        /* ===== body 基础样式：设置全站字体、背景、行高 ===== */
         body {
-            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;  /* 优先使用微软雅黑，兜底系统字体 */
             background: var(--color-bg);
             color: var(--color-text);
-            line-height: 1.6;
+            line-height: 1.6;           /* 行高 1.6，提升阅读舒适度 */
         }
 
-        /* ===== 顶部红色 Header ===== */
+        /* ===== 顶部红色 Header：网站品牌区，含徽标和标题 ===== */
         .top-header {
-            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);
+            background: linear-gradient(135deg, var(--color-red-dark) 0%, var(--color-red) 100%);  /* 红色对角渐变 */
             color: var(--color-white);
             padding: 18px 0;
-            border-bottom: 3px solid var(--color-gold);
+            border-bottom: 3px solid var(--color-gold);   /* 金色底边，凸显政务庄重感 */
         }
 
+        /* ===== Header 内部容器：左右两端对齐布局 ===== */
         .top-header .container {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
+        /* ===== 徽标区域：横向排列徽章和文字 ===== */
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 18px;                  /* 徽章与文字间距 18px */
         }
 
+        /* ===== 徽章样式：圆形金色徽标，承载"徽"字 ===== */
         .emblem {
             width: 56px;
             height: 56px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--color-gold) 0%, #B8860B 100%);
+            border-radius: 50%;         /* 圆形 */
+            background: radial-gradient(circle, var(--color-gold) 0%, #B8860B 100%);  /* 金色径向渐变 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -63,27 +73,31 @@
             color: var(--color-red-dark);
             font-weight: bold;
             border: 2px solid var(--color-white);
-            box-shadow: 0 0 8px rgba(212, 160, 23, 0.6);
+            box-shadow: 0 0 8px rgba(212, 160, 23, 0.6);   /* 金色光晕，提升质感 */
         }
 
+        /* ===== 网站主标题样式 ===== */
         .site-title {
             font-size: 26px;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 2px;        /* 字间距 2px，更显端庄 */
         }
 
+        /* ===== 网站副标题样式（英文） ===== */
         .site-subtitle {
             font-size: 12px;
-            opacity: 0.9;
+            opacity: 0.9;               /* 透明度 0.9，弱化副标题 */
             margin-top: 2px;
             letter-spacing: 1px;
         }
 
+        /* ===== Header 右侧区域：宣传周名称与功能链接 ===== */
         .header-right {
             font-size: 13px;
             text-align: right;
         }
 
+        /* ===== Header 右侧链接样式 ===== */
         .header-right a {
             color: var(--color-white);
             text-decoration: none;
@@ -91,27 +105,31 @@
             opacity: 0.9;
         }
 
+        /* ===== Header 右侧链接 hover 效果 ===== */
         .header-right a:hover {
             opacity: 1;
             text-decoration: underline;
         }
 
-        /* ===== 主导航（深蓝） ===== */
+        /* ===== 主导航（深蓝）：栏目切换栏 ===== */
         .main-nav {
             background: var(--color-blue);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);   /* 轻微阴影，增强层次感 */
         }
 
+        /* ===== 导航列表：横向排列 ===== */
         .main-nav ul {
-            list-style: none;
+            list-style: none;           /* 移除默认列表样式 */
             display: flex;
         }
 
+        /* ===== 导航项：均分宽度 ===== */
         .main-nav li {
             flex: 1;
             text-align: center;
         }
 
+        /* ===== 导航链接样式：块级元素铺满 li ===== */
         .main-nav a {
             display: block;
             color: var(--color-white);
@@ -119,29 +137,31 @@
             padding: 14px 20px;
             font-size: 16px;
             font-weight: 500;
-            transition: background 0.2s;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s;    /* 背景色过渡动画 0.2s */
+            border-right: 1px solid rgba(255, 255, 255, 0.1);   /* 项间分隔线 */
         }
 
+        /* ===== 导航链接 hover 和 active 状态：深蓝背景 ===== */
         .main-nav a:hover,
         .main-nav a.active {
             background: var(--color-blue-dark);
         }
 
+        /* ===== 当前激活导航项：底部金色下划线 ===== */
         .main-nav a.active {
             border-bottom: 3px solid var(--color-gold);
         }
 
-        /* ===== Container ===== */
+        /* ===== Container：页面内容容器，固定最大宽度居中 ===== */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* ===== Hero Banner ===== */
+        /* ===== Hero Banner：首页大横幅，红蓝渐变背景 ===== */
         .hero {
-            background: linear-gradient(135deg, var(--color-red) 0%, var(--color-blue) 100%);
+            background: linear-gradient(135deg, var(--color-red) 0%, var(--color-blue) 100%);  /* 红到蓝对角渐变 */
             color: var(--color-white);
             padding: 50px 20px;
             text-align: center;
@@ -149,6 +169,7 @@
             overflow: hidden;
         }
 
+        /* ===== Hero 装饰背景：径向渐变光晕，增加层次感 ===== */
         .hero::before {
             content: "";
             position: absolute;
@@ -160,11 +181,13 @@
                         radial-gradient(circle at 80% 50%, rgba(212, 160, 23, 0.15) 0%, transparent 50%);
         }
 
+        /* ===== Hero 内容层：相对定位提升层级，避免被装饰背景遮挡 ===== */
         .hero-content {
             position: relative;
             z-index: 1;
         }
 
+        /* ===== Hero 主标题：大字号、宽字距、文字阴影 ===== */
         .hero h1 {
             font-size: 38px;
             letter-spacing: 6px;
@@ -172,40 +195,46 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        /* ===== Hero 副标题 ===== */
         .hero p {
             font-size: 16px;
             opacity: 0.95;
             letter-spacing: 2px;
         }
 
+        /* ===== Hero 元信息：宣传周说明文字 ===== */
         .hero-meta {
             margin-top: 18px;
             font-size: 13px;
             opacity: 0.85;
         }
 
-        /* ===== 主体内容 ===== */
+        /* ===== 主体内容外层 ===== */
         .main-content {
             padding: 30px 0 50px;
         }
 
+        /* ===== Section 区块：默认隐藏，通过 active 类控制显示 ===== */
         .section {
             display: none;
         }
 
+        /* ===== 当前激活的 Section：显示为块级 ===== */
         .section.active {
             display: block;
         }
 
+        /* ===== 区块标题栏：横向布局，左侧标题右侧"更多" ===== */
         .section-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 18px;
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--color-red);
+            border-bottom: 2px solid var(--color-red);   /* 红色下划线分隔 */
         }
 
+        /* ===== 区块标题文字 ===== */
         .section-title h2 {
             font-size: 22px;
             color: var(--color-red);
@@ -214,6 +243,7 @@
             gap: 10px;
         }
 
+        /* ===== 区块标题前装饰条：红色竖线 ===== */
         .section-title h2::before {
             content: "";
             display: inline-block;
@@ -222,35 +252,40 @@
             background: var(--color-red);
         }
 
+        /* ===== 区块标题右侧"更多"链接 ===== */
         .section-title .more {
             color: var(--color-text-light);
             text-decoration: none;
             font-size: 13px;
         }
 
+        /* ===== "更多"链接 hover 效果 ===== */
         .section-title .more:hover {
             color: var(--color-red);
         }
 
-        /* ===== 首页三栏 ===== */
+        /* ===== 首页三栏布局：等分三列 ===== */
         .home-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
         }
 
+        /* ===== 首页卡片：白色背景、阴影、顶部彩色边 ===== */
         .home-card {
             background: var(--color-white);
             border-radius: 4px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            border-top: 3px solid var(--color-blue);
+            border-top: 3px solid var(--color-blue);    /* 默认蓝色顶边 */
         }
 
+        /* ===== 红色顶边卡片变体（要闻动态） ===== */
         .home-card.red {
             border-top-color: var(--color-red);
         }
 
+        /* ===== 卡片标题：横向布局，标题与"更多"对齐 ===== */
         .home-card h3 {
             font-size: 17px;
             color: var(--color-blue-dark);
@@ -260,34 +295,40 @@
             justify-content: space-between;
         }
 
+        /* ===== 卡片标题内的"更多"链接 ===== */
         .home-card h3 a {
             font-size: 12px;
             color: var(--color-text-light);
             text-decoration: none;
         }
 
+        /* ===== 卡片列表：移除默认样式 ===== */
         .home-card ul {
             list-style: none;
         }
 
+        /* ===== 卡片列表项：横向布局，圆点+标题+日期 ===== */
         .home-card li {
             padding: 8px 0;
-            border-bottom: 1px dashed var(--color-border);
+            border-bottom: 1px dashed var(--color-border);   /* 虚线分隔 */
             font-size: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        /* ===== 列表最后一项：移除底边 ===== */
         .home-card li:last-child {
             border-bottom: none;
         }
 
+        /* ===== 列表项前的红色圆点 ===== */
         .home-card li .dot {
             color: var(--color-red);
             font-size: 10px;
         }
 
+        /* ===== 列表项标题链接：省略号截断超长文本 ===== */
         .home-card li a {
             color: var(--color-text);
             text-decoration: none;
@@ -297,16 +338,18 @@
             white-space: nowrap;
         }
 
+        /* ===== 列表项标题 hover 效果 ===== */
         .home-card li a:hover {
             color: var(--color-red);
         }
 
+        /* ===== 列表项日期 ===== */
         .home-card li .date {
             color: var(--color-text-light);
             font-size: 12px;
         }
 
-        /* ===== 列表页 ===== */
+        /* ===== 列表页筛选栏：横向排列筛选项 ===== */
         .filter-bar {
             background: var(--color-white);
             padding: 14px 20px;
@@ -315,15 +358,17 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
+            flex-wrap: wrap;            /* 允许换行，适配窄屏 */
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         }
 
+        /* ===== 筛选栏 label 样式 ===== */
         .filter-bar label {
             font-size: 14px;
             color: var(--color-text-light);
         }
 
+        /* ===== 筛选栏下拉框样式 ===== */
         .filter-bar select {
             padding: 6px 12px;
             border: 1px solid var(--color-border);
@@ -333,32 +378,38 @@
             cursor: pointer;
         }
 
+        /* ===== 筛选下拉框聚焦效果 ===== */
         .filter-bar select:focus {
             outline: none;
             border-color: var(--color-blue);
         }
 
+        /* ===== 列表容器：白色卡片背景 ===== */
         .list-container {
             background: var(--color-white);
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         }
 
+        /* ===== 列表项：可点击的卡片单元 ===== */
         .list-item {
             padding: 18px 22px;
             border-bottom: 1px solid var(--color-border);
-            cursor: pointer;
+            cursor: pointer;            /* 鼠标指针变为手型，提示可点击 */
             transition: background 0.15s;
         }
 
+        /* ===== 列表项 hover 效果：浅灰背景 ===== */
         .list-item:hover {
             background: #FAFAFA;
         }
 
+        /* ===== 列表最后一项：移除底边 ===== */
         .list-item:last-child {
             border-bottom: none;
         }
 
+        /* ===== 列表项标题：横向布局，含标签和标题 ===== */
         .list-item-title {
             font-size: 16px;
             font-weight: 500;
@@ -369,6 +420,7 @@
             gap: 10px;
         }
 
+        /* ===== 列表项标题内的标签（红色） ===== */
         .list-item-title .tag {
             background: var(--color-red);
             color: var(--color-white);
@@ -378,24 +430,28 @@
             font-weight: normal;
         }
 
+        /* ===== 蓝色标签变体（新闻分类） ===== */
         .list-item-title .tag.blue {
             background: var(--color-blue);
         }
 
+        /* ===== 金色标签变体（知识分类） ===== */
         .list-item-title .tag.gold {
             background: var(--color-gold);
         }
 
+        /* ===== 列表项摘要：两行截断 ===== */
         .list-item-summary {
             font-size: 13px;
             color: var(--color-text-light);
             margin-bottom: 8px;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 2;      /* 最多显示 2 行 */
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
+        /* ===== 列表项元信息：来源、发布时间、阅读量 ===== */
         .list-item-meta {
             font-size: 12px;
             color: var(--color-text-light);
@@ -403,6 +459,7 @@
             gap: 18px;
         }
 
+        /* ===== 空数据提示样式 ===== */
         .empty-tip {
             text-align: center;
             padding: 50px 20px;
@@ -410,7 +467,7 @@
             font-size: 14px;
         }
 
-        /* ===== 举报表单 ===== */
+        /* ===== 举报表单容器：居中、限宽 ===== */
         .report-box {
             background: var(--color-white);
             border-radius: 4px;
@@ -420,12 +477,14 @@
             margin: 0 auto;
         }
 
+        /* ===== 举报表单标题 ===== */
         .report-box h3 {
             color: var(--color-red);
             margin-bottom: 8px;
             font-size: 18px;
         }
 
+        /* ===== 举报提示框：金色左边框，浅黄背景 ===== */
         .report-box .tip {
             font-size: 13px;
             color: var(--color-text-light);
@@ -436,10 +495,12 @@
             border-radius: 2px;
         }
 
+        /* ===== 表单分组：每个表单项的容器 ===== */
         .form-group {
             margin-bottom: 16px;
         }
 
+        /* ===== 表单分组 label ===== */
         .form-group label {
             display: block;
             font-size: 14px;
@@ -448,10 +509,12 @@
             font-weight: 500;
         }
 
+        /* ===== 必填项星号：红色 ===== */
         .form-group label .required {
             color: var(--color-red);
         }
 
+        /* ===== 表单输入控件统一样式 ===== */
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -463,6 +526,7 @@
             font-family: inherit;
         }
 
+        /* ===== 表单控件聚焦效果：蓝色边框 ===== */
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
@@ -470,17 +534,20 @@
             border-color: var(--color-blue);
         }
 
+        /* ===== 文本域：允许垂直拉伸，最小高度 100px ===== */
         .form-group textarea {
             resize: vertical;
             min-height: 100px;
         }
 
+        /* ===== 表单行：两列网格布局 ===== */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
 
+        /* ===== 提交按钮：红色背景 ===== */
         .btn-submit {
             background: var(--color-red);
             color: var(--color-white);
@@ -493,38 +560,42 @@
             font-family: inherit;
         }
 
+        /* ===== 提交按钮 hover：深红色 ===== */
         .btn-submit:hover {
             background: var(--color-red-dark);
         }
 
-        /* ===== Modal 详情 ===== */
+        /* ===== Modal 详情遮罩：默认隐藏 ===== */
         .modal-mask {
             display: none;
-            position: fixed;
+            position: fixed;            /* 固定定位，脱离文档流 */
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.5);     /* 半透明黑色遮罩 */
+            z-index: 1000;              /* 层级 1000，覆盖页面内容 */
             justify-content: center;
             align-items: flex-start;
             padding: 40px 20px;
         }
 
+        /* ===== Modal 显示状态：flex 居中 ===== */
         .modal-mask.show {
             display: flex;
         }
 
+        /* ===== Modal 主体：白色卡片，限宽限高，可滚动 ===== */
         .modal {
             background: var(--color-white);
             border-radius: 4px;
             width: 100%;
             max-width: 800px;
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
+            max-height: calc(100vh - 80px);     /* 最大高度为视口减 80px */
+            overflow-y: auto;           /* 内容溢出时垂直滚动 */
         }
 
+        /* ===== Modal 头部：蓝色背景，吸顶 ===== */
         .modal-header {
             background: var(--color-blue);
             color: var(--color-white);
@@ -532,16 +603,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: sticky;
+            position: sticky;           /* 滚动时吸顶 */
             top: 0;
             z-index: 1;
         }
 
+        /* ===== Modal 头部标题 ===== */
         .modal-header h3 {
             font-size: 16px;
             font-weight: 500;
         }
 
+        /* ===== Modal 关闭按钮 ===== */
         .modal-close {
             background: none;
             border: none;
@@ -552,10 +625,12 @@
             padding: 0 5px;
         }
 
+        /* ===== Modal 内容区 ===== */
         .modal-body {
             padding: 24px;
         }
 
+        /* ===== Modal 详情标题 ===== */
         .modal-body h1 {
             font-size: 22px;
             color: var(--color-text);
@@ -563,6 +638,7 @@
             line-height: 1.4;
         }
 
+        /* ===== Modal 元信息栏：分类、来源、时间等 ===== */
         .modal-meta {
             font-size: 13px;
             color: var(--color-text-light);
@@ -574,6 +650,7 @@
             flex-wrap: wrap;
         }
 
+        /* ===== Modal 正文：保留换行与空格 ===== */
         .modal-content {
             font-size: 15px;
             line-height: 1.9;
@@ -581,7 +658,7 @@
             white-space: pre-wrap;
         }
 
-        /* ===== Footer ===== */
+        /* ===== Footer 页脚：深蓝背景，白色文字 ===== */
         .footer {
             background: var(--color-blue-dark);
             color: rgba(255, 255, 255, 0.8);
@@ -591,59 +668,66 @@
             line-height: 2;
         }
 
+        /* ===== Footer 链接 ===== */
         .footer a {
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
             margin: 0 8px;
         }
 
+        /* ===== Footer 链接 hover ===== */
         .footer a:hover {
             text-decoration: underline;
         }
 
-        /* ===== 提示框 ===== */
+        /* ===== Toast 提示框：顶部居中悬浮 ===== */
         .toast {
             position: fixed;
             top: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%);   /* 水平居中 */
             background: var(--color-blue);
             color: var(--color-white);
             padding: 12px 28px;
             border-radius: 3px;
             font-size: 14px;
-            z-index: 2000;
+            z-index: 2000;             /* 层级最高，覆盖 Modal */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: none;
         }
 
+        /* ===== Toast 显示状态 ===== */
         .toast.show {
             display: block;
         }
 
+        /* ===== 成功 Toast：绿色背景 ===== */
         .toast.success {
             background: #2E7D32;
         }
 
+        /* ===== 错误 Toast：红色背景 ===== */
         .toast.error {
             background: var(--color-red);
         }
 
+        /* ===== 移动端响应式适配：768px 以下单列布局 ===== */
         @media (max-width: 768px) {
-            .home-grid { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
-            .main-nav ul { flex-wrap: wrap; }
-            .main-nav li { flex: 1 0 33%; }
-            .hero h1 { font-size: 26px; }
-            .site-title { font-size: 18px; }
-            .header-right { display: none; }
+            .home-grid { grid-template-columns: 1fr; }       /* 三栏变单栏 */
+            .form-row { grid-template-columns: 1fr; }        /* 两列表单项变单列 */
+            .main-nav ul { flex-wrap: wrap; }                /* 导航允许换行 */
+            .main-nav li { flex: 1 0 33%; }                  /* 每行 3 个导航项 */
+            .hero h1 { font-size: 26px; }                    /* Hero 标题缩小 */
+            .site-title { font-size: 18px; }                 /* 站点标题缩小 */
+            .header-right { display: none; }                 /* 隐藏右侧功能区 */
         }
     </style>
 </head>
 <body>
-    <!-- 顶部红色 Header -->
+    <!-- 顶部红色 Header：网站品牌区，含徽标、标题、宣传周名称、功能链接 -->
     <header class="top-header">
         <div class="container">
+            <!-- 左侧徽标区域：徽章 + 站点标题 -->
             <div class="logo-area">
                 <div class="emblem">徽</div>
                 <div>
@@ -651,6 +735,7 @@
                     <div class="site-subtitle">National Cybersecurity Awareness</div>
                 </div>
             </div>
+            <!-- 右侧功能区：宣传周名称、管理后台入口、数据库控制台入口 -->
             <div class="header-right">
                 <div>2026年国家网络安全宣传周</div>
                 <div style="margin-top: 4px;">
@@ -661,7 +746,7 @@
         </div>
     </header>
 
-    <!-- 主导航 -->
+    <!-- 主导航：5 个栏目切换，通过 data-section 属性标识目标区块 -->
     <nav class="main-nav">
         <div class="container">
             <ul>
@@ -674,7 +759,7 @@
         </div>
     </nav>
 
-    <!-- Hero Banner -->
+    <!-- Hero Banner：首页大横幅，宣传标语 -->
     <section class="hero">
         <div class="hero-content">
             <h1>网络安全为人民 网络安全靠人民</h1>
@@ -683,20 +768,23 @@
         </div>
     </section>
 
-    <!-- 主体内容 -->
+    <!-- 主体内容区：通过 section 切换实现单页应用 -->
     <main class="main-content">
         <div class="container">
-            <!-- 首页 -->
+            <!-- 首页 section：三栏卡片展示最新要闻、知识、法规 -->
             <section class="section active" id="section-home">
                 <div class="home-grid">
+                    <!-- 要闻动态卡片：红色顶边 -->
                     <div class="home-card red">
                         <h3>要闻动态 <a href="#" data-jump="news">更多 &gt;</a></h3>
                         <ul id="home-news"></ul>
                     </div>
+                    <!-- 安全知识卡片：蓝色顶边 -->
                     <div class="home-card">
                         <h3>安全知识 <a href="#" data-jump="knowledge">更多 &gt;</a></h3>
                         <ul id="home-knowledge"></ul>
                     </div>
+                    <!-- 政策法规卡片：蓝色顶边 -->
                     <div class="home-card">
                         <h3>政策法规 <a href="#" data-jump="regulation">更多 &gt;</a></h3>
                         <ul id="home-regulation"></ul>
@@ -704,11 +792,12 @@
                 </div>
             </section>
 
-            <!-- 新闻资讯 -->
+            <!-- 新闻资讯 section：含分类筛选与列表 -->
             <section class="section" id="section-news">
                 <div class="section-title">
                     <h2>新闻资讯</h2>
                 </div>
+                <!-- 筛选栏：按新闻分类过滤 -->
                 <div class="filter-bar">
                     <label>分类筛选：</label>
                     <select id="news-filter">
@@ -719,14 +808,16 @@
                         <option value="VULNERABILITY_ALERT">漏洞预警</option>
                     </select>
                 </div>
+                <!-- 新闻列表渲染容器 -->
                 <div class="list-container" id="news-list"></div>
             </section>
 
-            <!-- 安全知识 -->
+            <!-- 安全知识 section：含分类筛选与列表 -->
             <section class="section" id="section-knowledge">
                 <div class="section-title">
                     <h2>安全知识</h2>
                 </div>
+                <!-- 筛选栏：按知识分类过滤 -->
                 <div class="filter-bar">
                     <label>分类筛选：</label>
                     <select id="knowledge-filter">
@@ -737,14 +828,16 @@
                         <option value="EMERGENCY_RESPONSE">应急响应</option>
                     </select>
                 </div>
+                <!-- 知识列表渲染容器 -->
                 <div class="list-container" id="knowledge-list"></div>
             </section>
 
-            <!-- 政策法规 -->
+            <!-- 政策法规 section：含分类筛选与列表 -->
             <section class="section" id="section-regulation">
                 <div class="section-title">
                     <h2>政策法规</h2>
                 </div>
+                <!-- 筛选栏：按法规分类过滤 -->
                 <div class="filter-bar">
                     <label>分类筛选：</label>
                     <select id="regulation-filter">
@@ -755,10 +848,11 @@
                         <option value="NORMATIVE_DOCUMENT">规范性文件</option>
                     </select>
                 </div>
+                <!-- 法规列表渲染容器 -->
                 <div class="list-container" id="regulation-list"></div>
             </section>
 
-            <!-- 举报中心 -->
+            <!-- 举报中心 section：违法和不良信息举报表单 -->
             <section class="section" id="section-report">
                 <div class="section-title">
                     <h2>违法和不良信息举报中心</h2>
@@ -768,7 +862,9 @@
                     <div class="tip">
                         举报人的个人信息将严格保密。请如实填写举报内容，配合我们共同维护清朗网络空间。
                     </div>
+                    <!-- 举报表单：提交至 POST /api/reports -->
                     <form id="report-form">
+                        <!-- 举报类型：必填下拉框 -->
                         <div class="form-group">
                             <label>举报类型 <span class="required">*</span></label>
                             <select id="report-type" required>
@@ -781,14 +877,17 @@
                                 <option value="OTHER">其他</option>
                             </select>
                         </div>
+                        <!-- 举报对象链接：选填 -->
                         <div class="form-group">
                             <label>举报对象链接</label>
                             <input type="url" id="report-url" placeholder="https://（选填）">
                         </div>
+                        <!-- 举报描述：必填多行文本 -->
                         <div class="form-group">
                             <label>举报描述 <span class="required">*</span></label>
                             <textarea id="report-desc" required placeholder="请详细描述举报内容、违规事实及相关证据..."></textarea>
                         </div>
+                        <!-- 举报人信息：姓名 + 联系方式，两列布局 -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label>举报人姓名</label>
@@ -806,7 +905,7 @@
         </div>
     </main>
 
-    <!-- 详情 Modal -->
+    <!-- 详情 Modal：点击列表项后弹出，展示新闻/知识/法规详情 -->
     <div class="modal-mask" id="modal">
         <div class="modal">
             <div class="modal-header">
@@ -817,10 +916,10 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast 全局提示框：用于操作成功/失败提示 -->
     <div class="toast" id="toast"></div>
 
-    <!-- Footer -->
+    <!-- Footer 页脚：版权信息与导航链接 -->
     <footer class="footer">
         <div class="container">
             <div>
@@ -835,19 +934,21 @@
     </footer>
 
     <script>
-        // ===== 分类标签映射 =====
+        // ===== 新闻分类枚举映射：后端枚举值 -> 中文显示文本 =====
         const NEWS_CATEGORY = {
             SECURITY_NEWS: '安全新闻',
             INDUSTRY_TREND: '行业动态',
             POLICY_INTERPRETATION: '政策解读',
             VULNERABILITY_ALERT: '漏洞预警'
         };
+        // ===== 安全知识分类枚举映射 =====
         const KNOWLEDGE_CATEGORY = {
             PROTECTION_TIPS: '防护技巧',
             POPULAR_SCIENCE: '科普文章',
             CASE_ANALYSIS: '案例分析',
             EMERGENCY_RESPONSE: '应急响应'
         };
+        // ===== 政策法规分类枚举映射 =====
         const REGULATION_CATEGORY = {
             LAW: '法律',
             ADMINISTRATIVE_REGULATION: '行政法规',
@@ -855,65 +956,74 @@
             NORMATIVE_DOCUMENT: '规范性文件'
         };
 
-        // ===== 通用工具 =====
+        // ===== 通用工具方法 =====
+        // 显示 Toast 提示框：msg-提示文案，type-类型(success/error)
         function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast show ' + (type || '');
-            setTimeout(() => toast.className = 'toast', 2500);
+            const toast = document.getElementById('toast');     // 获取 toast 元素
+            toast.textContent = msg;                            // 设置提示文案
+            toast.className = 'toast show ' + (type || '');     // 添加 show 与类型类名
+            setTimeout(() => toast.className = 'toast', 2500);  // 2.5s 后自动隐藏
         }
 
+        // 日期格式化：截取前 10 位得到 YYYY-MM-DD
         function formatDate(dateStr) {
-            if (!dateStr) return '';
-            return dateStr.substring(0, 10);
+            if (!dateStr) return '';                            // 空值返回空字符串
+            return dateStr.substring(0, 10);                    // 截取年月日部分
         }
 
+        // 日期时间格式化：截取前 16 位并将 T 替换为空格，得到 YYYY-MM-DD HH:mm
         function formatDateTime(dateStr) {
-            if (!dateStr) return '';
-            return dateStr.substring(0, 16).replace('T', ' ');
+            if (!dateStr) return '';                            // 空值返回空字符串
+            return dateStr.substring(0, 16).replace('T', ' ');  // 截取并替换 T 分隔符
         }
 
+        // 通用 fetch 请求封装：返回 JSON 数据，失败抛出异常
         async function fetchJson(url) {
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error('请求失败：' + resp.status);
-            return resp.json();
+            const resp = await fetch(url);                      // 发起 GET 请求
+            if (!resp.ok) throw new Error('请求失败：' + resp.status);  // 非 2xx 状态码抛出异常
+            return resp.json();                                 // 解析并返回 JSON
         }
 
-        // ===== 导航切换 =====
+        // ===== 导航切换逻辑 =====
+        // 为所有导航链接绑定点击事件
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', e => {
-                e.preventDefault();
-                switchSection(link.dataset.section);
+                e.preventDefault();                             // 阻止默认锚点跳转
+                switchSection(link.dataset.section);            // 切换到目标 section
             });
         });
 
+        // 为首页卡片"更多"链接绑定跳转事件
         document.querySelectorAll('[data-jump]').forEach(link => {
             link.addEventListener('click', e => {
-                e.preventDefault();
-                switchSection(link.dataset.jump);
+                e.preventDefault();                             // 阻止默认跳转
+                switchSection(link.dataset.jump);               // 切换到目标 section
             });
         });
 
+        // 切换 section 显示：name-目标 section 名称
         function switchSection(name) {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.querySelector('.nav-link[data-section="' + name + '"]').classList.add('active');
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('section-' + name).classList.add('active');
-            window.scrollTo({ top: 180, behavior: 'smooth' });
-            // 懒加载各模块
-            if (name === 'news') loadNews();
-            else if (name === 'knowledge') loadKnowledge();
-            else if (name === 'regulation') loadRegulations();
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));  // 移除所有导航激活态
+            document.querySelector('.nav-link[data-section="' + name + '"]').classList.add('active');  // 激活当前导航
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));  // 隐藏所有 section
+            document.getElementById('section-' + name).classList.add('active');  // 显示目标 section
+            window.scrollTo({ top: 180, behavior: 'smooth' }); // 平滑滚动到内容区
+            // 懒加载各模块：进入对应栏目时才请求数据
+            if (name === 'news') loadNews();                    // 进入新闻栏目加载新闻
+            else if (name === 'knowledge') loadKnowledge();     // 进入知识栏目加载知识
+            else if (name === 'regulation') loadRegulations();  // 进入法规栏目加载法规
         }
 
-        // ===== 首页加载 =====
+        // ===== 首页加载：并行请求三类最新数据 =====
         async function loadHome() {
             try {
+                // 使用 Promise.all 并行请求新闻、知识、法规最新列表
                 const [news, knowledge, regulations] = await Promise.all([
-                    fetchJson('/api/news/latest'),
-                    fetchJson('/api/knowledge/latest'),
-                    fetchJson('/api/regulations/latest')
+                    fetchJson('/api/news/latest'),              // 调用 GET /api/news/latest 获取最新新闻
+                    fetchJson('/api/knowledge/latest'),         // 调用 GET /api/knowledge/latest 获取最新知识
+                    fetchJson('/api/regulations/latest')        // 调用 GET /api/regulations/latest 获取最新法规
                 ]);
+                // 渲染首页要闻动态列表（最多 6 条）
                 document.getElementById('home-news').innerHTML = news.slice(0, 6).map(n => `
                     <li>
                         <span class="dot">●</span>
@@ -922,6 +1032,7 @@
                     </li>
                 `).join('') || '<li class="empty-tip">暂无新闻</li>';
 
+                // 渲染首页安全知识列表（最多 6 条）
                 document.getElementById('home-knowledge').innerHTML = knowledge.slice(0, 6).map(k => `
                     <li>
                         <span class="dot">●</span>
@@ -930,6 +1041,7 @@
                     </li>
                 `).join('') || '<li class="empty-tip">暂无文章</li>';
 
+                // 渲染首页政策法规列表（最多 6 条）
                 document.getElementById('home-regulation').innerHTML = regulations.slice(0, 6).map(r => `
                     <li>
                         <span class="dot">●</span>
@@ -938,18 +1050,20 @@
                     </li>
                 `).join('') || '<li class="empty-tip">暂无法规</li>';
             } catch (err) {
-                console.error('加载首页失败', err);
+                console.error('加载首页失败', err);              // 控制台输出错误日志
             }
         }
 
-        // ===== 新闻 =====
+        // ===== 新闻模块 =====
+        // 监听新闻分类筛选变化，触发重新加载
         document.getElementById('news-filter').addEventListener('change', loadNews);
 
+        // 加载新闻列表：根据筛选条件请求接口并渲染
         async function loadNews() {
-            const filter = document.getElementById('news-filter').value;
-            const url = filter ? '/api/news?category=' + filter : '/api/news';
+            const filter = document.getElementById('news-filter').value;  // 获取当前筛选值
+            const url = filter ? '/api/news?category=' + filter : '/api/news';  // 构造请求 URL，有筛选则带 category 参数
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);              // 请求新闻列表数据
                 document.getElementById('news-list').innerHTML = list.length ? list.map(n => `
                     <div class="list-item" onclick="showNews(${n.id})">
                         <div class="list-item-title">
@@ -966,14 +1080,15 @@
                     </div>
                 `).join('') : '<div class="empty-tip">暂无新闻数据</div>';
             } catch (err) {
-                showToast('加载新闻失败', 'error');
+                showToast('加载新闻失败', 'error');             // 弹出错误提示
             }
         }
 
+        // 查看新闻详情：id-新闻 ID
         async function showNews(id) {
             try {
-                const n = await fetchJson('/api/news/' + id);
-                openModal('新闻详情', `
+                const n = await fetchJson('/api/news/' + id);   // 调用 GET /api/news/{id} 获取详情
+                openModal('新闻详情', `                         // 打开 Modal 展示详情
                     <h1>${escapeHtml(n.title)}</h1>
                     <div class="modal-meta">
                         <span>分类：${NEWS_CATEGORY[n.category] || n.category}</span>
@@ -984,18 +1099,20 @@
                     <div class="modal-content">${escapeHtml(n.content || '')}</div>
                 `);
             } catch (err) {
-                showToast('加载详情失败', 'error');
+                showToast('加载详情失败', 'error');             // 弹出错误提示
             }
         }
 
-        // ===== 知识 =====
+        // ===== 知识模块 =====
+        // 监听知识分类筛选变化
         document.getElementById('knowledge-filter').addEventListener('change', loadKnowledge);
 
+        // 加载知识列表
         async function loadKnowledge() {
-            const filter = document.getElementById('knowledge-filter').value;
-            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';
+            const filter = document.getElementById('knowledge-filter').value;  // 获取筛选值
+            const url = filter ? '/api/knowledge?category=' + filter : '/api/knowledge';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);              // 请求知识列表
                 document.getElementById('knowledge-list').innerHTML = list.length ? list.map(k => `
                     <div class="list-item" onclick="showKnowledge(${k.id})">
                         <div class="list-item-title">
@@ -1011,14 +1128,15 @@
                     </div>
                 `).join('') : '<div class="empty-tip">暂无文章数据</div>';
             } catch (err) {
-                showToast('加载知识文章失败', 'error');
+                showToast('加载知识文章失败', 'error');         // 弹出错误提示
             }
         }
 
+        // 查看知识详情：id-知识 ID
         async function showKnowledge(id) {
             try {
-                const k = await fetchJson('/api/knowledge/' + id);
-                openModal('知识详情', `
+                const k = await fetchJson('/api/knowledge/' + id);  // 调用 GET /api/knowledge/{id}
+                openModal('知识详情', `                         // 打开 Modal
                     <h1>${escapeHtml(k.title)}</h1>
                     <div class="modal-meta">
                         <span>分类：${KNOWLEDGE_CATEGORY[k.category] || k.category}</span>
@@ -1029,18 +1147,20 @@
                     <div class="modal-content">${escapeHtml(k.content || '')}</div>
                 `);
             } catch (err) {
-                showToast('加载详情失败', 'error');
+                showToast('加载详情失败', 'error');             // 弹出错误提示
             }
         }
 
-        // ===== 法规 =====
+        // ===== 法规模块 =====
+        // 监听法规分类筛选变化
         document.getElementById('regulation-filter').addEventListener('change', loadRegulations);
 
+        // 加载法规列表
         async function loadRegulations() {
-            const filter = document.getElementById('regulation-filter').value;
-            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';
+            const filter = document.getElementById('regulation-filter').value;  // 获取筛选值
+            const url = filter ? '/api/regulations?category=' + filter : '/api/regulations';  // 构造 URL
             try {
-                const list = await fetchJson(url);
+                const list = await fetchJson(url);              // 请求法规列表
                 document.getElementById('regulation-list').innerHTML = list.length ? list.map(r => `
                     <div class="list-item" onclick="showRegulation(${r.id})">
                         <div class="list-item-title">
@@ -1057,14 +1177,15 @@
                     </div>
                 `).join('') : '<div class="empty-tip">暂无法规数据</div>';
             } catch (err) {
-                showToast('加载法规失败', 'error');
+                showToast('加载法规失败', 'error');             // 弹出错误提示
             }
         }
 
+        // 查看法规详情：id-法规 ID
         async function showRegulation(id) {
             try {
-                const r = await fetchJson('/api/regulations/' + id);
-                openModal('法规详情', `
+                const r = await fetchJson('/api/regulations/' + id);  // 调用 GET /api/regulations/{id}
+                openModal('法规详情', `                         // 打开 Modal
                     <h1>${escapeHtml(r.title)}</h1>
                     <div class="modal-meta">
                         <span>分类：${REGULATION_CATEGORY[r.category] || r.category}</span>
@@ -1076,74 +1197,82 @@
                     <div class="modal-content">${escapeHtml(r.content || '')}</div>
                 `);
             } catch (err) {
-                showToast('加载详情失败', 'error');
+                showToast('加载详情失败', 'error');             // 弹出错误提示
             }
         }
 
         // ===== 举报提交 =====
+        // 监听举报表单提交事件
         document.getElementById('report-form').addEventListener('submit', async e => {
-            e.preventDefault();
+            e.preventDefault();                                 // 阻止表单默认提交行为
+            // 收集表单数据
             const data = {
-                reportType: document.getElementById('report-type').value,
-                targetUrl: document.getElementById('report-url').value || null,
-                description: document.getElementById('report-desc').value,
-                reporterName: document.getElementById('report-name').value || null,
-                reporterContact: document.getElementById('report-contact').value || null
+                reportType: document.getElementById('report-type').value,            // 举报类型
+                targetUrl: document.getElementById('report-url').value || null,      // 举报链接（选填）
+                description: document.getElementById('report-desc').value,           // 举报描述
+                reporterName: document.getElementById('report-name').value || null,  // 举报人姓名（选填）
+                reporterContact: document.getElementById('report-contact').value || null  // 联系方式（选填）
             };
+            // 前端校验：举报类型和描述必填
             if (!data.reportType || !data.description) {
-                showToast('请填写举报类型和描述', 'error');
+                showToast('请填写举报类型和描述', 'error');     // 提示必填项缺失
                 return;
             }
             try {
+                // 调用 POST /api/reports 提交举报
                 const resp = await fetch('/api/reports', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    headers: { 'Content-Type': 'application/json' },  // 请求头声明 JSON 格式
+                    body: JSON.stringify(data)                  // 序列化数据为 JSON
                 });
-                if (resp.ok) {
-                    showToast('举报提交成功，感谢您的支持！', 'success');
-                    document.getElementById('report-form').reset();
-                } else {
+                if (resp.ok) {                                  // 提交成功
+                    showToast('举报提交成功，感谢您的支持！', 'success');  // 成功提示
+                    document.getElementById('report-form').reset();  // 重置表单
+                } else {                                        // 服务端返回错误
                     showToast('提交失败，请稍后重试', 'error');
                 }
-            } catch (err) {
+            } catch (err) {                                     // 网络异常
                 showToast('网络错误，提交失败', 'error');
             }
         });
 
-        // ===== Modal =====
+        // ===== Modal 详情弹窗控制 =====
+        // 打开 Modal：tag-标题文案，html-内容 HTML
         function openModal(tag, html) {
-            document.getElementById('modal-tag').textContent = tag;
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('modal').classList.add('show');
+            document.getElementById('modal-tag').textContent = tag;     // 设置标题
+            document.getElementById('modal-body').innerHTML = html;     // 注入内容
+            document.getElementById('modal').classList.add('show');     // 显示遮罩
         }
 
+        // 关闭 Modal
         function closeModal() {
-            document.getElementById('modal').classList.remove('show');
+            document.getElementById('modal').classList.remove('show');  // 移除 show 类隐藏
         }
 
+        // 点击遮罩空白区域关闭 Modal
         document.getElementById('modal').addEventListener('click', e => {
-            if (e.target.id === 'modal') closeModal();
+            if (e.target.id === 'modal') closeModal();         // 仅当点击的是遮罩本身时关闭
         });
 
+        // 按 ESC 键关闭 Modal
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') closeModal();              // 检测 ESC 键
         });
 
-        // ===== HTML 转义 =====
+        // ===== HTML 转义：防止 XSS 攻击，转义特殊字符 =====
         function escapeHtml(str) {
-            if (str == null) return '';
-            return String(str).replace(/[&<>"']/g, c => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
+            if (str == null) return '';                        // 空值返回空字符串
+            return String(str).replace(/[&<>"']/g, c => ({     // 正则匹配 5 个特殊字符
+                '&': '&amp;',                                   // & 转义
+                '<': '&lt;',                                    // < 转义
+                '>': '&gt;',                                    // > 转义
+                '"': '&quot;',                                  // " 转义
+                "'": '&#39;'                                    // ' 转义
             }[c]));
         }
 
-        // ===== 初始化 =====
-        loadHome();
+        // ===== 页面初始化：加载首页数据 =====
+        loadHome();                                             // 调用 loadHome 加载首页三栏数据
     </script>
 </body>
 </html>
