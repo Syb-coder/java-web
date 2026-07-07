@@ -1,5 +1,6 @@
 package com.example.java6.controller;
 
+import com.example.java6.dto.ChangePasswordRequest;
 import com.example.java6.dto.LoginRequest;
 import com.example.java6.dto.LoginResponse;
 import com.example.java6.model.AdminUser;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 /**
  * 认证控制器
@@ -77,5 +79,33 @@ public class AuthController {
             return ResponseEntity.ok(LoginResponse.from(adminUser));
         }
         return ResponseEntity.status(401).build();
+    }
+
+    /**
+     * 修改当前登录管理员的密码
+     *
+     * @param req     修改密码请求（含旧密码、新密码）
+     * @param admin   当前登录管理员（由 Session 注入）
+     * @return 200（成功） / 400（参数不合规） / 401（未登录） / 422（旧密码错误）
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(
+            @RequestBody ChangePasswordRequest req,
+            @SessionAttribute(value = SESSION_USER_KEY, required = false) AdminUser admin) {
+        // 未登录拦截
+        if (admin == null) {
+            return ResponseEntity.status(401).build();
+        }
+        try {
+            boolean ok = authService.changePassword(admin.getId(), req);
+            if (ok) {
+                return ResponseEntity.ok().build();
+            }
+            // 旧密码错误
+            return ResponseEntity.status(422).build();
+        } catch (IllegalArgumentException e) {
+            // 新密码不合规
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

@@ -581,6 +581,7 @@
             <div class="title">内容管理后台 · 国家网络安全宣传官网</div>
             <div class="user-info">
                 <span class="username" id="current-user"></span>
+                <button class="logout-btn" onclick="openChangePassword()">修改密码</button>
                 <button class="logout-btn" onclick="doLogout()">退出登录</button>
                 <a href="index.html">返回前台</a>
                 <a href="/h2-console" target="_blank">H2 控制台</a>
@@ -736,6 +737,35 @@
         </div>
     </div>
 
+    <!-- 修改密码模态框 -->
+    <div class="modal-mask" id="pwd-modal">
+        <div class="modal" style="max-width: 420px;">
+            <div class="modal-header">
+                <h3>修改密码</h3>
+                <button class="modal-close" onclick="closePwdModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>旧密码</label>
+                    <input type="password" id="pwd-old" autocomplete="current-password" placeholder="请输入当前密码">
+                </div>
+                <div class="form-group">
+                    <label>新密码</label>
+                    <input type="password" id="pwd-new" autocomplete="new-password" placeholder="至少 6 位，不能与旧密码相同">
+                </div>
+                <div class="form-group">
+                    <label>确认新密码</label>
+                    <input type="password" id="pwd-confirm" autocomplete="new-password" placeholder="请再次输入新密码">
+                </div>
+                <div id="pwd-error" style="color: var(--color-red); font-size: 13px; min-height: 18px; margin-top: 4px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closePwdModal()">取消</button>
+                <button class="btn btn-primary" id="pwd-save" onclick="submitChangePassword()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
@@ -869,6 +899,85 @@
             } catch (e) { /* 忽略 */ }
             showLoginOverlay();
             showToast('已退出登录');
+        }
+
+        // ===== 修改密码 =====
+        /**
+         * 打开修改密码模态框
+         */
+        function openChangePassword() {
+            document.getElementById('pwd-old').value = '';
+            document.getElementById('pwd-new').value = '';
+            document.getElementById('pwd-confirm').value = '';
+            document.getElementById('pwd-error').textContent = '';
+            document.getElementById('pwd-modal').classList.add('show');
+        }
+
+        /**
+         * 关闭修改密码模态框
+         */
+        function closePwdModal() {
+            document.getElementById('pwd-modal').classList.remove('show');
+        }
+
+        /**
+         * 提交修改密码
+         */
+        async function submitChangePassword() {
+            const oldPwd = document.getElementById('pwd-old').value;
+            const newPwd = document.getElementById('pwd-new').value;
+            const confirmPwd = document.getElementById('pwd-confirm').value;
+            const errEl = document.getElementById('pwd-error');
+            const btn = document.getElementById('pwd-save');
+            errEl.textContent = '';
+
+            // 前端校验
+            if (!oldPwd || !newPwd || !confirmPwd) {
+                errEl.textContent = '请填写所有字段';
+                return;
+            }
+            if (newPwd.length < 6) {
+                errEl.textContent = '新密码至少 6 位';
+                return;
+            }
+            if (newPwd !== confirmPwd) {
+                errEl.textContent = '两次输入的新密码不一致';
+                return;
+            }
+            if (newPwd === oldPwd) {
+                errEl.textContent = '新密码不能与旧密码相同';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '提交中...';
+            try {
+                const resp = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+                });
+                if (resp.status === 200) {
+                    closePwdModal();
+                    showToast('密码修改成功，请重新登录', 'success');
+                    // 密码修改成功后退出登录，要求重新登录
+                    setTimeout(() => doLogout(), 1500);
+                } else if (resp.status === 422) {
+                    errEl.textContent = '旧密码错误';
+                } else if (resp.status === 400) {
+                    errEl.textContent = '新密码不合规';
+                } else if (resp.status === 401) {
+                    errEl.textContent = '未登录或会话过期';
+                    setTimeout(() => showLoginOverlay(), 1500);
+                } else {
+                    errEl.textContent = '修改失败（HTTP ' + resp.status + '）';
+                }
+            } catch (e) {
+                errEl.textContent = '网络错误：' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '确认修改';
+            }
         }
 
         /**
@@ -1313,7 +1422,10 @@
         });
 
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closePwdModal();
+            }
         });
 
         // ===== 初始化 =====

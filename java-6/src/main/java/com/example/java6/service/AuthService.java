@@ -1,5 +1,6 @@
 package com.example.java6.service;
 
+import com.example.java6.dto.ChangePasswordRequest;
 import com.example.java6.dto.LoginRequest;
 import com.example.java6.dto.LoginResponse;
 import com.example.java6.model.AdminUser;
@@ -61,5 +62,38 @@ public class AuthService {
      */
     public AdminUser getByUsername(String username) {
         return repository.findByUsername(username).orElse(null);
+    }
+
+    /**
+     * 修改密码
+     *
+     * <p>校验旧密码后更新为新密码。新密码通过 BCrypt 重新加密存储。</p>
+     *
+     * @param userId    管理员 ID
+     * @param req       修改密码请求（含旧密码、新密码）
+     * @return true 修改成功，false 旧密码错误或用户不存在
+     * @throws IllegalArgumentException 新密码不合规（为空或与旧密码相同）
+     */
+    public boolean changePassword(Long userId, ChangePasswordRequest req) {
+        // 校验新密码非空
+        if (req.newPassword() == null || req.newPassword().isBlank()) {
+            throw new IllegalArgumentException("新密码不能为空");
+        }
+        // 校验新旧密码不同
+        if (req.newPassword().equals(req.oldPassword())) {
+            throw new IllegalArgumentException("新密码不能与旧密码相同");
+        }
+        AdminUser user = repository.findById(userId).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        // 校验旧密码
+        if (!passwordEncoder.matches(req.oldPassword(), user.getPassword())) {
+            return false;
+        }
+        // 更新密码
+        user.setPassword(passwordEncoder.encode(req.newPassword()));
+        repository.save(user);
+        return true;
     }
 }
