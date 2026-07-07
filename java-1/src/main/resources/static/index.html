@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园图书借阅管理系统</title>
+    <style>
+        /* ===== 全局样式 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        /* ===== 顶部导航 ===== */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: #fff;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        header h1 { font-size: 22px; font-weight: 600; }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .header-actions .user-info { font-size: 14px; opacity: 0.95; }
+        .btn { padding: 6px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background: #fff; color: #1e3a8a; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.5); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+        .btn-blue { background: #3b82f6; color: #fff; }
+        .btn-green { background: #10b981; color: #fff; }
+        .btn-red { background: #ef4444; color: #fff; }
+        .btn-gray { background: #6b7280; color: #fff; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ===== 主体容器 ===== */
+        main { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+
+        /* ===== 数据看板 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #1e3a8a; }
+        .stat-card .stat-label { font-size: 13px; color: #6b7280; margin-top: 4px; }
+        .stat-card.overdue .stat-value { color: #ef4444; }
+        .stat-card.fine .stat-value { color: #f59e0b; }
+
+        /* ===== 标签页 ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab.active { color: #1e3a8a; border-bottom-color: #1e3a8a; font-weight: 600; }
+        .tab:hover:not(.active) { color: #3b82f6; }
+
+        /* ===== 工具栏 ===== */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .toolbar input, .toolbar select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .toolbar input { flex: 1; min-width: 200px; }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 16px; text-align: left; font-size: 14px; }
+        th { background: #f9fafb; color: #6b7280; font-weight: 600; font-size: 13px; }
+        tr { border-bottom: 1px solid #f3f4f6; }
+        tr:last-child { border-bottom: none; }
+        tr:hover { background: #f9fafb; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-blue { background: #dbeafe; color: #1e40af; }
+        .tag-green { background: #d1fae5; color: #065f46; }
+        .tag-red { background: #fee2e2; color: #991b1b; }
+        .tag-yellow { background: #fef3c7; color: #92400e; }
+        .tag-gray { background: #f3f4f6; color: #6b7280; }
+
+        /* ===== 模态框 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-mask.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal h3 { margin-bottom: 16px; color: #1e3a8a; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 13px; color: #6b7280; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+        /* ===== 提示 ===== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            padding: 12px 20px;
+            background: #1e3a8a;
+            color: #fff;
+            border-radius: 4px;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+        .toast.show { opacity: 1; }
+        .toast.error { background: #ef4444; }
+        .toast.success { background: #10b981; }
+
+        .empty { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
+        .book-desc { color: #6b7280; font-size: 12px; max-width: 300px; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- ===== 顶部导航 ===== -->
+    <header>
+        <h1>📚 校园图书借阅管理系统</h1>
+        <div class="header-actions" id="headerActions">
+            <!-- 未登录状态显示管理员登录按钮 -->
+            <button class="btn btn-outline" id="adminLoginBtn" onclick="showAdminLogin()">管理员登录</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== 数据看板 ===== -->
+        <div class="stats-grid" id="statsGrid">
+            <!-- 由 JS 动态渲染 -->
+        </div>
+
+        <!-- ===== 标签页 ===== -->
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-tab="books" onclick="switchTab('books')">📖 图书查询</button>
+            <button class="tab tab-admin hidden" data-tab="borrow-records" onclick="switchTab('borrow-records')">📋 借阅管理</button>
+            <button class="tab tab-admin hidden" data-tab="readers" onclick="switchTab('readers')">👥 读者管理</button>
+        </div>
+
+        <!-- ===== 图书查询面板 ===== -->
+        <div id="panel-books" class="tab-panel">
+            <div class="toolbar">
+                <input type="text" id="bookSearchInput" placeholder="按书名或作者搜索..." oninput="loadBooks()">
+                <button class="btn btn-blue btn-sm" onclick="loadBooks()">搜索</button>
+                <button class="btn btn-gray btn-sm" onclick="clearBookSearch()">重置</button>
+                <button class="btn btn-green btn-sm tab-admin hidden" onclick="showBookModal()">+ 新增图书</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>分类</th>
+                            <th>出版社</th>
+                            <th>可借/总数</th>
+                            <th>位置</th>
+                            <th class="tab-admin hidden">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 借阅管理面板 ===== -->
+        <div id="panel-borrow-records" class="tab-panel hidden">
+            <div class="toolbar">
+                <select id="borrowStatusFilter" onchange="loadBorrowRecords()">
+                    <option value="">全部状态</option>
+                    <option value="BORROWED">借出中</option>
+                    <option value="RETURNED">已归还</option>
+                    <option value="OVERDUE">已逾期</option>
+                </select>
+                <button class="btn btn-blue btn-sm" onclick="showBorrowModal()">+ 办理借书</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>图书</th>
+                            <th>读者</th>
+                            <th>学号</th>
+                            <th>借出日期</th>
+                            <th>应还日期</th>
+                            <th>归还日期</th>
+                            <th>状态</th>
+                            <th>续借</th>
+                            <th>罚款</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 读者管理面板 ===== -->
+        <div id="panel-readers" class="tab-panel hidden">
+            <div class="toolbar">
+                <input type="text" id="readerSearchInput" placeholder="按姓名搜索..." oninput="loadReaders()">
+                <button class="btn btn-blue btn-sm" onclick="loadReaders()">搜索</button>
+                <button class="btn btn-green btn-sm" onclick="showReaderModal()">+ 新增读者</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>学号/工号</th>
+                            <th>姓名</th>
+                            <th>类型</th>
+                            <th>院系</th>
+                            <th>电话</th>
+                            <th>借阅中</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readerTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== 管理员登录模态框 ===== -->
+    <div class="modal-mask" id="adminLoginModal">
+        <div class="modal">
+            <h3>管理员登录</h3>
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="loginUsername" value="admin" placeholder="用户名">
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="loginPassword" placeholder="密码">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-gray" onclick="closeModal('adminLoginModal')">取消</button>
+                <button class="btn btn-blue" onclick="doAdminLogin()">登录</button>
+            </div>
+            <p style="margin-top:12px;font-size:12px;color:#9ca3af;">默认账号：admin / admin123</p>
+        </div>
+    </div>
+
+    <!-- ===== 图书新增/编辑模态框 ===== -->
+    <div class="modal-mask" id="bookModal">
+        <div class="modal">
+            <h3 id="bookModalTitle">新增图书</h3>
+            <input type="hidden" id="bookId">
+            <div class="form-group">
+                <label>书名 *</label>
+                <input type="text" id="bookTitle">
+            </div>
+            <div class="form-group">
+                <label>作者 *</label>
+                <input type="text" id="bookAuthor">
+            </div>
+            <div class="form-group">
+                <label>ISBN</label>
+                <input type="text" id="bookIsbn">
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <input type="text" id="bookCategory" placeholder="如 计算机/TP3">
+            </div>
+            <div class="form-group">
+                <label>出版社</label>
+                <input type="text" id="bookPublisher">
+            </div>
+            <div class="form-group">
+                <label>出版年份</label>
+                <input type="number" id="bookPublishYear">
+            </div>
+            <div class="form-group">
+                <label>简介</label>
+                <textarea id="bookDescription"></textarea>
+            </div>
+            <div class="form-group">
+                <label>总副本数 *</label>
+                <input type="number" id="bookTotalCopies" value="1" min="0">
+            </div>
+            <div class="form-group">
+                <label>可借副本数 *</label>
+                <input type="number" id="bookAvailableCopies" value="1" min="0">
+            </div>
+            <div class="form-group">
+                <label>存放位置</label>
+                <input type="text" id="bookLocation" placeholder="如 A区1排">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-gray" onclick="closeModal('bookModal')">取消</button>
+                <button class="btn btn-blue" onclick="saveBook()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 读者新增/编辑模态框 ===== -->
+    <div class="modal-mask" id="readerModal">
+        <div class="modal">
+            <h3 id="readerModalTitle">新增读者</h3>
+            <input type="hidden" id="readerId">
+            <div class="form-group">
+                <label>学号/工号 *</label>
+                <input type="text" id="readerNo">
+            </div>
+            <div class="form-group">
+                <label>密码（新建必填，修改留空保持不变）</label>
+                <input type="password" id="readerPassword" placeholder="至少 6 位">
+            </div>
+            <div class="form-group">
+                <label>姓名 *</label>
+                <input type="text" id="readerName">
+            </div>
+            <div class="form-group">
+                <label>类型 *</label>
+                <select id="readerType">
+                    <option value="STUDENT">学生（借5本/30天）</option>
+                    <option value="TEACHER">教师（借10本/60天）</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>院系</label>
+                <input type="text" id="readerDepartment">
+            </div>
+            <div class="form-group">
+                <label>电话</label>
+                <input type="text" id="readerPhone">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-gray" onclick="closeModal('readerModal')">取消</button>
+                <button class="btn btn-blue" onclick="saveReader()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 借书模态框 ===== -->
+    <div class="modal-mask" id="borrowModal">
+        <div class="modal">
+            <h3>办理借书</h3>
+            <div class="form-group">
+                <label>选择图书 *</label>
+                <select id="borrowBookId"></select>
+            </div>
+            <div class="form-group">
+                <label>选择读者 *</label>
+                <select id="borrowReaderId"></select>
+            </div>
+            <div class="form-group">
+                <label>备注</label>
+                <input type="text" id="borrowRemark">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-gray" onclick="closeModal('borrowModal')">取消</button>
+                <button class="btn btn-blue" onclick="doBorrow()">确认借出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 修改密码模态框 ===== -->
+    <div class="modal-mask" id="changePwdModal">
+        <div class="modal">
+            <h3>修改管理员密码</h3>
+            <div class="form-group">
+                <label>旧密码</label>
+                <input type="password" id="oldPassword">
+            </div>
+            <div class="form-group">
+                <label>新密码（至少 6 位）</label>
+                <input type="password" id="newPassword">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-gray" onclick="closeModal('changePwdModal')">取消</button>
+                <button class="btn btn-blue" onclick="doChangePassword()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== 全局状态 =====
+        let isAdmin = false;      // 是否管理员登录
+        let currentTab = 'books'; // 当前标签页
+
+        // ===== 通用工具函数 =====
+        /** 显示提示消息 */
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show ' + (type || '');
+            setTimeout(() => toast.className = 'toast ' + (type || ''), 2500);
+        }
+
+        /** 打开模态框 */
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        /** 关闭模态框 */
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        /** 日期格式化 */
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            return dateStr.substring(0, 10);
+        }
+
+        /** API 请求封装 */
+        async function api(url, options) {
+            const resp = await fetch(url, options);
+            if (resp.status === 401) {
+                showToast('请先登录管理员账号', 'error');
+                adminLogout();
+                return null;
+            }
+            return resp;
+        }
+
+        // ===== 数据看板 =====
+        async function loadStats() {
+            const resp = await fetch('/api/stats');
+            const data = await resp.json();
+            const grid = document.getElementById('statsGrid');
+            grid.innerHTML = `
+                <div class="stat-card"><div class="stat-value">${data.totalBooks}</div><div class="stat-label">图书种类</div></div>
+                <div class="stat-card"><div class="stat-value">${data.totalCopies}</div><div class="stat-label">副本总数</div></div>
+                <div class="stat-card"><div class="stat-value">${data.availableCopies}</div><div class="stat-label">可借副本</div></div>
+                <div class="stat-card"><div class="stat-value">${data.totalReaders}</div><div class="stat-label">读者总数</div></div>
+                <div class="stat-card"><div class="stat-value">${data.borrowedCount}</div><div class="stat-label">借出中</div></div>
+                <div class="stat-card"><div class="stat-value">${data.returnedCount}</div><div class="stat-label">已归还</div></div>
+                <div class="stat-card overdue"><div class="stat-value">${data.overdueCount}</div><div class="stat-label">逾期</div></div>
+                <div class="stat-card fine"><div class="stat-value">${data.totalFine.toFixed(1)}</div><div class="stat-label">累计罚款(元)</div></div>
+            `;
+        }
+
+        // ===== 标签页切换 =====
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`panel-${tab}`).classList.remove('hidden');
+            if (tab === 'books') loadBooks();
+            if (tab === 'borrow-records') loadBorrowRecords();
+            if (tab === 'readers') loadReaders();
+        }
+
+        // ===== 图书管理 =====
+        async function loadBooks() {
+            const keyword = document.getElementById('bookSearchInput').value.trim();
+            const url = keyword ? `/api/books/search?keyword=${encodeURIComponent(keyword)}` : '/api/books';
+            const resp = await fetch(url);
+            const books = await resp.json();
+            const tbody = document.getElementById('bookTableBody');
+            if (books.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无图书</td></tr>';
+                return;
+            }
+            tbody.innerHTML = books.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${escapeHtml(b.title)}</td>
+                    <td>${escapeHtml(b.author)}</td>
+                    <td><span class="tag tag-blue">${escapeHtml(b.category || '-')}</span></td>
+                    <td>${escapeHtml(b.publisher || '-')}</td>
+                    <td>${b.availableCopies}/${b.totalCopies}</td>
+                    <td>${escapeHtml(b.location || '-')}</td>
+                    <td class="tab-admin ${isAdmin?'':'hidden'}">
+                        <button class="btn btn-sm btn-blue" onclick="editBook(${b.id})">编辑</button>
+                        <button class="btn btn-sm btn-red" onclick="deleteBook(${b.id}, '${escapeHtml(b.title)}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearBookSearch() {
+            document.getElementById('bookSearchInput').value = '';
+            loadBooks();
+        }
+
+        async function showBookModal() {
+            document.getElementById('bookModalTitle').textContent = '新增图书';
+            ['bookId','bookTitle','bookAuthor','bookIsbn','bookCategory','bookPublisher','bookPublishYear','bookDescription','bookLocation'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('bookTotalCopies').value = 1;
+            document.getElementById('bookAvailableCopies').value = 1;
+            openModal('bookModal');
+        }
+
+        async function editBook(id) {
+            const resp = await fetch(`/api/books/${id}`);
+            const b = await resp.json();
+            document.getElementById('bookModalTitle').textContent = '编辑图书';
+            document.getElementById('bookId').value = b.id;
+            document.getElementById('bookTitle').value = b.title || '';
+            document.getElementById('bookAuthor').value = b.author || '';
+            document.getElementById('bookIsbn').value = b.isbn || '';
+            document.getElementById('bookCategory').value = b.category || '';
+            document.getElementById('bookPublisher').value = b.publisher || '';
+            document.getElementById('bookPublishYear').value = b.publishYear || '';
+            document.getElementById('bookDescription').value = b.description || '';
+            document.getElementById('bookTotalCopies').value = b.totalCopies;
+            document.getElementById('bookAvailableCopies').value = b.availableCopies;
+            document.getElementById('bookLocation').value = b.location || '';
+            openModal('bookModal');
+        }
+
+        async function saveBook() {
+            const id = document.getElementById('bookId').value;
+            const body = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                isbn: document.getElementById('bookIsbn').value,
+                category: document.getElementById('bookCategory').value,
+                publisher: document.getElementById('bookPublisher').value,
+                publishYear: parseInt(document.getElementById('bookPublishYear').value) || null,
+                description: document.getElementById('bookDescription').value,
+                totalCopies: parseInt(document.getElementById('bookTotalCopies').value),
+                availableCopies: parseInt(document.getElementById('bookAvailableCopies').value),
+                location: document.getElementById('bookLocation').value
+            };
+            if (!body.title || !body.author || isNaN(body.totalCopies) || isNaN(body.availableCopies)) {
+                showToast('请填写必填项', 'error');
+                return;
+            }
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/books/${id}` : '/api/books';
+            const resp = await api(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp && resp.ok) {
+                showToast(id ? '修改成功' : '新增成功', 'success');
+                closeModal('bookModal');
+                loadBooks();
+                loadStats();
+            } else {
+                showToast('保存失败，请检查参数', 'error');
+            }
+        }
+
+        async function deleteBook(id, title) {
+            if (!confirm(`确认删除《${title}》？`)) return;
+            const resp = await api(`/api/books/${id}`, { method: 'DELETE' });
+            if (resp && resp.ok) {
+                showToast('删除成功', 'success');
+                loadBooks();
+                loadStats();
+            } else {
+                showToast('删除失败', 'error');
+            }
+        }
+
+        // ===== 读者管理 =====
+        async function loadReaders() {
+            const name = document.getElementById('readerSearchInput').value.trim();
+            const url = name ? `/api/readers/search?name=${encodeURIComponent(name)}` : '/api/readers';
+            const resp = await fetch(url);
+            const readers = await resp.json();
+            const tbody = document.getElementById('readerTableBody');
+            if (readers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无读者</td></tr>';
+                return;
+            }
+            tbody.innerHTML = readers.map(r => `
+                <tr>
+                    <td>${r.id}</td>
+                    <td>${escapeHtml(r.readerNo)}</td>
+                    <td>${escapeHtml(r.name)}</td>
+                    <td><span class="tag ${r.type==='TEACHER'?'tag-yellow':'tag-blue'}">${r.type==='TEACHER'?'教师':'学生'}</span></td>
+                    <td>${escapeHtml(r.department || '-')}</td>
+                    <td>${escapeHtml(r.phone || '-')}</td>
+                    <td>${r.currentBorrowCount}</td>
+                    <td>
+                        <button class="btn btn-sm btn-blue" onclick="editReader(${r.id})">编辑</button>
+                        <button class="btn btn-sm btn-red" onclick="deleteReader(${r.id}, '${escapeHtml(r.name)}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showReaderModal() {
+            document.getElementById('readerModalTitle').textContent = '新增读者';
+            ['readerId','readerNo','readerPassword','readerName','readerDepartment','readerPhone'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('readerType').value = 'STUDENT';
+            openModal('readerModal');
+        }
+
+        async function editReader(id) {
+            const resp = await fetch(`/api/readers/${id}`);
+            const r = await resp.json();
+            document.getElementById('readerModalTitle').textContent = '编辑读者';
+            document.getElementById('readerId').value = r.id;
+            document.getElementById('readerNo').value = r.readerNo;
+            document.getElementById('readerPassword').value = '';
+            document.getElementById('readerName').value = r.name;
+            document.getElementById('readerType').value = r.type;
+            document.getElementById('readerDepartment').value = r.department || '';
+            document.getElementById('readerPhone').value = r.phone || '';
+            openModal('readerModal');
+        }
+
+        async function saveReader() {
+            const id = document.getElementById('readerId').value;
+            const body = {
+                readerNo: document.getElementById('readerNo').value,
+                password: document.getElementById('readerPassword').value,
+                name: document.getElementById('readerName').value,
+                type: document.getElementById('readerType').value,
+                department: document.getElementById('readerDepartment').value,
+                phone: document.getElementById('readerPhone').value
+            };
+            if (!body.readerNo || !body.name) {
+                showToast('请填写必填项', 'error');
+                return;
+            }
+            if (!id && (!body.password || body.password.length < 6)) {
+                showToast('新建读者密码至少 6 位', 'error');
+                return;
+            }
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/readers/${id}` : '/api/readers';
+            const resp = await api(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp && resp.ok) {
+                showToast(id ? '修改成功' : '新增成功', 'success');
+                closeModal('readerModal');
+                loadReaders();
+                loadStats();
+            } else {
+                showToast('保存失败，请检查参数', 'error');
+            }
+        }
+
+        async function deleteReader(id, name) {
+            if (!confirm(`确认删除读者 ${name}？`)) return;
+            const resp = await api(`/api/readers/${id}`, { method: 'DELETE' });
+            if (resp && resp.ok) {
+                showToast('删除成功', 'success');
+                loadReaders();
+                loadStats();
+            } else {
+                showToast('删除失败', 'error');
+            }
+        }
+
+        // ===== 借阅管理 =====
+        async function loadBorrowRecords() {
+            const status = document.getElementById('borrowStatusFilter').value;
+            const url = status ? `/api/borrows/status/${status}` : '/api/borrows';
+            const resp = await fetch(url);
+            const records = await resp.json();
+            const tbody = document.getElementById('borrowTableBody');
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="empty">暂无借阅记录</td></tr>';
+                return;
+            }
+            tbody.innerHTML = records.map(r => {
+                let statusTag = '';
+                if (r.overdue) statusTag = '<span class="tag tag-red">逾期中</span>';
+                else if (r.status === 'BORROWED') statusTag = '<span class="tag tag-blue">借出中</span>';
+                else if (r.status === 'RETURNED') statusTag = '<span class="tag tag-green">已归还</span>';
+                else if (r.status === 'OVERDUE') statusTag = '<span class="tag tag-red">逾期归还</span>';
+                const canReturn = r.status === 'BORROWED' || r.overdue;
+                const canRenew = r.status === 'BORROWED' && !r.overdue && r.renewCount < 1;
+                return `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${escapeHtml(r.bookTitle)}</td>
+                        <td>${escapeHtml(r.readerName)}</td>
+                        <td>${escapeHtml(r.readerNo)}</td>
+                        <td>${formatDate(r.borrowDate)}</td>
+                        <td>${formatDate(r.dueDate)}</td>
+                        <td>${formatDate(r.returnDate)}</td>
+                        <td>${statusTag}</td>
+                        <td>${r.renewCount}</td>
+                        <td>${r.fine > 0 ? r.fine.toFixed(1) : '-'}</td>
+                        <td>
+                            ${canReturn ? `<button class="btn btn-sm btn-green" onclick="doReturn(${r.id})">还书</button>` : ''}
+                            ${canRenew ? `<button class="btn btn-sm btn-blue" onclick="doRenew(${r.id})">续借</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function showBorrowModal() {
+            // 加载可借图书与读者列表
+            const [bookResp, readerResp] = await Promise.all([
+                fetch('/api/books'),
+                fetch('/api/readers')
+            ]);
+            const books = await bookResp.json();
+            const readers = await readerResp.json();
+            document.getElementById('borrowBookId').innerHTML = books
+                .filter(b => b.availableCopies > 0)
+                .map(b => `<option value="${b.id}">《${escapeHtml(b.title)}》 可借${b.availableCopies}本</option>`).join('');
+            document.getElementById('borrowReaderId').innerHTML = readers
+                .map(r => `<option value="${r.id}">${escapeHtml(r.name)} (${escapeHtml(r.readerNo)})</option>`).join('');
+            document.getElementById('borrowRemark').value = '';
+            openModal('borrowModal');
+        }
+
+        async function doBorrow() {
+            const body = {
+                bookId: parseInt(document.getElementById('borrowBookId').value),
+                readerId: parseInt(document.getElementById('borrowReaderId').value),
+                remark: document.getElementById('borrowRemark').value
+            };
+            const resp = await api('/api/borrows', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp && resp.ok) {
+                showToast('借书成功', 'success');
+                closeModal('borrowModal');
+                loadBorrowRecords();
+                loadStats();
+            } else if (resp) {
+                if (resp.status === 422) showToast('借书失败：库存不足或已达借阅上限', 'error');
+                else showToast('借书失败，请检查参数', 'error');
+            }
+        }
+
+        async function doReturn(id) {
+            if (!confirm('确认归还该图书？')) return;
+            const resp = await api('/api/borrows/return', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recordId: id })
+            });
+            if (resp && resp.ok) {
+                const data = await resp.json();
+                if (data.fine > 0) {
+                    showToast(`归还成功，超期罚款 ${data.fine.toFixed(1)} 元`, 'success');
+                } else {
+                    showToast('归还成功', 'success');
+                }
+                loadBorrowRecords();
+                loadStats();
+            } else if (resp) {
+                showToast('还书失败', 'error');
+            }
+        }
+
+        async function doRenew(id) {
+            const resp = await api('/api/borrows/renew', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recordId: id })
+            });
+            if (resp && resp.ok) {
+                showToast('续借成功，应还日期延长 15 天', 'success');
+                loadBorrowRecords();
+            } else if (resp) {
+                if (resp.status === 422) showToast('续借失败：已达续借上限或已逾期', 'error');
+                else showToast('续借失败', 'error');
+            }
+        }
+
+        // ===== 管理员认证 =====
+        function showAdminLogin() {
+            document.getElementById('loginPassword').value = '';
+            openModal('adminLoginModal');
+        }
+
+        async function doAdminLogin() {
+            const body = {
+                username: document.getElementById('loginUsername').value,
+                password: document.getElementById('loginPassword').value
+            };
+            const resp = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                isAdmin = true;
+                updateHeader(data.nickname);
+                showToast('登录成功', 'success');
+                closeModal('adminLoginModal');
+                showAdminPanels();
+            } else {
+                showToast('用户名或密码错误', 'error');
+            }
+        }
+
+        async function adminLogout() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            isAdmin = false;
+            updateHeader(null);
+            hideAdminPanels();
+            switchTab('books');
+        }
+
+        function updateHeader(nickname) {
+            const div = document.getElementById('headerActions');
+            if (nickname) {
+                div.innerHTML = `
+                    <span class="user-info">管理员：${escapeHtml(nickname)}</span>
+                    <button class="btn btn-outline" onclick="openModal('changePwdModal')">修改密码</button>
+                    <button class="btn btn-primary" onclick="adminLogout()">退出</button>
+                `;
+            } else {
+                div.innerHTML = `<button class="btn btn-outline" onclick="showAdminLogin()">管理员登录</button>`;
+            }
+        }
+
+        function showAdminPanels() {
+            document.querySelectorAll('.tab-admin').forEach(el => el.classList.remove('hidden'));
+            loadBooks(); // 重新渲染以显示操作列
+        }
+
+        function hideAdminPanels() {
+            document.querySelectorAll('.tab-admin').forEach(el => el.classList.add('hidden'));
+        }
+
+        async function doChangePassword() {
+            const body = {
+                oldPassword: document.getElementById('oldPassword').value,
+                newPassword: document.getElementById('newPassword').value
+            };
+            if (!body.oldPassword || !body.newPassword) {
+                showToast('请填写完整', 'error');
+                return;
+            }
+            if (body.newPassword.length < 6) {
+                showToast('新密码至少 6 位', 'error');
+                return;
+            }
+            const resp = await api('/api/auth/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp && resp.ok) {
+                showToast('密码修改成功，请重新登录', 'success');
+                closeModal('changePwdModal');
+                setTimeout(() => adminLogout(), 1000);
+            } else if (resp) {
+                if (resp.status === 422) showToast('旧密码错误', 'error');
+                else if (resp.status === 400) showToast('新密码不合规', 'error');
+                else showToast('修改失败', 'error');
+            }
+        }
+
+        // ===== 工具：HTML 转义，防止 XSS =====
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str).replace(/[&<>"']/g, m => ({
+                '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+            }[m]));
+        }
+
+        // ===== 启动时检查登录态并加载数据 =====
+        async function init() {
+            const resp = await fetch('/api/auth/me');
+            if (resp.ok) {
+                const data = await resp.json();
+                isAdmin = true;
+                updateHeader(data.nickname);
+                showAdminPanels();
+            }
+            loadStats();
+            loadBooks();
+        }
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Maven 构建产物
+target/
+*.class
+
+# IDE 配置
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# H2 数据文件（文件模式数据库，按需保留）
+# data/
+
+# 日志
+*.log
+logs/
+
+# Maven Wrapper 临时文件
+.mvn/wrapper/maven-wrapper.jar

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 响应式布局，适配移动端 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络安全知识学习平台</title>
+    <style>
+        /* ===== 全局样式 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        button { cursor: pointer; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; }
+
+        /* ===== 顶部导航栏 ===== */
+        .navbar {
+            background: linear-gradient(135deg, #1a5f7a 0%, #15995e 100%);
+            color: #fff;
+            padding: 12px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .navbar .logo { font-size: 20px; font-weight: 600; }
+        .navbar .nav-links { display: flex; gap: 20px; align-items: center; }
+        .navbar .nav-links a { color: #fff; opacity: 0.9; }
+        .navbar button { background: rgba(255,255,255,0.2); color: #fff; }
+        .navbar button:hover { background: rgba(255,255,255,0.3); }
+        .user-info { font-size: 14px; opacity: 0.95; }
+
+        /* ===== 容器布局 ===== */
+        .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+        .layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+
+        /* ===== 侧边分类栏 ===== */
+        .sidebar {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            height: fit-content;
+        }
+        .sidebar h3 { font-size: 16px; margin-bottom: 12px; color: #1a5f7a; border-bottom: 2px solid #1a5f7a; padding-bottom: 8px; }
+        .sidebar ul { list-style: none; }
+        .sidebar li { padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; font-size: 14px; transition: background 0.2s; }
+        .sidebar li:hover { background: #f0f7ff; }
+        .sidebar li.active { background: #1a5f7a; color: #fff; }
+        .sidebar .count { font-size: 12px; color: #999; float: right; }
+        .sidebar li.active .count { color: rgba(255,255,255,0.8); }
+
+        /* ===== 文章列表 ===== */
+        .article-list { display: flex; flex-direction: column; gap: 16px; }
+        .article-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .article-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .article-card .category-tag {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #1a5f7a;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .article-card h3 { font-size: 18px; margin-bottom: 8px; color: #2c3e50; }
+        .article-card .summary { font-size: 14px; color: #666; margin-bottom: 12px; }
+        .article-card .meta { font-size: 12px; color: #999; display: flex; gap: 16px; }
+        .article-card .meta span::before { content: "👁 "; }
+        .article-card .meta .likes::before { content: "👍 "; }
+        .article-card .meta .favs::before { content: "⭐ "; }
+
+        /* ===== 搜索栏 ===== */
+        .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+        .search-bar input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-bar button { background: #1a5f7a; color: #fff; padding: 10px 20px; }
+        .search-bar button:hover { background: #14495e; }
+
+        /* ===== 分页 ===== */
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
+        .pagination button { background: #fff; border: 1px solid #ddd; color: #333; }
+        .pagination button.active { background: #1a5f7a; color: #fff; border-color: #1a5f7a; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ===== 文章详情 ===== */
+        .article-detail { background: #fff; border-radius: 8px; padding: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .article-detail h1 { font-size: 26px; margin-bottom: 12px; }
+        .article-detail .meta { color: #999; font-size: 13px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+        .article-detail .content { font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
+        .article-detail .actions { margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; display: flex; gap: 12px; }
+        .article-detail .actions button { padding: 8px 20px; font-size: 14px; }
+        .btn-like { background: #fff; border: 1px solid #e74c3c; color: #e74c3c; }
+        .btn-like.active { background: #e74c3c; color: #fff; }
+        .btn-fav { background: #fff; border: 1px solid #f39c12; color: #f39c12; }
+        .btn-fav.active { background: #f39c12; color: #fff; }
+        .btn-back { background: #ecf0f1; color: #333; }
+
+        /* ===== 评论 ===== */
+        .comments-section { margin-top: 32px; }
+        .comments-section h3 { font-size: 18px; margin-bottom: 16px; }
+        .comment-form { margin-bottom: 20px; }
+        .comment-form textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical; min-height: 80px; }
+        .comment-form button { background: #1a5f7a; color: #fff; margin-top: 8px; padding: 8px 20px; }
+        .comment-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .comment-item .author { font-weight: 600; font-size: 14px; color: #1a5f7a; }
+        .comment-item .time { font-size: 12px; color: #999; margin-left: 8px; }
+        .comment-item .content { margin-top: 6px; font-size: 14px; }
+
+        /* ===== 模态框 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-mask.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            padding: 28px;
+            width: 360px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal h3 { font-size: 20px; margin-bottom: 20px; color: #1a5f7a; }
+        .modal .form-group { margin-bottom: 16px; }
+        .modal label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
+        .modal input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
+        .modal .btn-primary { background: #1a5f7a; color: #fff; padding: 10px 20px; }
+        .modal .btn-cancel { background: #ecf0f1; color: #333; padding: 10px 20px; }
+        .modal .switch-link { text-align: center; margin-top: 16px; font-size: 13px; color: #666; }
+
+        /* ===== 自测答题 ===== */
+        .test-section { background: #fff; border-radius: 8px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .test-section h2 { font-size: 22px; margin-bottom: 16px; color: #1a5f7a; }
+        .test-question { margin-bottom: 24px; padding: 16px; background: #f9fbfc; border-radius: 6px; border-left: 3px solid #1a5f7a; }
+        .test-question .stem { font-weight: 600; margin-bottom: 12px; }
+        .test-option { padding: 8px 12px; margin-bottom: 6px; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .test-option:hover { background: #e8f4fd; }
+        .test-option.selected { background: #1a5f7a; color: #fff; border-color: #1a5f7a; }
+        .test-option.correct { background: #27ae60; color: #fff; border-color: #27ae60; }
+        .test-option.wrong { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+        .test-result { background: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; }
+        .test-result .score { font-size: 36px; font-weight: 700; color: #1a5f7a; }
+        .test-result .info { color: #666; margin-top: 8px; }
+
+        /* ===== 个人中心 ===== */
+        .profile-section { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .profile-section h2 { font-size: 22px; margin-bottom: 16px; color: #1a5f7a; }
+        .record-item { padding: 12px; background: #f9fbfc; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .record-item .info { font-size: 14px; }
+        .record-item .score { font-weight: 600; color: #1a5f7a; }
+
+        .empty { text-align: center; padding: 40px; color: #999; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- ===== 顶部导航栏 ===== -->
+    <nav class="navbar">
+        <div class="logo">🛡 网络安全知识学习平台</div>
+        <div class="nav-links">
+            <a href="#" onclick="showHome()">首页</a>
+            <a href="#" onclick="showTest()">在线自测</a>
+            <a href="#" onclick="showProfile()">个人中心</a>
+            <span id="userArea"></span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- ===== 首页视图（文章列表） ===== -->
+        <div id="homeView">
+            <div class="layout">
+                <!-- 侧边分类栏 -->
+                <aside class="sidebar">
+                    <h3>知识分类</h3>
+                    <ul id="categoryList">
+                        <li class="active" onclick="filterByCategory(null, this)">全部分类</li>
+                    </ul>
+                </aside>
+
+                <!-- 文章列表 -->
+                <main>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="搜索文章标题或摘要..." onkeydown="if(event.key==='Enter')doSearch()">
+                        <button onclick="doSearch()">搜索</button>
+                    </div>
+                    <div class="article-list" id="articleList"></div>
+                    <div class="pagination" id="pagination"></div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ===== 文章详情视图 ===== -->
+        <div id="detailView" class="hidden">
+            <div class="article-detail" id="articleDetail"></div>
+            <div class="comments-section" id="commentsSection"></div>
+        </div>
+
+        <!-- ===== 自测答题视图 ===== -->
+        <div id="testView" class="hidden">
+            <div class="test-section" id="testSection"></div>
+        </div>
+
+        <!-- ===== 个人中心视图 ===== -->
+        <div id="profileView" class="hidden">
+            <div class="profile-section">
+                <h2>我的收藏</h2>
+                <div id="favoritesList"></div>
+            </div>
+            <div class="profile-section" style="margin-top:16px;">
+                <h2>答题历史</h2>
+                <div id="recordsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 登录/注册模态框 ===== -->
+    <div class="modal-mask" id="authModal">
+        <div class="modal">
+            <h3 id="authTitle">登录</h3>
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="authUsername">
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="authPassword">
+            </div>
+            <div class="form-group hidden" id="nicknameGroup">
+                <label>昵称（可选）</label>
+                <input type="text" id="authNickname">
+            </div>
+            <div class="actions">
+                <button class="btn-cancel" onclick="closeAuthModal()">取消</button>
+                <button class="btn-primary" id="authSubmit" onclick="submitAuth()">登录</button>
+            </div>
+            <div class="switch-link">
+                <span id="switchText">还没有账号？</span>
+                <a href="#" onclick="switchAuthMode()">去注册</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 全局状态 =====
+        let currentCategory = null;     // 当前筛选的分类 ID
+        let currentKeyword = '';        // 当前搜索关键词
+        let currentPage = 0;            // 当前页码（0 起）
+        const pageSize = 5;             // 每页条数
+        let authMode = 'login';         // 模态框模式：login / register
+
+        // ===== 页面初始化 =====
+        window.onload = function() {
+            loadCategories();
+            loadArticles();
+            checkLogin();
+        };
+
+        // ===== 工具函数：发起带 JSON 的 fetch 请求 =====
+        async function api(url, options = {}) {
+            const opts = { credentials: 'same-origin', ...options };
+            if (opts.body && typeof opts.body === 'object') {
+                opts.headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+                opts.body = JSON.stringify(opts.body);
+            }
+            const resp = await fetch(url, opts);
+            if (resp.status === 204) return null;
+            const text = await resp.text();
+            return text ? JSON.parse(text) : null;
+        }
+
+        // ===== 加载分类列表 =====
+        async function loadCategories() {
+            const cats = await api('/api/categories?withArticleCount=true');
+            const ul = document.getElementById('categoryList');
+            // 保留"全部分类"项
+            ul.innerHTML = '<li class="active" onclick="filterByCategory(null, this)">全部分类</li>';
+            cats.forEach(c => {
+                const li = document.createElement('li');
+                li.innerHTML = `${escapeHtml(c.name)} <span class="count">${c.articleCount || 0}</span>`;
+                li.onclick = () => filterByCategory(c.id, li);
+                ul.appendChild(li);
+            });
+        }
+
+        // ===== 按分类筛选 =====
+        function filterByCategory(catId, li) {
+            currentCategory = catId;
+            currentKeyword = '';
+            currentPage = 0;
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('#categoryList li').forEach(el => el.classList.remove('active'));
+            if (li) li.classList.add('active');
+            else document.querySelector('#categoryList li').classList.add('active');
+            loadArticles();
+        }
+
+        // ===== 搜索 =====
+        function doSearch() {
+            currentKeyword = document.getElementById('searchInput').value.trim();
+            currentPage = 0;
+            loadArticles();
+        }
+
+        // ===== 加载文章列表 =====
+        async function loadArticles() {
+            let url = `/api/articles?page=${currentPage}&size=${pageSize}`;
+            if (currentCategory) url += `&categoryId=${currentCategory}`;
+            if (currentKeyword) url += `&keyword=${encodeURIComponent(currentKeyword)}`;
+            const data = await api(url);
+            const list = document.getElementById('articleList');
+            list.innerHTML = '';
+            if (!data.content || data.content.length === 0) {
+                list.innerHTML = '<div class="empty">暂无文章</div>';
+            } else {
+                data.content.forEach(a => {
+                    const card = document.createElement('div');
+                    card.className = 'article-card';
+                    card.innerHTML = `
+                        <span class="category-tag">${escapeHtml(a.categoryName || '未分类')}</span>
+                        <h3>${escapeHtml(a.title)}</h3>
+                        <p class="summary">${escapeHtml(a.summary || '')}</p>
+                        <div class="meta">
+                            <span>${a.viewCount} 阅读</span>
+                            <span class="likes">${a.likeCount}</span>
+                            <span class="favs">${a.favoriteCount}</span>
+                        </div>
+                    `;
+                    card.onclick = () => showDetail(a.id);
+                    list.appendChild(card);
+                });
+            }
+            renderPagination(data);
+        }
+
+        // ===== 渲染分页按钮 =====
+        function renderPagination(pageData) {
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+            if (pageData.totalPages <= 1) return;
+            const prev = document.createElement('button');
+            prev.textContent = '上一页';
+            prev.disabled = pageData.first;
+            prev.onclick = () => { currentPage--; loadArticles(); };
+            pag.appendChild(prev);
+            for (let i = 0; i < pageData.totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                if (i === pageData.number) btn.classList.add('active');
+                btn.onclick = () => { currentPage = i; loadArticles(); };
+                pag.appendChild(btn);
+            }
+            const next = document.createElement('button');
+            next.textContent = '下一页';
+            next.disabled = pageData.last;
+            next.onclick = () => { currentPage++; loadArticles(); };
+            pag.appendChild(next);
+        }
+
+        // ===== 文章详情 =====
+        async function showDetail(id) {
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('detailView').classList.remove('hidden');
+            const article = await api(`/api/articles/${id}`);
+            const detail = document.getElementById('articleDetail');
+            detail.innerHTML = `
+                <h1>${escapeHtml(article.title)}</h1>
+                <div class="meta">
+                    <span>分类：${escapeHtml(article.categoryName || '未分类')}</span> ·
+                    <span>${article.viewCount} 阅读</span> ·
+                    <span>${article.likeCount} 赞</span> ·
+                    <span>${article.favoriteCount} 收藏</span>
+                </div>
+                <div class="content">${escapeHtml(article.content)}</div>
+                <div class="actions">
+                    <button class="btn-like ${article.liked ? 'active' : ''}" id="likeBtn" onclick="toggleLike(${id}, ${article.liked})">
+                        ${article.liked ? '已赞' : '点赞'}
+                    </button>
+                    <button class="btn-fav ${article.favorited ? 'active' : ''}" id="favBtn" onclick="toggleFav(${id}, ${article.favorited})">
+                        ${article.favorited ? '已收藏' : '收藏'}
+                    </button>
+                    <button class="btn-back" onclick="showHome()">返回列表</button>
+                </div>
+            `;
+            loadComments(id);
+        }
+
+        // ===== 切换点赞 =====
+        async function toggleLike(id, liked) {
+            if (!await ensureLogin()) return;
+            if (liked) {
+                await api(`/api/articles/${id}/like`, { method: 'DELETE' });
+            } else {
+                await api(`/api/articles/${id}/like`, { method: 'POST' });
+            }
+            showDetail(id);
+        }
+
+        // ===== 切换收藏 =====
+        async function toggleFav(id, favorited) {
+            if (!await ensureLogin()) return;
+            if (favorited) {
+                await api(`/api/articles/${id}/favorite`, { method: 'DELETE' });
+            } else {
+                await api(`/api/articles/${id}/favorite`, { method: 'POST' });
+            }
+            showDetail(id);
+        }
+
+        // ===== 加载评论 =====
+        async function loadComments(articleId) {
+            const data = await api(`/api/comments?articleId=${articleId}&page=0&size=50`);
+            const section = document.getElementById('commentsSection');
+            let html = '<h3>评论 (' + data.totalElements + ')</h3>';
+            html += `<div class="comment-form">
+                <textarea id="commentInput" placeholder="发表你的见解..."></textarea>
+                <button onclick="publishComment(${articleId})">发表评论</button>
+            </div>`;
+            if (data.content && data.content.length > 0) {
+                data.content.forEach(c => {
+                    html += `<div class="comment-item">
+                        <span class="author">${escapeHtml(c.nickname || c.username)}</span>
+                        <span class="time">${formatTime(c.createTime)}</span>
+                        <div class="content">${escapeHtml(c.content)}</div>
+                    </div>`;
+                });
+            } else {
+                html += '<div class="empty">还没有评论，快来抢沙发吧！</div>';
+            }
+            section.innerHTML = html;
+        }
+
+        // ===== 发表评论 =====
+        async function publishComment(articleId) {
+            if (!await ensureLogin()) return;
+            const content = document.getElementById('commentInput').value.trim();
+            if (!content) { alert('评论内容不能为空'); return; }
+            const resp = await api(`/api/comments?articleId=${articleId}`, {
+                method: 'POST',
+                body: { content: content }
+            });
+            if (resp) {
+                loadComments(articleId);
+            } else {
+                alert('发表失败');
+            }
+        }
+
+        // ===== 视图切换：首页 =====
+        function showHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.getElementById('detailView').classList.add('hidden');
+            document.getElementById('testView').classList.add('hidden');
+            document.getElementById('profileView').classList.add('hidden');
+        }
+
+        // ===== 视图切换：自测 =====
+        async function showTest() {
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('detailView').classList.add('hidden');
+            document.getElementById('testView').classList.remove('hidden');
+            document.getElementById('profileView').classList.add('hidden');
+            if (!await ensureLogin()) return;
+            // 默认拉取综合测试题（categoryId=0）
+            const questions = await api('/api/questions/test?categoryId=0&size=5');
+            renderTest(questions);
+        }
+
+        // ===== 渲染测试题 =====
+        function renderTest(questions) {
+            const section = document.getElementById('testSection');
+            if (!questions || questions.length === 0) {
+                section.innerHTML = '<h2>在线自测</h2><div class="empty">题库暂无题目</div>';
+                return;
+            }
+            let html = '<h2>在线自测</h2><p style="margin-bottom:16px;color:#666;">本次共 ' + questions.length + ' 道题，选择答案后点击"提交判分"。</p>';
+            questions.forEach((q, idx) => {
+                html += `<div class="test-question" data-qid="${q.id}">
+                    <div class="stem">${idx + 1}. ${escapeHtml(q.stem)}</div>
+                    <div class="test-option" onclick="selectOption(this, 0)">A. ${escapeHtml(q.optionA)}</div>
+                    <div class="test-option" onclick="selectOption(this, 1)">B. ${escapeHtml(q.optionB)}</div>
+                    <div class="test-option" onclick="selectOption(this, 2)">C. ${escapeHtml(q.optionC)}</div>
+                    <div class="test-option" onclick="selectOption(this, 3)">D. ${escapeHtml(q.optionD)}</div>
+                </div>`;
+            });
+            html += `<div style="text-align:center;"><button class="btn-primary" style="background:#1a5f7a;color:#fff;padding:10px 32px;" onclick="submitTest(${JSON.stringify(questions).replace(/"/g, '&quot;')})">提交判分</button></div>`;
+            section.innerHTML = html;
+        }
+
+        // ===== 选择答案 =====
+        function selectOption(el, idx) {
+            // 同一题内单选：清除兄弟节点的 selected
+            const siblings = el.parentElement.querySelectorAll('.test-option');
+            siblings.forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            el.parentElement.dataset.answer = idx;
+        }
+
+        // ===== 提交判分 =====
+        async function submitTest(questions) {
+            const answers = {};
+            document.querySelectorAll('.test-question').forEach(q => {
+                const qid = q.dataset.qid;
+                const ans = q.dataset.answer;
+                if (ans !== undefined) answers[qid] = parseInt(ans);
+            });
+            if (Object.keys(answers).length < questions.length) {
+                if (!confirm('还有未作答的题目，确定提交吗？')) return;
+            }
+            const result = await api('/api/test/submit', {
+                method: 'POST',
+                body: { categoryId: 0, answers: answers }
+            });
+            renderTestResult(questions, result);
+        }
+
+        // ===== 渲染答题结果 =====
+        function renderTestResult(questions, result) {
+            const section = document.getElementById('testSection');
+            let html = `<div class="test-result">
+                <div class="score">${result.score} / ${result.totalScore}</div>
+                <div class="info">答对 ${result.correctCount} / ${result.totalCount} 题</div>
+            </div>`;
+            questions.forEach((q, idx) => {
+                const detail = result.details.find(d => d.questionId === q.id);
+                const userAns = detail ? detail.userAnswer : -1;
+                const correctAns = detail ? detail.correctAnswer : -1;
+                const isCorrect = detail && detail.correct;
+                html += `<div class="test-question">
+                    <div class="stem">${idx + 1}. ${escapeHtml(q.stem)} ${isCorrect ? '✓' : '✗'}</div>
+                    ${[q.optionA, q.optionB, q.optionC, q.optionD].map((opt, i) => {
+                        let cls = 'test-option';
+                        if (i === correctAns) cls += ' correct';
+                        else if (i === userAns && !isCorrect) cls += ' wrong';
+                        return `<div class="${cls}">${'ABCD'[i]}. ${escapeHtml(opt)}</div>`;
+                    }).join('')}
+                    ${detail && detail.analysis ? `<div style="margin-top:8px;font-size:13px;color:#666;">解析：${escapeHtml(detail.analysis)}</div>` : ''}
+                </div>`;
+            });
+            html += `<div style="text-align:center;margin-top:16px;">
+                <button class="btn-primary" style="background:#1a5f7a;color:#fff;padding:10px 32px;" onclick="showTest()">再测一次</button>
+            </div>`;
+            section.innerHTML = html;
+        }
+
+        // ===== 视图切换：个人中心 =====
+        async function showProfile() {
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('detailView').classList.add('hidden');
+            document.getElementById('testView').classList.add('hidden');
+            document.getElementById('profileView').classList.remove('hidden');
+            if (!await ensureLogin()) return;
+            loadFavorites();
+            loadRecords();
+        }
+
+        // ===== 加载收藏列表 =====
+        async function loadFavorites() {
+            const list = await api('/api/articles/favorites');
+            const el = document.getElementById('favoritesList');
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div class="empty">还没有收藏任何文章</div>';
+                return;
+            }
+            el.innerHTML = list.map(a => `
+                <div class="article-card" onclick="showDetail(${a.id})">
+                    <span class="category-tag">${escapeHtml(a.categoryName || '未分类')}</span>
+                    <h3>${escapeHtml(a.title)}</h3>
+                    <p class="summary">${escapeHtml(a.summary || '')}</p>
+                </div>
+            `).join('');
+        }
+
+        // ===== 加载答题历史 =====
+        async function loadRecords() {
+            const data = await api('/api/test/records?page=0&size=20');
+            const el = document.getElementById('recordsList');
+            if (!data.content || data.content.length === 0) {
+                el.innerHTML = '<div class="empty">还没有答题记录</div>';
+                return;
+            }
+            el.innerHTML = data.content.map(r => `
+                <div class="record-item">
+                    <div class="info">${escapeHtml(r.categoryName || '综合测试')} · 答对 ${r.correctCount}/${r.totalCount} · ${formatTime(r.createTime)}</div>
+                    <div class="score">${r.score} 分</div>
+                </div>
+            `).join('');
+        }
+
+        // ===== 登录态检查 =====
+        async function checkLogin() {
+            const user = await api('/api/users/me');
+            renderUserArea(user);
+        }
+
+        // ===== 渲染顶部用户区 =====
+        function renderUserArea(user) {
+            const area = document.getElementById('userArea');
+            if (user) {
+                area.innerHTML = `<span class="user-info">👤 ${escapeHtml(user.nickname || user.username)}</span>
+                    <button onclick="logout()">登出</button>`;
+            } else {
+                area.innerHTML = `<button onclick="openAuthModal('login')">登录</button>
+                    <button onclick="openAuthModal('register')">注册</button>`;
+            }
+        }
+
+        // ===== 确保已登录，未登录则弹出登录框 =====
+        async function ensureLogin() {
+            const user = await api('/api/users/me');
+            if (!user) {
+                alert('请先登录');
+                openAuthModal('login');
+                return false;
+            }
+            return true;
+        }
+
+        // ===== 打开认证模态框 =====
+        function openAuthModal(mode) {
+            authMode = mode;
+            document.getElementById('authTitle').textContent = mode === 'login' ? '登录' : '注册';
+            document.getElementById('authSubmit').textContent = mode === 'login' ? '登录' : '注册';
+            document.getElementById('nicknameGroup').classList.toggle('hidden', mode === 'login');
+            document.getElementById('switchText').textContent = mode === 'login' ? '还没有账号？' : '已有账号？';
+            document.querySelector('#switchText + a').textContent = mode === 'login' ? '去注册' : '去登录';
+            document.getElementById('authModal').classList.add('show');
+        }
+
+        // ===== 关闭认证模态框 =====
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('show');
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authNickname').value = '';
+        }
+
+        // ===== 切换登录/注册模式 =====
+        function switchAuthMode() {
+            openAuthModal(authMode === 'login' ? 'register' : 'login');
+        }
+
+        // ===== 提交登录/注册 =====
+        async function submitAuth() {
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const nickname = document.getElementById('authNickname').value.trim();
+            if (!username || !password) { alert('用户名和密码不能为空'); return; }
+
+            const url = authMode === 'login' ? '/api/users/login' : '/api/users/register';
+            const body = authMode === 'login'
+                ? { username, password }
+                : { username, password, nickname };
+            const resp = await api(url, { method: 'POST', body });
+            if (resp) {
+                closeAuthModal();
+                await checkLogin();
+                alert(authMode === 'login' ? '登录成功' : '注册成功，已自动登录');
+            } else {
+                alert(authMode === 'login' ? '用户名或密码错误，或账号已被禁用' : '用户名已存在');
+            }
+        }
+
+        // ===== 登出 =====
+        async function logout() {
+            await api('/api/users/logout', { method: 'POST' });
+            renderUserArea(null);
+            showHome();
+        }
+
+        // ===== 工具：HTML 转义 =====
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        // ===== 工具：时间格式化 =====
+        function formatTime(s) {
+            if (!s) return '';
+            return s.replace('T', ' ').substring(0, 16);
+        }
+    </script>
+</body>
+</html>

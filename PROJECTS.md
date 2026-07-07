@@ -8,3 +8,5 @@
 | java-2 | java-2/ |
 | java-3 | java-3/ |
 | java-4 | java-4/ |
+
+> 注：java-1 目录已重建为"校园图书借阅管理网站"（JDK 21 + Spring Boot 4.1 + H2 文件库，端口 8089）。

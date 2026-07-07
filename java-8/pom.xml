@@ -14,7 +14,7 @@
 	<name>java-8</name>
 	<description>服装私人定制网站</description>
 	<properties>
-		<java.version>25</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot Web MVC：提供 RESTful API 与静态资源服务能力 -->

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络安全学习平台 - 后台管理</title>
+    <style>
+        /* ===== 全局样式 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f2f5;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        button { cursor: pointer; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; }
+
+        /* ===== 顶部导航栏 ===== */
+        .navbar {
+            background: #001529;
+            color: #fff;
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo { font-size: 18px; font-weight: 600; }
+        .navbar .user-area { display: flex; gap: 12px; align-items: center; font-size: 14px; }
+        .navbar button { background: rgba(255,255,255,0.15); color: #fff; }
+        .navbar button:hover { background: rgba(255,255,255,0.25); }
+
+        /* ===== 主布局 ===== */
+        .layout { display: flex; min-height: calc(100vh - 56px); }
+        .sidebar {
+            width: 200px;
+            background: #001529;
+            color: #b3c0d1;
+            padding: 12px 0;
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .sidebar .menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .sidebar .menu-item.active { background: #1890ff; color: #fff; }
+
+        .main { flex: 1; padding: 24px; overflow-y: auto; }
+        .page-title { font-size: 22px; margin-bottom: 20px; color: #1a5f7a; font-weight: 600; }
+
+        /* ===== 卡片 ===== */
+        .card { background: #fff; border-radius: 6px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+        /* ===== 统计仪表板 ===== */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+        .stat-card {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-top: 3px solid #1890ff;
+        }
+        .stat-card .value { font-size: 32px; font-weight: 700; color: #1890ff; }
+        .stat-card .label { font-size: 14px; color: #666; margin-top: 6px; }
+        .stat-card.green { border-top-color: #27ae60; }
+        .stat-card.green .value { color: #27ae60; }
+        .stat-card.orange { border-top-color: #f39c12; }
+        .stat-card.orange .value { color: #f39c12; }
+        .stat-card.red { border-top-color: #e74c3c; }
+        .stat-card.red .value { color: #e74c3c; }
+
+        /* ===== 表格 ===== */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #fafafa; font-weight: 600; color: #5a5a5a; }
+        tr:hover { background: #fafafa; }
+        .table-actions { display: flex; gap: 6px; }
+        .btn-edit { background: #1890ff; color: #fff; }
+        .btn-delete { background: #e74c3c; color: #fff; }
+        .btn-add { background: #27ae60; color: #fff; padding: 8px 16px; margin-bottom: 12px; }
+
+        /* ===== 状态标签 ===== */
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-published { background: #e8f7e8; color: #27ae60; }
+        .tag-draft { background: #fff3e0; color: #f39c12; }
+        .tag-enabled { background: #e8f7e8; color: #27ae60; }
+        .tag-disabled { background: #fde8e8; color: #e74c3c; }
+
+        /* ===== 模态框 ===== */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-mask.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            width: 600px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal h3 { font-size: 18px; margin-bottom: 16px; color: #1a5f7a; }
+        .modal .form-group { margin-bottom: 12px; }
+        .modal label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
+        .modal input, .modal textarea, .modal select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+        .modal textarea { resize: vertical; min-height: 100px; }
+        .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+        .btn-primary { background: #1890ff; color: #fff; padding: 8px 20px; }
+        .btn-cancel { background: #ecf0f1; color: #333; padding: 8px 20px; }
+
+        /* ===== 分页 ===== */
+        .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
+        .pagination button { background: #fff; border: 1px solid #ddd; color: #333; }
+        .pagination button.active { background: #1890ff; color: #fff; border-color: #1890ff; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ===== 登录页 ===== */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a5f7a 0%, #15995e 100%);
+        }
+        .login-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            width: 360px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .login-box h2 { text-align: center; margin-bottom: 24px; color: #1a5f7a; }
+        .login-box .form-group { margin-bottom: 16px; }
+        .login-box label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
+        .login-box input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .login-box button { width: 100%; background: #1a5f7a; color: #fff; padding: 12px; font-size: 15px; margin-top: 8px; }
+        .login-box .hint { text-align: center; margin-top: 16px; font-size: 12px; color: #999; }
+
+        .hidden { display: none !important; }
+        .empty { text-align: center; padding: 40px; color: #999; }
+    </style>
+</head>
+<body>
+    <!-- ===== 登录页 ===== -->
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <h2>🛡 后台管理登录</h2>
+            <div class="form-group">
+                <label>管理员账号</label>
+                <input type="text" id="loginUsername" value="admin">
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="loginPassword" value="admin123">
+            </div>
+            <button onclick="adminLogin()">登录</button>
+            <div class="hint">默认账号：admin / admin123</div>
+        </div>
+    </div>
+
+    <!-- ===== 管理后台主界面 ===== -->
+    <div id="adminApp" class="hidden">
+        <!-- 顶部导航 -->
+        <nav class="navbar">
+            <div class="logo">🛡 网络安全学习平台 · 后台管理</div>
+            <div class="user-area">
+                <span id="adminName"></span>
+                <button onclick="changePasswordModal()">修改密码</button>
+                <button onclick="adminLogout()">登出</button>
+            </div>
+        </nav>
+
+        <div class="layout">
+            <!-- 侧边菜单 -->
+            <aside class="sidebar">
+                <div class="menu-item active" onclick="showPage('dashboard', this)">📊 仪表板</div>
+                <div class="menu-item" onclick="showPage('categories', this)">📁 分类管理</div>
+                <div class="menu-item" onclick="showPage('articles', this)">📄 文章管理</div>
+                <div class="menu-item" onclick="showPage('questions', this)">❓ 题库管理</div>
+                <div class="menu-item" onclick="showPage('users', this)">👥 用户管理</div>
+                <div class="menu-item" onclick="showPage('comments', this)">💬 评论管理</div>
+            </aside>
+
+            <!-- 主内容区 -->
+            <main class="main">
+                <!-- 仪表板 -->
+                <div id="page-dashboard">
+                    <h1 class="page-title">📊 仪表板</h1>
+                    <div class="stats-grid" id="statsGrid"></div>
+                </div>
+
+                <!-- 分类管理 -->
+                <div id="page-categories" class="hidden">
+                    <h1 class="page-title">📁 分类管理</h1>
+                    <div class="card">
+                        <button class="btn-add" onclick="openCategoryModal()">+ 新增分类</button>
+                        <table>
+                            <thead><tr><th>ID</th><th>分类名称</th><th>描述</th><th>排序</th><th>操作</th></tr></thead>
+                            <tbody id="categoryTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 文章管理 -->
+                <div id="page-articles" class="hidden">
+                    <h1 class="page-title">📄 文章管理</h1>
+                    <div class="card">
+                        <button class="btn-add" onclick="openArticleModal()">+ 新增文章</button>
+                        <table>
+                            <thead><tr><th>ID</th><th>标题</th><th>分类</th><th>阅读</th><th>赞</th><th>收藏</th><th>状态</th><th>操作</th></tr></thead>
+                            <tbody id="articleTable"></tbody>
+                        </table>
+                        <div class="pagination" id="articlePagination"></div>
+                    </div>
+                </div>
+
+                <!-- 题库管理 -->
+                <div id="page-questions" class="hidden">
+                    <h1 class="page-title">❓ 题库管理</h1>
+                    <div class="card">
+                        <button class="btn-add" onclick="openQuestionModal()">+ 新增题目</button>
+                        <table>
+                            <thead><tr><th>ID</th><th>分类</th><th>题干</th><th>答案</th><th>分值</th><th>操作</th></tr></thead>
+                            <tbody id="questionTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 用户管理 -->
+                <div id="page-users" class="hidden">
+                    <h1 class="page-title">👥 用户管理</h1>
+                    <div class="card">
+                        <table>
+                            <thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>状态</th><th>注册时间</th><th>最近登录</th><th>操作</th></tr></thead>
+                            <tbody id="userTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 评论管理 -->
+                <div id="page-comments" class="hidden">
+                    <h1 class="page-title">💬 评论管理</h1>
+                    <div class="card">
+                        <table>
+                            <thead><tr><th>ID</th><th>文章ID</th><th>用户</th><th>内容</th><th>时间</th><th>操作</th></tr></thead>
+                            <tbody id="commentTable"></tbody>
+                        </table>
+                        <div class="pagination" id="commentPagination"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== 通用模态框 ===== -->
+    <div class="modal-mask" id="modalMask">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
+    <script>
+        // ===== 全局状态 =====
+        let articlePage = 0;
+        const articleSize = 8;
+        let commentPage = 0;
+        const commentSize = 10;
+
+        // ===== 工具函数 =====
+        async function api(url, options = {}) {
+            const opts = { credentials: 'same-origin', ...options };
+            if (opts.body && typeof opts.body === 'object') {
+                opts.headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+                opts.body = JSON.stringify(opts.body);
+            }
+            const resp = await fetch(url, opts);
+            if (resp.status === 204) return null;
+            const text = await resp.text();
+            return text ? JSON.parse(text) : null;
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        function formatTime(s) {
+            if (!s) return '-';
+            return s.replace('T', ' ').substring(0, 16);
+        }
+
+        // ===== 管理员登录 =====
+        async function adminLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const resp = await api('/api/auth/login', { method: 'POST', body: { username, password } });
+            if (resp) {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('adminApp').classList.remove('hidden');
+                document.getElementById('adminName').textContent = '👤 ' + (resp.displayName || resp.username);
+                showPage('dashboard', document.querySelector('.menu-item'));
+            } else {
+                alert('用户名或密码错误');
+            }
+        }
+
+        // ===== 管理员登出 =====
+        async function adminLogout() {
+            await api('/api/auth/logout', { method: 'POST' });
+            location.reload();
+        }
+
+        // ===== 页面切换 =====
+        function showPage(name, el) {
+            document.querySelectorAll('.main > div').forEach(d => d.classList.add('hidden'));
+            document.getElementById('page-' + name).classList.remove('hidden');
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (name === 'dashboard') loadStats();
+            else if (name === 'categories') loadCategories();
+            else if (name === 'articles') loadArticles();
+            else if (name === 'questions') loadQuestions();
+            else if (name === 'users') loadUsers();
+            else if (name === 'comments') loadComments();
+        }
+
+        // ===== 仪表板 =====
+        async function loadStats() {
+            const s = await api('/api/admin/stats');
+            const grid = document.getElementById('statsGrid');
+            grid.innerHTML = `
+                <div class="stat-card"><div class="value">${s.articleCount}</div><div class="label">已发布文章</div></div>
+                <div class="stat-card green"><div class="value">${s.categoryCount}</div><div class="label">分类数</div></div>
+                <div class="stat-card orange"><div class="value">${s.userCount}</div><div class="label">注册用户</div></div>
+                <div class="stat-card"><div class="value">${s.questionCount}</div><div class="label">题库题目</div></div>
+                <div class="stat-card red"><div class="value">${s.commentCount}</div><div class="label">评论数</div></div>
+                <div class="stat-card green"><div class="value">${s.totalViewCount}</div><div class="label">总阅读量</div></div>
+                <div class="stat-card orange"><div class="value">${s.testCount}</div><div class="label">答题次数</div></div>
+            `;
+        }
+
+        // ===== 分类管理 =====
+        async function loadCategories() {
+            const list = await api('/api/categories');
+            const tb = document.getElementById('categoryTable');
+            tb.innerHTML = list.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${escapeHtml(c.name)}</td>
+                    <td>${escapeHtml(c.description || '-')}</td>
+                    <td>${c.sortOrder}</td>
+                    <td class="table-actions">
+                        <button class="btn-edit" onclick="openCategoryModal(${c.id})">编辑</button>
+                        <button class="btn-delete" onclick="deleteCategory(${c.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function openCategoryModal(id) {
+            let cat = null;
+            if (id) {
+                cat = await api('/api/categories/' + id);
+            }
+            document.getElementById('modalContent').innerHTML = `
+                <h3>${id ? '编辑分类' : '新增分类'}</h3>
+                <div class="form-group"><label>分类名称</label><input id="catName" value="${cat ? escapeHtml(cat.name) : ''}"></div>
+                <div class="form-group"><label>分类描述</label><input id="catDesc" value="${cat ? escapeHtml(cat.description || '') : ''}"></div>
+                <div class="form-group"><label>排序序号</label><input type="number" id="catSort" value="${cat ? cat.sortOrder : 0}"></div>
+                <div class="actions">
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-primary" onclick="saveCategory(${id || 0})">保存</button>
+                </div>
+            `;
+            document.getElementById('modalMask').classList.add('show');
+        }
+
+        async function saveCategory(id) {
+            const body = {
+                name: document.getElementById('catName').value.trim(),
+                description: document.getElementById('catDesc').value.trim(),
+                sortOrder: parseInt(document.getElementById('catSort').value) || 0
+            };
+            if (!body.name) { alert('分类名称不能为空'); return; }
+            const url = id ? `/api/categories/${id}` : '/api/categories';
+            const method = id ? 'PUT' : 'POST';
+            const resp = await api(url, { method, body });
+            if (resp) {
+                closeModal();
+                loadCategories();
+            } else {
+                alert('保存失败，可能分类名已存在');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('确定删除该分类吗？')) return;
+            const resp = await fetch(`/api/categories/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+            if (resp.status === 204) {
+                loadCategories();
+            } else if (resp.status === 400) {
+                alert('该分类下仍有文章或题目，无法删除');
+            } else {
+                alert('删除失败');
+            }
+        }
+
+        // ===== 文章管理 =====
+        async function loadArticles() {
+            const data = await api(`/api/articles/admin?page=${articlePage}&size=${articleSize}`);
+            const tb = document.getElementById('articleTable');
+            tb.innerHTML = data.content.map(a => `
+                <tr>
+                    <td>${a.id}</td>
+                    <td>${escapeHtml(a.title)}</td>
+                    <td>${escapeHtml(a.categoryName || '-')}</td>
+                    <td>${a.viewCount}</td>
+                    <td>${a.likeCount}</td>
+                    <td>${a.favoriteCount}</td>
+                    <td>-</td>
+                    <td class="table-actions">
+                        <button class="btn-edit" onclick="openArticleModal(${a.id})">编辑</button>
+                        <button class="btn-delete" onclick="deleteArticle(${a.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+            renderArticlePagination(data);
+        }
+
+        function renderArticlePagination(data) {
+            const pag = document.getElementById('articlePagination');
+            pag.innerHTML = '';
+            if (data.totalPages <= 1) return;
+            for (let i = 0; i < data.totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                if (i === data.number) btn.classList.add('active');
+                btn.onclick = () => { articlePage = i; loadArticles(); };
+                pag.appendChild(btn);
+            }
+        }
+
+        async function openArticleModal(id) {
+            let article = null;
+            const cats = await api('/api/categories');
+            if (id) {
+                article = await api(`/api/articles/admin/${id}`);
+            }
+            const catOptions = cats.map(c => 
+                `<option value="${c.id}" ${article && article.categoryId === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`
+            ).join('');
+            document.getElementById('modalContent').innerHTML = `
+                <h3>${id ? '编辑文章' : '新增文章'}</h3>
+                <div class="form-group"><label>分类</label><select id="artCat">${catOptions}</select></div>
+                <div class="form-group"><label>标题</label><input id="artTitle" value="${article ? escapeHtml(article.title) : ''}"></div>
+                <div class="form-group"><label>摘要</label><textarea id="artSummary">${article ? escapeHtml(article.summary || '') : ''}</textarea></div>
+                <div class="form-group"><label>正文（支持 Markdown 风格）</label><textarea id="artContent" style="min-height:200px;">${article ? escapeHtml(article.content) : ''}</textarea></div>
+                <div class="form-group"><label><input type="checkbox" id="artPublished" ${(!article || article.published) ? 'checked' : ''}> 发布</label></div>
+                <div class="actions">
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-primary" onclick="saveArticle(${id || 0})">保存</button>
+                </div>
+            `;
+            document.getElementById('modalMask').classList.add('show');
+        }
+
+        async function saveArticle(id) {
+            const body = {
+                categoryId: parseInt(document.getElementById('artCat').value),
+                title: document.getElementById('artTitle').value.trim(),
+                summary: document.getElementById('artSummary').value.trim(),
+                content: document.getElementById('artContent').value,
+                published: document.getElementById('artPublished').checked
+            };
+            if (!body.title || !body.content) { alert('标题和正文不能为空'); return; }
+            const url = id ? `/api/articles/admin/${id}` : '/api/articles/admin';
+            const method = id ? 'PUT' : 'POST';
+            const resp = await api(url, { method, body });
+            if (resp) {
+                closeModal();
+                loadArticles();
+            } else {
+                alert('保存失败');
+            }
+        }
+
+        async function deleteArticle(id) {
+            if (!confirm('确定删除该文章吗？相关收藏和点赞也会被清除。')) return;
+            await fetch(`/api/articles/admin/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+            loadArticles();
+        }
+
+        // ===== 题库管理 =====
+        async function loadQuestions() {
+            const list = await api('/api/questions/admin');
+            const tb = document.getElementById('questionTable');
+            tb.innerHTML = list.map(q => `
+                <tr>
+                    <td>${q.id}</td>
+                    <td>${escapeHtml(q.categoryName || '-')}</td>
+                    <td>${escapeHtml(q.stem.substring(0, 50))}${q.stem.length > 50 ? '...' : ''}</td>
+                    <td>${'ABCD'[q.answerIndex]}</td>
+                    <td>${q.score}</td>
+                    <td class="table-actions">
+                        <button class="btn-edit" onclick="openQuestionModal(${q.id})">编辑</button>
+                        <button class="btn-delete" onclick="deleteQuestion(${q.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function openQuestionModal(id) {
+            let q = null;
+            const cats = await api('/api/categories');
+            if (id) {
+                q = await api(`/api/questions/admin/${id}`);
+            }
+            const catOptions = cats.map(c => 
+                `<option value="${c.id}" ${q && q.categoryId === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`
+            ).join('');
+            document.getElementById('modalContent').innerHTML = `
+                <h3>${id ? '编辑题目' : '新增题目'}</h3>
+                <div class="form-group"><label>分类</label><select id="qCat">${catOptions}</select></div>
+                <div class="form-group"><label>题干</label><textarea id="qStem">${q ? escapeHtml(q.stem) : ''}</textarea></div>
+                <div class="form-group"><label>选项 A</label><input id="qA" value="${q ? escapeHtml(q.optionA) : ''}"></div>
+                <div class="form-group"><label>选项 B</label><input id="qB" value="${q ? escapeHtml(q.optionB) : ''}"></div>
+                <div class="form-group"><label>选项 C</label><input id="qC" value="${q ? escapeHtml(q.optionC) : ''}"></div>
+                <div class="form-group"><label>选项 D</label><input id="qD" value="${q ? escapeHtml(q.optionD) : ''}"></div>
+                <div class="form-group"><label>正确答案</label>
+                    <select id="qAns">
+                        <option value="0" ${q && q.answerIndex === 0 ? 'selected' : ''}>A</option>
+                        <option value="1" ${q && q.answerIndex === 1 ? 'selected' : ''}>B</option>
+                        <option value="2" ${q && q.answerIndex === 2 ? 'selected' : ''}>C</option>
+                        <option value="3" ${q && q.answerIndex === 3 ? 'selected' : ''}>D</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>分值</label><input type="number" id="qScore" value="${q ? q.score : 10}"></div>
+                <div class="form-group"><label>解析（可选）</label><textarea id="qAnalysis">${q ? escapeHtml(q.analysis || '') : ''}</textarea></div>
+                <div class="actions">
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-primary" onclick="saveQuestion(${id || 0})">保存</button>
+                </div>
+            `;
+            document.getElementById('modalMask').classList.add('show');
+        }
+
+        async function saveQuestion(id) {
+            const body = {
+                categoryId: parseInt(document.getElementById('qCat').value),
+                stem: document.getElementById('qStem').value.trim(),
+                optionA: document.getElementById('qA').value.trim(),
+                optionB: document.getElementById('qB').value.trim(),
+                optionC: document.getElementById('qC').value.trim(),
+                optionD: document.getElementById('qD').value.trim(),
+                answerIndex: parseInt(document.getElementById('qAns').value),
+                score: parseInt(document.getElementById('qScore').value) || 10,
+                analysis: document.getElementById('qAnalysis').value.trim()
+            };
+            if (!body.stem || !body.optionA || !body.optionB || !body.optionC || !body.optionD) {
+                alert('题干和选项均不能为空'); return;
+            }
+            const url = id ? `/api/questions/admin/${id}` : '/api/questions/admin';
+            const method = id ? 'PUT' : 'POST';
+            const resp = await api(url, { method, body });
+            if (resp) {
+                closeModal();
+                loadQuestions();
+            } else {
+                alert('保存失败');
+            }
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm('确定删除该题目吗？')) return;
+            await fetch(`/api/questions/admin/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+            loadQuestions();
+        }
+
+        // ===== 用户管理 =====
+        async function loadUsers() {
+            const list = await api('/api/admin/users');
+            const tb = document.getElementById('userTable');
+            tb.innerHTML = list.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${escapeHtml(u.username)}</td>
+                    <td>${escapeHtml(u.nickname || '-')}</td>
+                    <td><span class="tag ${u.enabled ? 'tag-enabled' : 'tag-disabled'}">${u.enabled ? '正常' : '禁用'}</span></td>
+                    <td>${formatTime(u.createTime)}</td>
+                    <td>${formatTime(u.lastLoginAt)}</td>
+                    <td class="table-actions">
+                        ${u.enabled 
+                            ? `<button class="btn-delete" onclick="toggleUser(${u.id}, false)">禁用</button>`
+                            : `<button class="btn-edit" onclick="toggleUser(${u.id}, true)">启用</button>`}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function toggleUser(id, enabled) {
+            await fetch(`/api/admin/users/${id}/enabled?enabled=${enabled}`, { method: 'PUT', credentials: 'same-origin' });
+            loadUsers();
+        }
+
+        // ===== 评论管理 =====
+        async function loadComments() {
+            const data = await api(`/api/comments/admin?page=${commentPage}&size=${commentSize}`);
+            const tb = document.getElementById('commentTable');
+            tb.innerHTML = data.content.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.articleId}</td>
+                    <td>${escapeHtml(c.nickname || c.username)}</td>
+                    <td>${escapeHtml(c.content.substring(0, 60))}${c.content.length > 60 ? '...' : ''}</td>
+                    <td>${formatTime(c.createTime)}</td>
+                    <td class="table-actions">
+                        <button class="btn-delete" onclick="deleteComment(${c.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+            renderCommentPagination(data);
+        }
+
+        function renderCommentPagination(data) {
+            const pag = document.getElementById('commentPagination');
+            pag.innerHTML = '';
+            if (data.totalPages <= 1) return;
+            for (let i = 0; i < data.totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                if (i === data.number) btn.classList.add('active');
+                btn.onclick = () => { commentPage = i; loadComments(); };
+                pag.appendChild(btn);
+            }
+        }
+
+        async function deleteComment(id) {
+            if (!confirm('确定删除该评论吗？')) return;
+            await fetch(`/api/comments/admin/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+            loadComments();
+        }
+
+        // ===== 修改密码 =====
+        function changePasswordModal() {
+            document.getElementById('modalContent').innerHTML = `
+                <h3>修改密码</h3>
+                <div class="form-group"><label>旧密码</label><input type="password" id="oldPwd"></div>
+                <div class="form-group"><label>新密码（至少 6 位）</label><input type="password" id="newPwd"></div>
+                <div class="actions">
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-primary" onclick="changePassword()">确认修改</button>
+                </div>
+            `;
+            document.getElementById('modalMask').classList.add('show');
+        }
+
+        async function changePassword() {
+            const body = {
+                oldPassword: document.getElementById('oldPwd').value,
+                newPassword: document.getElementById('newPwd').value
+            };
+            if (!body.oldPassword || !body.newPassword) { alert('请填写完整'); return; }
+            if (body.newPassword.length < 6) { alert('新密码至少 6 位'); return; }
+            const resp = await fetch('/api/auth/change-password', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (resp.status === 200) {
+                alert('密码修改成功，请重新登录');
+                closeModal();
+                adminLogout();
+            } else if (resp.status === 422) {
+                alert('旧密码错误');
+            } else if (resp.status === 400) {
+                alert('新密码不合规（至少 6 位，且不能与旧密码相同）');
+            } else {
+                alert('修改失败');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalMask').classList.remove('show');
+        }
+
+        // ===== 启动时检查登录态 =====
+        window.onload = async function() {
+            const me = await api('/api/auth/me');
+            if (me) {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('adminApp').classList.remove('hidden');
+                document.getElementById('adminName').textContent = '👤 ' + (me.displayName || me.username);
+                showPage('dashboard', document.querySelector('.menu-item'));
+            }
+        };
+    </script>
+</body>
+</html>
