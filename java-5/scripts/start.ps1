@@ -1,5 +1,5 @@
-﻿param(
-    [int]$Port = 8085,
+param(
+    [int]$Port = 8084,
     [switch]$SkipPortCheck
 )
 $JDK_VERSION = "21"
@@ -42,7 +42,7 @@ function Test-PortInUse {
 }
 
 Write-Log "========================================"
-Write-Log "  java-6 - Start Script"
+Write-Log "  java-5 - Start Script"
 Write-Log "========================================"
 Write-Log "Project: $PROJECT_DIR"
 Write-Log "Port: $Port"

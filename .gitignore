@@ -14,3 +14,9 @@ build/
 # 系统
 .DS_Store
 Thumbs.db
+
+# MSI 安装文件
+*.msi
+
+# Node.js 依赖
+node_modules/

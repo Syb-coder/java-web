@@ -24,7 +24,7 @@
 	<!-- 项目自定义属性 -->
 	<properties>
 		<!-- 指定 JDK 版本为 25：使用最新 LTS 版本以获得最新语言特性与性能优化 -->
-		<java.version>25</java.version>
+		<java.version>21</java.version>
 	</properties>
 
 	<!-- 项目依赖列表 -->
