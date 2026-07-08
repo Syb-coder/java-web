@@ -1,3 +1,4 @@
+// 声明当前类所在的包路径，归类为 model（数据模型）层
 package com.example.java3.model;
 
 /**

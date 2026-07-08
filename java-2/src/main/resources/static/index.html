@@ -6,130 +6,494 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>网络安全知识学习平台</title>
     <style>
-        /* ===== 全局样式 ===== */
+        /* ===== 主题色变量（统一管控视觉风格，便于后续换肤） ===== */
+        :root {
+            --primary: #1a5f7a;
+            --primary-dark: #14495e;
+            --primary-light: #e8f4fd;
+            --text-main: #2c3e50;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --bg: #f7f9fc;
+            --card-bg: #ffffff;
+            --border: #e8ecef;
+            --shadow: 0 1px 4px rgba(0,0,0,0.06);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.1);
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --radius: 8px;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            background: var(--bg);
+            color: var(--text-main);
             line-height: 1.6;
         }
-        a { color: #3498db; text-decoration: none; }
+        a { color: var(--primary); text-decoration: none; }
         a:hover { text-decoration: underline; }
-        button { cursor: pointer; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; }
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            background: var(--primary);
+            color: #fff;
+            transition: background 0.2s;
+        }
+        button:hover { background: var(--primary-dark); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        input, textarea, select {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            background: #fff;
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 
         /* ===== 顶部导航栏 ===== */
         .navbar {
-            background: linear-gradient(135deg, #1a5f7a 0%, #15995e 100%);
-            color: #fff;
-            padding: 12px 32px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .navbar .logo { font-size: 20px; font-weight: 600; }
-        .navbar .nav-links { display: flex; gap: 20px; align-items: center; }
-        .navbar .nav-links a { color: #fff; opacity: 0.9; }
-        .navbar button { background: rgba(255,255,255,0.2); color: #fff; }
-        .navbar button:hover { background: rgba(255,255,255,0.3); }
-        .user-info { font-size: 14px; opacity: 0.95; }
-
-        /* ===== 容器布局 ===== */
-        .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
-        .layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
-
-        /* ===== 侧边分类栏 ===== */
-        .sidebar {
-            background: #fff;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            height: fit-content;
+        .navbar .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .sidebar h3 { font-size: 16px; margin-bottom: 12px; color: #1a5f7a; border-bottom: 2px solid #1a5f7a; padding-bottom: 8px; }
-        .sidebar ul { list-style: none; }
-        .sidebar li { padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; font-size: 14px; transition: background 0.2s; }
-        .sidebar li:hover { background: #f0f7ff; }
-        .sidebar li.active { background: #1a5f7a; color: #fff; }
-        .sidebar .count { font-size: 12px; color: #999; float: right; }
-        .sidebar li.active .count { color: rgba(255,255,255,0.8); }
+        .navbar .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+        .navbar .nav-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .navbar .nav-links a:hover,
+        .navbar .nav-links a.active {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom-color: var(--primary);
+        }
+        .navbar .user-area {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .navbar .user-area .username {
+            color: var(--text-main);
+            margin-right: 4px;
+        }
+        .navbar .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+        }
+        .navbar .btn-ghost:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
 
-        /* ===== 文章列表 ===== */
-        .article-list { display: flex; flex-direction: column; gap: 16px; }
-        .article-card {
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        /* ===== 主容器 ===== */
+        .container {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 首页欢迎区 ===== */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 32px 0;
+        }
+        .hero h1 {
+            font-size: 28px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+        .hero p {
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto;
+            font-size: 15px;
+        }
+
+        /* ===== 分类卡片网格 ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .article-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+        .category-card .icon { font-size: 28px; }
+        .category-card .name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .category-card .count {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ===== 筛选栏 ===== */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-bar select { min-width: 160px; }
+        .filter-bar input { flex: 1; min-width: 200px; }
+
+        /* ===== 文章卡片 ===== */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .article-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
         .article-card .category-tag {
             display: inline-block;
-            background: #e8f4fd;
-            color: #1a5f7a;
+            background: var(--primary-light);
+            color: var(--primary);
             font-size: 12px;
             padding: 2px 8px;
             border-radius: 4px;
             margin-bottom: 8px;
         }
-        .article-card h3 { font-size: 18px; margin-bottom: 8px; color: #2c3e50; }
-        .article-card .summary { font-size: 14px; color: #666; margin-bottom: 12px; }
-        .article-card .meta { font-size: 12px; color: #999; display: flex; gap: 16px; }
-        .article-card .meta span::before { content: "👁 "; }
-        .article-card .meta .likes::before { content: "👍 "; }
-        .article-card .meta .favs::before { content: "⭐ "; }
-
-        /* ===== 搜索栏 ===== */
-        .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
-        .search-bar input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
+        .article-card h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--text-main);
         }
-        .search-bar button { background: #1a5f7a; color: #fff; padding: 10px 20px; }
-        .search-bar button:hover { background: #14495e; }
+        .article-card .summary {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .article-card .meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
 
         /* ===== 分页 ===== */
-        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
-        .pagination button { background: #fff; border: 1px solid #ddd; color: #333; }
-        .pagination button.active { background: #1a5f7a; color: #fff; border-color: #1a5f7a; }
-        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+        .pagination button {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+        }
+        .pagination button.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
 
         /* ===== 文章详情 ===== */
-        .article-detail { background: #fff; border-radius: 8px; padding: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .article-detail h1 { font-size: 26px; margin-bottom: 12px; }
-        .article-detail .meta { color: #999; font-size: 13px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
-        .article-detail .content { font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
-        .article-detail .actions { margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; display: flex; gap: 12px; }
-        .article-detail .actions button { padding: 8px 20px; font-size: 14px; }
-        .btn-like { background: #fff; border: 1px solid #e74c3c; color: #e74c3c; }
-        .btn-like.active { background: #e74c3c; color: #fff; }
-        .btn-fav { background: #fff; border: 1px solid #f39c12; color: #f39c12; }
-        .btn-fav.active { background: #f39c12; color: #fff; }
-        .btn-back { background: #ecf0f1; color: #333; }
+        .article-detail {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .article-detail h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .article-detail .meta {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 16px;
+        }
+        .article-detail .content {
+            font-size: 15px;
+            line-height: 1.85;
+        }
+        .article-detail .content h2 {
+            font-size: 18px;
+            margin: 20px 0 10px;
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+        }
+        .article-detail .content p { margin-bottom: 12px; }
+        .article-detail .content ul,
+        .article-detail .content ol {
+            margin: 8px 0 12px 24px;
+        }
+        .article-detail .content code {
+            background: var(--primary-light);
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+        .article-detail .content pre {
+            background: #f5f7fa;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+        .article-detail .content pre code {
+            background: transparent;
+            padding: 0;
+        }
+        .article-detail .actions {
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+        .btn-like, .btn-fav {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .btn-like.active {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: #fff;
+        }
+        .btn-fav.active {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: #fff;
+        }
+        .btn-back {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
 
-        /* ===== 评论 ===== */
-        .comments-section { margin-top: 32px; }
-        .comments-section h3 { font-size: 18px; margin-bottom: 16px; }
+        /* ===== 评论区 ===== */
+        .comments-section { margin-top: 24px; }
+        .comments-section h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
         .comment-form { margin-bottom: 20px; }
-        .comment-form textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical; min-height: 80px; }
-        .comment-form button { background: #1a5f7a; color: #fff; margin-top: 8px; padding: 8px 20px; }
-        .comment-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-        .comment-item .author { font-weight: 600; font-size: 14px; color: #1a5f7a; }
-        .comment-item .time { font-size: 12px; color: #999; margin-left: 8px; }
-        .comment-item .content { margin-top: 6px; font-size: 14px; }
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            min-height: 80px;
+            resize: vertical;
+        }
+        .comment-form button { margin-top: 8px; }
+        .comment-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .comment-item .author {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+        }
+        .comment-item .time {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+        .comment-item .content {
+            margin-top: 6px;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        /* ===== 自测 ===== */
+        .test-config {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .test-config h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        .test-config .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .test-config label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .test-config select,
+        .test-config input { padding: 6px 10px; }
+        .test-config input[type="number"] { width: 80px; }
+
+        .test-question {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+        .test-question .stem {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .test-option {
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 14px;
+        }
+        .test-option:hover { background: var(--primary-light); }
+        .test-option.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .test-option.correct {
+            background: var(--success);
+            color: #fff;
+            border-color: var(--success);
+        }
+        .test-option.wrong {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+        }
+        .test-result {
+            background: var(--primary-light);
+            padding: 24px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .test-result .score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .test-result .info {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        /* ===== 个人中心 Tab ===== */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .record-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .record-item:last-child { border-bottom: none; }
+        .record-item .score {
+            font-weight: 600;
+            color: var(--primary);
+        }
 
         /* ===== 模态框 ===== */
         .modal-mask {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.4);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -137,79 +501,117 @@
         .modal-mask.show { display: flex; }
         .modal {
             background: #fff;
-            border-radius: 8px;
+            border-radius: var(--radius);
             padding: 28px;
             width: 360px;
+            max-width: 90vw;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
-        .modal h3 { font-size: 20px; margin-bottom: 20px; color: #1a5f7a; }
-        .modal .form-group { margin-bottom: 16px; }
-        .modal label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
-        .modal input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
-        .modal .btn-primary { background: #1a5f7a; color: #fff; padding: 10px 20px; }
-        .modal .btn-cancel { background: #ecf0f1; color: #333; padding: 10px 20px; }
-        .modal .switch-link { text-align: center; margin-top: 16px; font-size: 13px; color: #666; }
+        .modal h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+        .modal .form-group { margin-bottom: 14px; }
+        .modal label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .modal input { width: 100%; }
+        .modal .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .modal .btn-cancel {
+            background: #f5f7fa;
+            color: var(--text-secondary);
+        }
+        .modal .switch-link {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .modal .error-hint {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 4px;
+            min-height: 16px;
+        }
 
-        /* ===== 自测答题 ===== */
-        .test-section { background: #fff; border-radius: 8px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .test-section h2 { font-size: 22px; margin-bottom: 16px; color: #1a5f7a; }
-        .test-question { margin-bottom: 24px; padding: 16px; background: #f9fbfc; border-radius: 6px; border-left: 3px solid #1a5f7a; }
-        .test-question .stem { font-weight: 600; margin-bottom: 12px; }
-        .test-option { padding: 8px 12px; margin-bottom: 6px; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
-        .test-option:hover { background: #e8f4fd; }
-        .test-option.selected { background: #1a5f7a; color: #fff; border-color: #1a5f7a; }
-        .test-option.correct { background: #27ae60; color: #fff; border-color: #27ae60; }
-        .test-option.wrong { background: #e74c3c; color: #fff; border-color: #e74c3c; }
-        .test-result { background: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; }
-        .test-result .score { font-size: 36px; font-weight: 700; color: #1a5f7a; }
-        .test-result .info { color: #666; margin-top: 8px; }
+        /* ===== Toast 提示 ===== */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            background: #fff;
+            border-left: 4px solid var(--primary);
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 14px;
+            min-width: 200px;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-        /* ===== 个人中心 ===== */
-        .profile-section { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .profile-section h2 { font-size: 22px; margin-bottom: 16px; color: #1a5f7a; }
-        .record-item { padding: 12px; background: #f9fbfc; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .record-item .info { font-size: 14px; }
-        .record-item .score { font-weight: 600; color: #1a5f7a; }
-
-        .empty { text-align: center; padding: 40px; color: #999; }
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <!-- ===== 顶部导航栏 ===== -->
     <nav class="navbar">
-        <div class="logo">🛡 网络安全知识学习平台</div>
+        <div class="logo">🛡 <span>网络安全知识学习平台</span></div>
         <div class="nav-links">
-            <a href="#" onclick="showHome()">首页</a>
-            <a href="#" onclick="showTest()">在线自测</a>
-            <a href="#" onclick="showProfile()">个人中心</a>
-            <span id="userArea"></span>
+            <a href="#" data-view="home" onclick="navigate('home');return false;">首页</a>
+            <a href="#" data-view="articles" onclick="navigate('articles');return false;">文章学习</a>
+            <a href="#" data-view="test" onclick="navigate('test');return false;">在线自测</a>
+            <a href="#" data-view="profile" onclick="navigate('profile');return false;">个人中心</a>
         </div>
+        <div class="user-area" id="userArea"></div>
     </nav>
 
     <div class="container">
-        <!-- ===== 首页视图（文章列表） ===== -->
+        <!-- ===== 首页视图 ===== -->
         <div id="homeView">
-            <div class="layout">
-                <!-- 侧边分类栏 -->
-                <aside class="sidebar">
-                    <h3>知识分类</h3>
-                    <ul id="categoryList">
-                        <li class="active" onclick="filterByCategory(null, this)">全部分类</li>
-                    </ul>
-                </aside>
-
-                <!-- 文章列表 -->
-                <main>
-                    <div class="search-bar">
-                        <input type="text" id="searchInput" placeholder="搜索文章标题或摘要..." onkeydown="if(event.key==='Enter')doSearch()">
-                        <button onclick="doSearch()">搜索</button>
-                    </div>
-                    <div class="article-list" id="articleList"></div>
-                    <div class="pagination" id="pagination"></div>
-                </main>
+            <div class="hero">
+                <h1>欢迎来到网络安全知识学习平台</h1>
+                <p>系统化的网络安全学习资源，涵盖 Web 安全、移动安全、密码学与社会工程学等核心领域，助你建立完整的知识体系。</p>
             </div>
+            <div class="category-grid" id="categoryGrid"></div>
+        </div>
+
+        <!-- ===== 文章学习视图 ===== -->
+        <div id="articlesView" class="hidden">
+            <div class="filter-bar">
+                <select id="filterCategory"><option value="">全部分类</option></select>
+                <input type="text" id="searchInput" placeholder="搜索文章标题或摘要..." onkeydown="if(event.key==='Enter')doSearch()">
+                <button onclick="doSearch()">搜索</button>
+            </div>
+            <div class="article-list" id="articleList"></div>
+            <div class="pagination" id="pagination"></div>
         </div>
 
         <!-- ===== 文章详情视图 ===== -->
@@ -218,21 +620,30 @@
             <div class="comments-section" id="commentsSection"></div>
         </div>
 
-        <!-- ===== 自测答题视图 ===== -->
+        <!-- ===== 在线自测视图 ===== -->
         <div id="testView" class="hidden">
-            <div class="test-section" id="testSection"></div>
+            <div class="test-config" id="testConfig">
+                <h2>在线自测</h2>
+                <div class="form-row">
+                    <label>分类：</label>
+                    <select id="testCategory">
+                        <option value="0">综合测试</option>
+                    </select>
+                    <label>题量：</label>
+                    <input type="number" id="testSize" value="5" min="1" max="50">
+                    <button onclick="startTest()">开始答题</button>
+                </div>
+            </div>
+            <div id="testContent"></div>
         </div>
 
         <!-- ===== 个人中心视图 ===== -->
         <div id="profileView" class="hidden">
-            <div class="profile-section">
-                <h2>我的收藏</h2>
-                <div id="favoritesList"></div>
+            <div class="tabs">
+                <div class="tab active" data-tab="favorites" onclick="switchTab('favorites')">我的收藏</div>
+                <div class="tab" data-tab="records" onclick="switchTab('records')">答题历史</div>
             </div>
-            <div class="profile-section" style="margin-top:16px;">
-                <h2>答题历史</h2>
-                <div id="recordsList"></div>
-            </div>
+            <div class="tab-content" id="tabContent"></div>
         </div>
     </div>
 
@@ -242,206 +653,405 @@
             <h3 id="authTitle">登录</h3>
             <div class="form-group">
                 <label>用户名</label>
-                <input type="text" id="authUsername">
+                <input type="text" id="authUsername" autocomplete="username">
             </div>
             <div class="form-group">
                 <label>密码</label>
-                <input type="password" id="authPassword">
+                <input type="password" id="authPassword" autocomplete="current-password">
             </div>
             <div class="form-group hidden" id="nicknameGroup">
                 <label>昵称（可选）</label>
                 <input type="text" id="authNickname">
             </div>
+            <div class="error-hint" id="authError"></div>
             <div class="actions">
                 <button class="btn-cancel" onclick="closeAuthModal()">取消</button>
-                <button class="btn-primary" id="authSubmit" onclick="submitAuth()">登录</button>
+                <button id="authSubmit" onclick="submitAuth()">登录</button>
             </div>
             <div class="switch-link">
                 <span id="switchText">还没有账号？</span>
-                <a href="#" onclick="switchAuthMode()">去注册</a>
+                <a href="#" onclick="switchAuthMode();return false;">去注册</a>
             </div>
         </div>
     </div>
 
+    <!-- ===== 修改密码模态框 ===== -->
+    <div class="modal-mask" id="pwdModal">
+        <div class="modal">
+            <h3>修改密码</h3>
+            <div class="form-group">
+                <label>旧密码</label>
+                <input type="password" id="oldPwd" autocomplete="current-password">
+            </div>
+            <div class="form-group">
+                <label>新密码（至少 6 位）</label>
+                <input type="password" id="newPwd" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label>确认新密码</label>
+                <input type="password" id="confirmPwd" autocomplete="new-password">
+            </div>
+            <div class="error-hint" id="pwdError"></div>
+            <div class="actions">
+                <button class="btn-cancel" onclick="closePwdModal()">取消</button>
+                <button onclick="changePassword()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Toast 容器 ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script>
         // ===== 全局状态 =====
-        let currentCategory = null;     // 当前筛选的分类 ID
-        let currentKeyword = '';        // 当前搜索关键词
-        let currentPage = 0;            // 当前页码（0 起）
-        const pageSize = 5;             // 每页条数
-        let authMode = 'login';         // 模态框模式：login / register
+        let currentUser = null;         // 当前登录用户（null 表示未登录）
+        let currentArticleId = null;    // 当前查看的文章 ID（用于详情页操作）
+        let articlePage = 0;            // 文章列表页码（0 起）
+        const pageSize = 10;            // 文章每页条数
+        let testQuestions = [];         // 当前测试题目缓存（提交判分时复用）
+        let currentTab = 'favorites';   // 个人中心当前激活的 Tab
 
-        // ===== 页面初始化 =====
-        window.onload = function() {
-            loadCategories();
-            loadArticles();
-            checkLogin();
-        };
-
-        // ===== 工具函数：发起带 JSON 的 fetch 请求 =====
+        // ===== 工具函数：发起 GET 请求并解析 JSON，统一处理 401 =====
         async function api(url, options = {}) {
+            const opts = { credentials: 'same-origin', ...options };
+            // 自动序列化对象 body 为 JSON
+            if (opts.body && typeof opts.body === 'object') {
+                opts.headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+                opts.body = JSON.stringify(opts.body);
+            }
+            try {
+                const resp = await fetch(url, opts);
+                if (resp.status === 401) {
+                    // 会话失效：清空登录态并提示，避免后续操作误用旧身份
+                    currentUser = null;
+                    renderUserArea();
+                    showToast('请先登录', 'warning');
+                    return null;
+                }
+                if (resp.status === 204) return null;
+                const text = await resp.text();
+                return text ? JSON.parse(text) : null;
+            } catch (err) {
+                // 网络异常统一兜底，避免未捕获的 Promise 错误
+                showToast('网络异常，请稍后重试', 'error');
+                return null;
+            }
+        }
+
+        // ===== 工具函数：发起 POST/DELETE 请求，只关心是否成功（不解析 body） =====
+        // 为什么单独抽一个：收藏/点赞/评论等接口成功响应体可能为空，
+        // 用 api() 会因 text 为空返回 null 被误判为失败，故这里只看状态码
+        async function apiOk(url, options = {}) {
             const opts = { credentials: 'same-origin', ...options };
             if (opts.body && typeof opts.body === 'object') {
                 opts.headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
                 opts.body = JSON.stringify(opts.body);
             }
-            const resp = await fetch(url, opts);
-            if (resp.status === 204) return null;
-            const text = await resp.text();
-            return text ? JSON.parse(text) : null;
+            try {
+                const resp = await fetch(url, opts);
+                if (resp.status === 401) {
+                    currentUser = null;
+                    renderUserArea();
+                    showToast('请先登录', 'warning');
+                    return false;
+                }
+                return resp.ok;
+            } catch (err) {
+                showToast('网络异常，请稍后重试', 'error');
+                return false;
+            }
         }
 
-        // ===== 加载分类列表 =====
-        async function loadCategories() {
-            const cats = await api('/api/categories?withArticleCount=true');
-            const ul = document.getElementById('categoryList');
-            // 保留"全部分类"项
-            ul.innerHTML = '<li class="active" onclick="filterByCategory(null, this)">全部分类</li>';
-            cats.forEach(c => {
-                const li = document.createElement('li');
-                li.innerHTML = `${escapeHtml(c.name)} <span class="count">${c.articleCount || 0}</span>`;
-                li.onclick = () => filterByCategory(c.id, li);
-                ul.appendChild(li);
+        // ===== 工具函数：HTML 转义防 XSS =====
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // ===== 工具函数：时间格式化为 YYYY-MM-DD HH:mm =====
+        function formatTime(s) {
+            if (!s) return '';
+            return String(s).replace('T', ' ').substring(0, 16);
+        }
+
+        // ===== Toast 提示（替代 alert） =====
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            // 3 秒后自动移除，避免堆积
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ===== 页面初始化 =====
+        window.addEventListener('DOMContentLoaded', () => {
+            // 并发拉取首屏所需数据，互不依赖
+            checkLogin();
+            loadCategoryGrid();
+            loadFilterCategories();
+            loadTestCategories();
+            // 点击模态框遮罩关闭
+            document.getElementById('authModal').addEventListener('click', e => {
+                if (e.target.id === 'authModal') closeAuthModal();
             });
+            document.getElementById('pwdModal').addEventListener('click', e => {
+                if (e.target.id === 'pwdModal') closePwdModal();
+            });
+        });
+
+        // ===== 视图切换（单页应用风格） =====
+        function navigate(view) {
+            // 个人中心需登录：先校验再切换，避免露出空白视图
+            if (view === 'profile' && !ensureLogin()) return;
+            const views = ['home', 'articles', 'detail', 'test', 'profile'];
+            views.forEach(v => {
+                const el = document.getElementById(v + 'View');
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(view + 'View');
+            if (target) target.classList.remove('hidden');
+
+            // 顶部导航高亮（详情页不属于主导航，不高亮任何项）
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.classList.toggle('active', a.dataset.view === view);
+            });
+
+            // 首次进入文章学习时自动加载列表
+            if (view === 'articles' && document.getElementById('articleList').children.length === 0) {
+                articlePage = 0;
+                loadArticles();
+            }
         }
 
-        // ===== 按分类筛选 =====
-        function filterByCategory(catId, li) {
-            currentCategory = catId;
-            currentKeyword = '';
-            currentPage = 0;
+        // ===== 首页：加载分类卡片 =====
+        async function loadCategoryGrid() {
+            const cats = await api('/api/categories?withArticleCount=true');
+            const grid = document.getElementById('categoryGrid');
+            if (!cats || cats.length === 0) {
+                grid.innerHTML = '<div class="empty">暂无分类</div>';
+                return;
+            }
+            // 预设图标循环分配，避免越界
+            const icons = ['🌐', '📱', '🔐', '🎭'];
+            grid.innerHTML = cats.map((c, i) => `
+                <div class="category-card" onclick="goCategoryArticles(${c.id})">
+                    <div class="icon">${icons[i % icons.length]}</div>
+                    <div class="name">${escapeHtml(c.name)}</div>
+                    <div class="count">${c.articleCount || 0} 篇文章</div>
+                </div>
+            `).join('');
+        }
+
+        // 点击分类卡片跳转到该分类的文章列表
+        function goCategoryArticles(catId) {
+            navigate('articles');
+            document.getElementById('filterCategory').value = catId;
             document.getElementById('searchInput').value = '';
-            document.querySelectorAll('#categoryList li').forEach(el => el.classList.remove('active'));
-            if (li) li.classList.add('active');
-            else document.querySelector('#categoryList li').classList.add('active');
+            articlePage = 0;
             loadArticles();
         }
 
-        // ===== 搜索 =====
+        // ===== 文章筛选下拉 =====
+        async function loadFilterCategories() {
+            const cats = await api('/api/categories');
+            const sel = document.getElementById('filterCategory');
+            if (!cats) return;
+            cats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                sel.appendChild(opt);
+            });
+        }
+
+        // ===== 自测分类下拉 =====
+        async function loadTestCategories() {
+            const cats = await api('/api/categories');
+            const sel = document.getElementById('testCategory');
+            if (!cats) return;
+            cats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                sel.appendChild(opt);
+            });
+        }
+
+        // ===== 搜索触发 =====
         function doSearch() {
-            currentKeyword = document.getElementById('searchInput').value.trim();
-            currentPage = 0;
+            articlePage = 0;
             loadArticles();
         }
 
         // ===== 加载文章列表 =====
         async function loadArticles() {
-            let url = `/api/articles?page=${currentPage}&size=${pageSize}`;
-            if (currentCategory) url += `&categoryId=${currentCategory}`;
-            if (currentKeyword) url += `&keyword=${encodeURIComponent(currentKeyword)}`;
+            const catId = document.getElementById('filterCategory').value;
+            const keyword = document.getElementById('searchInput').value.trim();
+            let url = `/api/articles?page=${articlePage}&size=${pageSize}`;
+            if (catId) url += `&categoryId=${encodeURIComponent(catId)}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
             const data = await api(url);
             const list = document.getElementById('articleList');
-            list.innerHTML = '';
-            if (!data.content || data.content.length === 0) {
+            if (!data || !data.content || data.content.length === 0) {
                 list.innerHTML = '<div class="empty">暂无文章</div>';
-            } else {
-                data.content.forEach(a => {
-                    const card = document.createElement('div');
-                    card.className = 'article-card';
-                    card.innerHTML = `
-                        <span class="category-tag">${escapeHtml(a.categoryName || '未分类')}</span>
-                        <h3>${escapeHtml(a.title)}</h3>
-                        <p class="summary">${escapeHtml(a.summary || '')}</p>
-                        <div class="meta">
-                            <span>${a.viewCount} 阅读</span>
-                            <span class="likes">${a.likeCount}</span>
-                            <span class="favs">${a.favoriteCount}</span>
-                        </div>
-                    `;
-                    card.onclick = () => showDetail(a.id);
-                    list.appendChild(card);
-                });
+                renderPagination(null);
+                return;
             }
+            list.innerHTML = data.content.map(a => `
+                <div class="article-card" onclick="showDetail(${a.id})">
+                    <span class="category-tag">${escapeHtml(a.categoryName || '未分类')}</span>
+                    <h3>${escapeHtml(a.title)}</h3>
+                    <p class="summary">${escapeHtml(a.summary || '')}</p>
+                    <div class="meta">
+                        <span>🕒 ${formatTime(a.publishTime)}</span>
+                        <span>阅读 ${a.viewCount || 0}</span>
+                        <span>赞 ${a.likeCount || 0}</span>
+                        <span>收藏 ${a.favoriteCount || 0}</span>
+                    </div>
+                </div>
+            `).join('');
             renderPagination(data);
         }
 
-        // ===== 渲染分页按钮 =====
+        // ===== 分页渲染 =====
         function renderPagination(pageData) {
             const pag = document.getElementById('pagination');
             pag.innerHTML = '';
-            if (pageData.totalPages <= 1) return;
+            if (!pageData || pageData.totalPages <= 1) return;
             const prev = document.createElement('button');
             prev.textContent = '上一页';
             prev.disabled = pageData.first;
-            prev.onclick = () => { currentPage--; loadArticles(); };
+            prev.onclick = () => { articlePage--; loadArticles(); };
             pag.appendChild(prev);
             for (let i = 0; i < pageData.totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i + 1;
                 if (i === pageData.number) btn.classList.add('active');
-                btn.onclick = () => { currentPage = i; loadArticles(); };
+                btn.onclick = () => { articlePage = i; loadArticles(); };
                 pag.appendChild(btn);
             }
             const next = document.createElement('button');
             next.textContent = '下一页';
             next.disabled = pageData.last;
-            next.onclick = () => { currentPage++; loadArticles(); };
+            next.onclick = () => { articlePage++; loadArticles(); };
             pag.appendChild(next);
         }
 
         // ===== 文章详情 =====
         async function showDetail(id) {
-            document.getElementById('homeView').classList.add('hidden');
-            document.getElementById('detailView').classList.remove('hidden');
+            currentArticleId = id;
+            navigate('detail');
             const article = await api(`/api/articles/${id}`);
+            if (!article) return;
             const detail = document.getElementById('articleDetail');
             detail.innerHTML = `
                 <h1>${escapeHtml(article.title)}</h1>
                 <div class="meta">
-                    <span>分类：${escapeHtml(article.categoryName || '未分类')}</span> ·
-                    <span>${article.viewCount} 阅读</span> ·
-                    <span>${article.likeCount} 赞</span> ·
-                    <span>${article.favoriteCount} 收藏</span>
+                    <span>分类：${escapeHtml(article.categoryName || '未分类')}</span>
+                    <span>发布于 ${formatTime(article.publishTime)}</span>
+                    <span>阅读 ${article.viewCount || 0}</span>
                 </div>
-                <div class="content">${escapeHtml(article.content)}</div>
+                <div class="content">${renderMarkdown(article.content)}</div>
                 <div class="actions">
-                    <button class="btn-like ${article.liked ? 'active' : ''}" id="likeBtn" onclick="toggleLike(${id}, ${article.liked})">
-                        ${article.liked ? '已赞' : '点赞'}
-                    </button>
-                    <button class="btn-fav ${article.favorited ? 'active' : ''}" id="favBtn" onclick="toggleFav(${id}, ${article.favorited})">
+                    <button class="btn-back" onclick="navigate('articles')">返回列表</button>
+                    <button class="btn-fav ${article.favorited ? 'active' : ''}" id="favBtn" onclick="toggleFav(${id})">
                         ${article.favorited ? '已收藏' : '收藏'}
                     </button>
-                    <button class="btn-back" onclick="showHome()">返回列表</button>
+                    <button class="btn-like ${article.liked ? 'active' : ''}" id="likeBtn" onclick="toggleLike(${id})">
+                        ${article.liked ? '已点赞' : '点赞'}
+                    </button>
                 </div>
             `;
             loadComments(id);
         }
 
-        // ===== 切换点赞 =====
-        async function toggleLike(id, liked) {
-            if (!await ensureLogin()) return;
-            if (liked) {
-                await api(`/api/articles/${id}/like`, { method: 'DELETE' });
-            } else {
-                await api(`/api/articles/${id}/like`, { method: 'POST' });
+        // ===== 简易 Markdown 渲染：## 标题、段落、代码块、列表 =====
+        // 设计原则：先 escapeHtml 防 XSS，再处理标记，避免注入风险
+        function renderMarkdown(content) {
+            if (!content) return '';
+            let html = escapeHtml(content);
+            // 代码块 ```...```
+            html = html.replace(/```([\s\S]*?)```/g, (m, code) => `<pre><code>${code}</code></pre>`);
+            // 行内代码 `...`
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // 按行分割处理标题与段落
+            const lines = html.split('\n');
+            const out = [];
+            let inList = false;
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) {
+                    if (inList) { out.push('</ul>'); inList = false; }
+                    continue;
+                }
+                if (line.startsWith('### ')) {
+                    if (inList) { out.push('</ul>'); inList = false; }
+                    out.push(`<h2>${line.slice(4)}</h2>`);
+                } else if (line.startsWith('## ')) {
+                    if (inList) { out.push('</ul>'); inList = false; }
+                    out.push(`<h2>${line.slice(3)}</h2>`);
+                } else if (line.startsWith('# ')) {
+                    if (inList) { out.push('</ul>'); inList = false; }
+                    out.push(`<h2>${line.slice(2)}</h2>`);
+                } else if (line.startsWith('- ') || line.startsWith('* ')) {
+                    if (!inList) { out.push('<ul>'); inList = true; }
+                    out.push(`<li>${line.slice(2)}</li>`);
+                } else if (/^\d+\.\s/.test(line)) {
+                    if (!inList) { out.push('<ul>'); inList = true; }
+                    out.push(`<li>${line.replace(/^\d+\.\s/, '')}</li>`);
+                } else {
+                    if (inList) { out.push('</ul>'); inList = false; }
+                    out.push(`<p>${line}</p>`);
+                }
             }
-            showDetail(id);
+            if (inList) out.push('</ul>');
+            return out.join('');
+        }
+
+        // ===== 切换点赞 =====
+        async function toggleLike(id) {
+            if (!ensureLogin()) return;
+            const btn = document.getElementById('likeBtn');
+            const liked = btn.classList.contains('active');
+            const method = liked ? 'DELETE' : 'POST';
+            const ok = await apiOk(`/api/articles/${id}/like`, { method });
+            if (ok) {
+                btn.classList.toggle('active');
+                btn.textContent = liked ? '点赞' : '已点赞';
+            }
         }
 
         // ===== 切换收藏 =====
-        async function toggleFav(id, favorited) {
-            if (!await ensureLogin()) return;
-            if (favorited) {
-                await api(`/api/articles/${id}/favorite`, { method: 'DELETE' });
-            } else {
-                await api(`/api/articles/${id}/favorite`, { method: 'POST' });
+        async function toggleFav(id) {
+            if (!ensureLogin()) return;
+            const btn = document.getElementById('favBtn');
+            const favorited = btn.classList.contains('active');
+            const method = favorited ? 'DELETE' : 'POST';
+            const ok = await apiOk(`/api/articles/${id}/favorite`, { method });
+            if (ok) {
+                btn.classList.toggle('active');
+                btn.textContent = favorited ? '收藏' : '已收藏';
             }
-            showDetail(id);
         }
 
         // ===== 加载评论 =====
         async function loadComments(articleId) {
-            const data = await api(`/api/comments?articleId=${articleId}&page=0&size=50`);
+            const data = await api(`/api/comments?articleId=${articleId}&page=0&size=10`);
             const section = document.getElementById('commentsSection');
-            let html = '<h3>评论 (' + data.totalElements + ')</h3>';
+            if (!data) return;
+            let html = `<h3>评论 (${data.totalElements || 0})</h3>`;
             html += `<div class="comment-form">
-                <textarea id="commentInput" placeholder="发表你的见解..."></textarea>
-                <button onclick="publishComment(${articleId})">发表评论</button>
+                <textarea id="commentInput" placeholder="${currentUser ? '发表你的见解...' : '登录后可发表评论'}"></textarea>
+                <button onclick="publishComment(${articleId})" ${currentUser ? '' : 'disabled'}>发表评论</button>
             </div>`;
             if (data.content && data.content.length > 0) {
                 data.content.forEach(c => {
                     html += `<div class="comment-item">
-                        <span class="author">${escapeHtml(c.nickname || c.username)}</span>
+                        <span class="author">${escapeHtml(c.nickname || c.username || '匿名')}</span>
                         <span class="time">${formatTime(c.createTime)}</span>
                         <div class="content">${escapeHtml(c.content)}</div>
                     </div>`;
@@ -454,138 +1064,137 @@
 
         // ===== 发表评论 =====
         async function publishComment(articleId) {
-            if (!await ensureLogin()) return;
+            if (!ensureLogin()) return;
             const content = document.getElementById('commentInput').value.trim();
-            if (!content) { alert('评论内容不能为空'); return; }
-            const resp = await api(`/api/comments?articleId=${articleId}`, {
+            if (!content) {
+                showToast('评论内容不能为空', 'warning');
+                return;
+            }
+            const ok = await apiOk(`/api/comments?articleId=${articleId}`, {
                 method: 'POST',
                 body: { content: content }
             });
-            if (resp) {
+            if (ok) {
+                showToast('评论发表成功', 'success');
                 loadComments(articleId);
-            } else {
-                alert('发表失败');
             }
         }
 
-        // ===== 视图切换：首页 =====
-        function showHome() {
-            document.getElementById('homeView').classList.remove('hidden');
-            document.getElementById('detailView').classList.add('hidden');
-            document.getElementById('testView').classList.add('hidden');
-            document.getElementById('profileView').classList.add('hidden');
-        }
-
-        // ===== 视图切换：自测 =====
-        async function showTest() {
-            document.getElementById('homeView').classList.add('hidden');
-            document.getElementById('detailView').classList.add('hidden');
-            document.getElementById('testView').classList.remove('hidden');
-            document.getElementById('profileView').classList.add('hidden');
-            if (!await ensureLogin()) return;
-            // 默认拉取综合测试题（categoryId=0）
-            const questions = await api('/api/questions/test?categoryId=0&size=5');
-            renderTest(questions);
+        // ===== 开始自测 =====
+        async function startTest() {
+            if (!ensureLogin()) return;
+            const categoryId = document.getElementById('testCategory').value;
+            const size = parseInt(document.getElementById('testSize').value) || 5;
+            if (size < 1 || size > 50) {
+                showToast('题量需在 1-50 之间', 'warning');
+                return;
+            }
+            const questions = await api(`/api/questions/test?categoryId=${categoryId}&size=${size}`);
+            if (!questions || questions.length === 0) {
+                document.getElementById('testContent').innerHTML = '<div class="empty">该分类暂无题目</div>';
+                return;
+            }
+            testQuestions = questions;
+            renderTest();
         }
 
         // ===== 渲染测试题 =====
-        function renderTest(questions) {
-            const section = document.getElementById('testSection');
-            if (!questions || questions.length === 0) {
-                section.innerHTML = '<h2>在线自测</h2><div class="empty">题库暂无题目</div>';
-                return;
-            }
-            let html = '<h2>在线自测</h2><p style="margin-bottom:16px;color:#666;">本次共 ' + questions.length + ' 道题，选择答案后点击"提交判分"。</p>';
-            questions.forEach((q, idx) => {
+        function renderTest() {
+            const section = document.getElementById('testContent');
+            let html = `<p style="margin-bottom:16px;color:var(--text-secondary);">本次共 ${testQuestions.length} 道题，选择答案后点击"提交判分"。</p>`;
+            testQuestions.forEach((q, idx) => {
                 html += `<div class="test-question" data-qid="${q.id}">
                     <div class="stem">${idx + 1}. ${escapeHtml(q.stem)}</div>
-                    <div class="test-option" onclick="selectOption(this, 0)">A. ${escapeHtml(q.optionA)}</div>
-                    <div class="test-option" onclick="selectOption(this, 1)">B. ${escapeHtml(q.optionB)}</div>
-                    <div class="test-option" onclick="selectOption(this, 2)">C. ${escapeHtml(q.optionC)}</div>
-                    <div class="test-option" onclick="selectOption(this, 3)">D. ${escapeHtml(q.optionD)}</div>
+                    <div class="test-option" data-idx="0">A. ${escapeHtml(q.optionA)}</div>
+                    <div class="test-option" data-idx="1">B. ${escapeHtml(q.optionB)}</div>
+                    <div class="test-option" data-idx="2">C. ${escapeHtml(q.optionC)}</div>
+                    <div class="test-option" data-idx="3">D. ${escapeHtml(q.optionD)}</div>
                 </div>`;
             });
-            html += `<div style="text-align:center;"><button class="btn-primary" style="background:#1a5f7a;color:#fff;padding:10px 32px;" onclick="submitTest(${JSON.stringify(questions).replace(/"/g, '&quot;')})">提交判分</button></div>`;
+            html += `<div style="text-align:center;"><button onclick="submitTest()">提交判分</button></div>`;
             section.innerHTML = html;
-        }
-
-        // ===== 选择答案 =====
-        function selectOption(el, idx) {
-            // 同一题内单选：清除兄弟节点的 selected
-            const siblings = el.parentElement.querySelectorAll('.test-option');
-            siblings.forEach(s => s.classList.remove('selected'));
-            el.classList.add('selected');
-            el.parentElement.dataset.answer = idx;
+            // 绑定选项点击：同题单选互斥
+            section.querySelectorAll('.test-question').forEach(qEl => {
+                qEl.querySelectorAll('.test-option').forEach(opt => {
+                    opt.onclick = () => {
+                        qEl.querySelectorAll('.test-option').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                        qEl.dataset.answer = opt.dataset.idx;
+                    };
+                });
+            });
         }
 
         // ===== 提交判分 =====
-        async function submitTest(questions) {
+        async function submitTest() {
             const answers = {};
             document.querySelectorAll('.test-question').forEach(q => {
                 const qid = q.dataset.qid;
                 const ans = q.dataset.answer;
                 if (ans !== undefined) answers[qid] = parseInt(ans);
             });
-            if (Object.keys(answers).length < questions.length) {
-                if (!confirm('还有未作答的题目，确定提交吗？')) return;
+            if (Object.keys(answers).length < testQuestions.length) {
+                showToast(`还有 ${testQuestions.length - Object.keys(answers).length} 题未作答`, 'warning');
             }
+            const categoryId = document.getElementById('testCategory').value;
             const result = await api('/api/test/submit', {
                 method: 'POST',
-                body: { categoryId: 0, answers: answers }
+                body: { categoryId: parseInt(categoryId), answers: answers }
             });
-            renderTestResult(questions, result);
+            if (result) renderTestResult(result);
         }
 
         // ===== 渲染答题结果 =====
-        function renderTestResult(questions, result) {
-            const section = document.getElementById('testSection');
+        function renderTestResult(result) {
+            const section = document.getElementById('testContent');
             let html = `<div class="test-result">
-                <div class="score">${result.score} / ${result.totalScore}</div>
+                <div class="score">${result.score} 分</div>
                 <div class="info">答对 ${result.correctCount} / ${result.totalCount} 题</div>
             </div>`;
-            questions.forEach((q, idx) => {
-                const detail = result.details.find(d => d.questionId === q.id);
+            testQuestions.forEach((q, idx) => {
+                const detail = result.details ? result.details.find(d => String(d.questionId) === String(q.id)) : null;
                 const userAns = detail ? detail.userAnswer : -1;
                 const correctAns = detail ? detail.correctAnswer : -1;
                 const isCorrect = detail && detail.correct;
+                const options = [q.optionA, q.optionB, q.optionC, q.optionD];
                 html += `<div class="test-question">
                     <div class="stem">${idx + 1}. ${escapeHtml(q.stem)} ${isCorrect ? '✓' : '✗'}</div>
-                    ${[q.optionA, q.optionB, q.optionC, q.optionD].map((opt, i) => {
+                    ${options.map((opt, i) => {
                         let cls = 'test-option';
                         if (i === correctAns) cls += ' correct';
                         else if (i === userAns && !isCorrect) cls += ' wrong';
                         return `<div class="${cls}">${'ABCD'[i]}. ${escapeHtml(opt)}</div>`;
                     }).join('')}
-                    ${detail && detail.analysis ? `<div style="margin-top:8px;font-size:13px;color:#666;">解析：${escapeHtml(detail.analysis)}</div>` : ''}
                 </div>`;
             });
             html += `<div style="text-align:center;margin-top:16px;">
-                <button class="btn-primary" style="background:#1a5f7a;color:#fff;padding:10px 32px;" onclick="showTest()">再测一次</button>
+                <button onclick="startTest()">再测一次</button>
             </div>`;
             section.innerHTML = html;
         }
 
-        // ===== 视图切换：个人中心 =====
-        async function showProfile() {
-            document.getElementById('homeView').classList.add('hidden');
-            document.getElementById('detailView').classList.add('hidden');
-            document.getElementById('testView').classList.add('hidden');
-            document.getElementById('profileView').classList.remove('hidden');
-            if (!await ensureLogin()) return;
-            loadFavorites();
-            loadRecords();
+        // ===== 个人中心 Tab 切换 =====
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tab);
+            });
+            if (tab === 'favorites') loadFavorites();
+            else loadRecords();
         }
 
-        // ===== 加载收藏列表 =====
+        // ===== 加载我的收藏 =====
         async function loadFavorites() {
             const list = await api('/api/articles/favorites');
-            const el = document.getElementById('favoritesList');
-            if (!list || list.length === 0) {
+            const el = document.getElementById('tabContent');
+            // 兼容数组与分页对象两种返回结构
+            const arr = Array.isArray(list) ? list : (list && list.content) || [];
+            if (arr.length === 0) {
                 el.innerHTML = '<div class="empty">还没有收藏任何文章</div>';
                 return;
             }
-            el.innerHTML = list.map(a => `
-                <div class="article-card" onclick="showDetail(${a.id})">
+            el.innerHTML = arr.map(a => `
+                <div class="article-card" onclick="showDetail(${a.id})" style="margin-bottom:12px;">
                     <span class="category-tag">${escapeHtml(a.categoryName || '未分类')}</span>
                     <h3>${escapeHtml(a.title)}</h3>
                     <p class="summary">${escapeHtml(a.summary || '')}</p>
@@ -595,15 +1204,19 @@
 
         // ===== 加载答题历史 =====
         async function loadRecords() {
-            const data = await api('/api/test/records?page=0&size=20');
-            const el = document.getElementById('recordsList');
-            if (!data.content || data.content.length === 0) {
+            const data = await api('/api/test/records?page=0&size=10');
+            const el = document.getElementById('tabContent');
+            if (!data || !data.content || data.content.length === 0) {
                 el.innerHTML = '<div class="empty">还没有答题记录</div>';
                 return;
             }
             el.innerHTML = data.content.map(r => `
                 <div class="record-item">
-                    <div class="info">${escapeHtml(r.categoryName || '综合测试')} · 答对 ${r.correctCount}/${r.totalCount} · ${formatTime(r.createTime)}</div>
+                    <div>
+                        ${escapeHtml(r.categoryName || '综合测试')} ·
+                        答对 ${r.correctCount}/${r.totalCount} ·
+                        ${formatTime(r.createTime)}
+                    </div>
                     <div class="score">${r.score} 分</div>
                 </div>
             `).join('');
@@ -612,54 +1225,61 @@
         // ===== 登录态检查 =====
         async function checkLogin() {
             const user = await api('/api/users/me');
-            renderUserArea(user);
+            currentUser = user;
+            renderUserArea();
         }
 
         // ===== 渲染顶部用户区 =====
-        function renderUserArea(user) {
+        function renderUserArea() {
             const area = document.getElementById('userArea');
-            if (user) {
-                area.innerHTML = `<span class="user-info">👤 ${escapeHtml(user.nickname || user.username)}</span>
-                    <button onclick="logout()">登出</button>`;
+            if (currentUser) {
+                area.innerHTML = `
+                    <span class="username">👤 ${escapeHtml(currentUser.nickname || currentUser.username)}</span>
+                    <button class="btn-ghost" onclick="openPwdModal()">修改密码</button>
+                    <button class="btn-ghost" onclick="logout()">退出</button>
+                `;
             } else {
-                area.innerHTML = `<button onclick="openAuthModal('login')">登录</button>
-                    <button onclick="openAuthModal('register')">注册</button>`;
+                area.innerHTML = `
+                    <button class="btn-ghost" onclick="openAuthModal('login')">登录</button>
+                    <button class="btn-ghost" onclick="openAuthModal('register')">注册</button>
+                `;
             }
         }
 
-        // ===== 确保已登录，未登录则弹出登录框 =====
-        async function ensureLogin() {
-            const user = await api('/api/users/me');
-            if (!user) {
-                alert('请先登录');
+        // ===== 确保已登录（同步检查缓存，未登录则弹登录框） =====
+        function ensureLogin() {
+            if (!currentUser) {
+                showToast('请先登录', 'warning');
                 openAuthModal('login');
                 return false;
             }
             return true;
         }
 
-        // ===== 打开认证模态框 =====
+        // ===== 打开登录/注册模态框 =====
         function openAuthModal(mode) {
-            authMode = mode;
             document.getElementById('authTitle').textContent = mode === 'login' ? '登录' : '注册';
             document.getElementById('authSubmit').textContent = mode === 'login' ? '登录' : '注册';
             document.getElementById('nicknameGroup').classList.toggle('hidden', mode === 'login');
             document.getElementById('switchText').textContent = mode === 'login' ? '还没有账号？' : '已有账号？';
             document.querySelector('#switchText + a').textContent = mode === 'login' ? '去注册' : '去登录';
+            document.getElementById('authError').textContent = '';
             document.getElementById('authModal').classList.add('show');
         }
 
-        // ===== 关闭认证模态框 =====
+        // ===== 关闭登录/注册模态框 =====
         function closeAuthModal() {
             document.getElementById('authModal').classList.remove('show');
             document.getElementById('authUsername').value = '';
             document.getElementById('authPassword').value = '';
             document.getElementById('authNickname').value = '';
+            document.getElementById('authError').textContent = '';
         }
 
         // ===== 切换登录/注册模式 =====
         function switchAuthMode() {
-            openAuthModal(authMode === 'login' ? 'register' : 'login');
+            const isLogin = document.getElementById('authTitle').textContent === '登录';
+            openAuthModal(isLogin ? 'register' : 'login');
         }
 
         // ===== 提交登录/注册 =====
@@ -667,39 +1287,93 @@
             const username = document.getElementById('authUsername').value.trim();
             const password = document.getElementById('authPassword').value;
             const nickname = document.getElementById('authNickname').value.trim();
-            if (!username || !password) { alert('用户名和密码不能为空'); return; }
-
-            const url = authMode === 'login' ? '/api/users/login' : '/api/users/register';
-            const body = authMode === 'login'
-                ? { username, password }
-                : { username, password, nickname };
-            const resp = await api(url, { method: 'POST', body });
-            if (resp) {
+            const errEl = document.getElementById('authError');
+            const isLogin = document.getElementById('authTitle').textContent === '登录';
+            if (!username || !password) {
+                errEl.textContent = '用户名和密码不能为空';
+                return;
+            }
+            if (!isLogin && password.length < 6) {
+                errEl.textContent = '密码至少 6 位';
+                return;
+            }
+            const url = isLogin ? '/api/users/login' : '/api/users/register';
+            const body = isLogin ? { username, password } : { username, password, nickname };
+            const ok = await apiOk(url, { method: 'POST', body });
+            if (ok) {
                 closeAuthModal();
                 await checkLogin();
-                alert(authMode === 'login' ? '登录成功' : '注册成功，已自动登录');
+                showToast(isLogin ? '登录成功' : '注册成功，已自动登录', 'success');
             } else {
-                alert(authMode === 'login' ? '用户名或密码错误，或账号已被禁用' : '用户名已存在');
+                errEl.textContent = isLogin ? '用户名或密码错误' : '注册失败，用户名可能已存在';
             }
         }
 
-        // ===== 登出 =====
+        // ===== 退出登录 =====
         async function logout() {
-            await api('/api/users/logout', { method: 'POST' });
-            renderUserArea(null);
-            showHome();
+            await apiOk('/api/users/logout', { method: 'POST' });
+            currentUser = null;
+            renderUserArea();
+            navigate('home');
+            showToast('已退出登录', 'info');
         }
 
-        // ===== 工具：HTML 转义 =====
-        function escapeHtml(s) {
-            if (s == null) return '';
-            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        // ===== 打开修改密码模态框 =====
+        function openPwdModal() {
+            document.getElementById('pwdModal').classList.add('show');
+            document.getElementById('pwdError').textContent = '';
         }
 
-        // ===== 工具：时间格式化 =====
-        function formatTime(s) {
-            if (!s) return '';
-            return s.replace('T', ' ').substring(0, 16);
+        // ===== 关闭修改密码模态框 =====
+        function closePwdModal() {
+            document.getElementById('pwdModal').classList.remove('show');
+            document.getElementById('oldPwd').value = '';
+            document.getElementById('newPwd').value = '';
+            document.getElementById('confirmPwd').value = '';
+            document.getElementById('pwdError').textContent = '';
+        }
+
+        // ===== 提交修改密码 =====
+        // 用 fetch 直接处理：需按状态码区分 200/422 等错误语义
+        async function changePassword() {
+            const oldPassword = document.getElementById('oldPwd').value;
+            const newPassword = document.getElementById('newPwd').value;
+            const confirmPassword = document.getElementById('confirmPwd').value;
+            const errEl = document.getElementById('pwdError');
+            if (!oldPassword || !newPassword) {
+                errEl.textContent = '请填写完整';
+                return;
+            }
+            if (newPassword.length < 6) {
+                errEl.textContent = '新密码至少 6 位';
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                errEl.textContent = '两次新密码不一致';
+                return;
+            }
+            try {
+                const resp = await fetch('/api/users/change-password', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oldPassword, newPassword })
+                });
+                if (resp.status === 200) {
+                    closePwdModal();
+                    showToast('密码修改成功，请重新登录', 'success');
+                    // 后端会 invalidate session，强制重新登录
+                    currentUser = null;
+                    renderUserArea();
+                    openAuthModal('login');
+                } else if (resp.status === 422) {
+                    errEl.textContent = '旧密码错误';
+                } else {
+                    errEl.textContent = '修改失败，请稍后重试';
+                }
+            } catch (err) {
+                errEl.textContent = '网络异常，请稍后重试';
+            }
         }
     </script>
 </body>
