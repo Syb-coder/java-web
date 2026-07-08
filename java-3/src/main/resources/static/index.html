@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校园闲置交易平台</title>
+<style>
+  /* ===== 全局变量：蓝绿色系校园风 ===== */
+  :root{
+    --primary:#14b8a6;        /* 主色：青绿 */
+    --primary-dark:#0d9488;   /* 深青绿 */
+    --primary-light:#5eead4;  /* 浅青绿 */
+    --accent:#3b82f6;         /* 辅色：蓝 */
+    --bg:#eef6f6;             /* 页面背景 */
+    --card:#ffffff;           /* 卡片背景 */
+    --text:#1f2937;           /* 主文本 */
+    --muted:#6b7280;          /* 次要文本 */
+    --border:#e5e7eb;         /* 边框 */
+    --danger:#ef4444;         /* 危险色 */
+    --warning:#f59e0b;        /* 警告色 */
+    --success:#10b981;        /* 成功色 */
+    --shadow:0 4px 16px rgba(20,184,166,.08);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  input,textarea,select{font-family:inherit;font-size:14px;outline:none}
+
+  /* ===== 顶部导航 ===== */
+  .navbar{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient(90deg,var(--primary-dark),var(--primary));
+    color:#fff;box-shadow:0 2px 10px rgba(13,148,136,.25);
+  }
+  .nav-inner{
+    max-width:1200px;margin:0 auto;padding:0 16px;height:56px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .logo{font-size:18px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:6px}
+  .nav-links{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-item{
+    position:relative;padding:8px 12px;border-radius:8px;font-size:14px;
+    white-space:nowrap;transition:background .2s;opacity:.92;
+  }
+  .nav-item:hover{background:rgba(255,255,255,.18)}
+  .nav-item.active{background:rgba(255,255,255,.25);font-weight:600}
+  .nav-badge{
+    position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;
+    background:var(--danger);border-radius:8px;font-size:10px;line-height:16px;
+    text-align:center;color:#fff;display:none;
+  }
+  .nav-right{display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .btn{padding:7px 14px;border-radius:8px;font-size:14px;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+  .btn-ghost{color:#fff;background:rgba(255,255,255,.18)}
+  .btn-ghost:hover{background:rgba(255,255,255,.3)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-accent{background:var(--accent);color:#fff}
+  .btn-accent:hover{background:#2563eb}
+  .btn-danger{background:var(--danger);color:#fff}
+  .btn-danger:hover{background:#dc2626}
+  .btn-outline{background:#fff;color:var(--primary-dark);border:1px solid var(--primary)}
+  .btn-outline:hover{background:var(--primary);color:#fff}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* 用户下拉 */
+  .user-menu{position:relative}
+  .user-trigger{display:flex;align-items:center;gap:6px;color:#fff;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.18)}
+  .user-trigger:hover{background:rgba(255,255,255,.3)}
+  .avatar{width:26px;height:26px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:600;overflow:hidden;flex-shrink:0}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .dropdown{
+    position:absolute;right:0;top:46px;min-width:140px;background:#fff;
+    border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:6px;
+    display:none;color:var(--text);z-index:60;
+  }
+  .dropdown.show{display:block}
+  .dropdown-item{padding:8px 12px;border-radius:6px;font-size:14px;cursor:pointer}
+  .dropdown-item:hover{background:var(--bg)}
+
+  /* ===== 公告滚动条 ===== */
+  .marquee-bar{
+    background:#fff;border-bottom:1px solid var(--border);overflow:hidden;height:36px;
+    display:flex;align-items:center;
+  }
+  .marquee-inner{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:10px;width:100%}
+  .marquee-tag{background:var(--warning);color:#fff;font-size:12px;padding:2px 8px;border-radius:4px;flex-shrink:0;font-weight:600}
+  .marquee-track{flex:1;overflow:hidden;white-space:nowrap;position:relative}
+  .marquee-content{display:inline-block;padding-left:100%;animation:marquee 28s linear infinite;color:var(--text);font-size:13px}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+  /* ===== 主内容 ===== */
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* 首页工具栏 */
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+  .search-box{flex:1;min-width:220px;display:flex;align-items:center;background:#fff;border:1px solid var(--border);border-radius:24px;padding:4px 4px 4px 16px;box-shadow:var(--shadow)}
+  .search-box input{flex:1;border:none;background:transparent;padding:6px 8px;font-size:14px}
+  .search-box button{background:var(--primary);color:#fff;border-radius:20px;padding:7px 18px}
+  .search-box button:hover{background:var(--primary-dark)}
+  .category-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+  .category-tabs::-webkit-scrollbar{height:4px}
+  .cat-tab{padding:6px 14px;border-radius:20px;background:#fff;border:1px solid var(--border);white-space:nowrap;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s}
+  .cat-tab:hover{border-color:var(--primary);color:var(--primary-dark)}
+  .cat-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+  /* 商品网格 */
+  .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .product-card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+  .product-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(20,184,166,.18)}
+  .product-img{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#a7f3d0,#5eead4);display:flex;align-items:center;justify-content:center;font-size:42px;position:relative;overflow:hidden}
+  .product-img img{width:100%;height:100%;object-fit:cover}
+  .product-status{position:absolute;top:8px;left:8px;font-size:11px;padding:2px 8px;border-radius:4px;color:#fff;font-weight:600}
+  .status-APPROVED{background:var(--success)}
+  .status-PENDING{background:var(--warning)}
+  .status-REJECTED{background:var(--danger)}
+  .sold-tag{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px}
+  .product-body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .product-title{font-size:14px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px}
+  .product-price{color:var(--danger);font-size:18px;font-weight:700}
+  .product-price small{color:var(--muted);font-size:12px;font-weight:400;text-decoration:line-through;margin-left:6px}
+  .product-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-top:auto}
+  .product-tag{background:#eef6f6;color:var(--primary-dark);padding:1px 6px;border-radius:4px;font-size:11px}
+  .stats{display:flex;gap:10px;font-size:12px;color:var(--muted)}
+
+  /* 空状态 */
+  .empty{text-align:center;padding:48px 16px;color:var(--muted)}
+  .empty-icon{font-size:48px;margin-bottom:8px}
+
+  /* 分页 */
+  .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:24px;flex-wrap:wrap}
+  .pagination button{min-width:36px;height:36px;border-radius:8px;background:#fff;border:1px solid var(--border);color:var(--text)}
+  .pagination button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .pagination button:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ===== 弹窗 ===== */
+  .modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow:auto;box-shadow:0 16px 48px rgba(0,0,0,.25);animation:slideUp .25s}
+  .modal.wide{max-width:880px}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+  .modal-title{font-size:17px;font-weight:700}
+  .modal-close{font-size:22px;color:var(--muted);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .modal-close:hover{background:var(--bg);color:var(--text)}
+  .modal-body{padding:20px}
+  .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+
+  /* 表单 */
+  .form-group{margin-bottom:14px}
+  .form-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text);font-weight:600}
+  .form-label .req{color:var(--danger)}
+  .form-control{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;transition:border .2s}
+  .form-control:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(20,184,166,.15)}
+  textarea.form-control{resize:vertical;min-height:80px}
+  .form-row{display:flex;gap:12px}
+  .form-row .form-group{flex:1}
+  .form-hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .form-error{font-size:12px;color:var(--danger);margin-top:4px;display:none}
+  .tab-switch{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:16px}
+  .tab-switch button{flex:1;padding:8px;border-radius:8px;font-size:14px;color:var(--muted)}
+  .tab-switch button.active{background:#fff;color:var(--primary-dark);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+
+  /* 商品详情 */
+  .detail-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .detail-img{width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#a7f3d0,#5eead4);display:flex;align-items:center;justify-content:center;font-size:64px}
+  .detail-img img{width:100%;height:100%;object-fit:cover}
+  .detail-info h2{font-size:18px;margin-bottom:8px}
+  .detail-price{font-size:26px;color:var(--danger);font-weight:700;margin-bottom:8px}
+  .detail-price .orig{font-size:14px;color:var(--muted);font-weight:400;text-decoration:line-through;margin-left:8px}
+  .detail-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px dashed var(--border)}
+  .detail-row .label{color:var(--muted)}
+  .detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .detail-desc{margin-top:14px;padding:12px;background:var(--bg);border-radius:8px;font-size:13px;white-space:pre-wrap}
+  .comment-section{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
+  .comment-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .comment-item .avatar{width:32px;height:32px;font-size:14px}
+  .comment-body{flex:1}
+  .comment-user{font-size:13px;font-weight:600}
+  .comment-time{font-size:11px;color:var(--muted);margin-left:8px}
+  .comment-text{font-size:13px;color:var(--text);margin-top:2px}
+
+  /* 订单/列表卡片 */
+  .list-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+  .list-card .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .order-no{font-size:12px;color:var(--muted)}
+  .order-status{padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .st-PENDING{background:#fef3c7;color:#92400e}
+  .st-PAID{background:#dbeafe;color:#1e40af}
+  .st-COMPLETED{background:#d1fae5;color:#065f46}
+  .st-CANCELLED{background:#fee2e2;color:#991b1b}
+  .audit-APPROVED{background:#d1fae5;color:#065f46}
+  .audit-PENDING{background:#fef3c7;color:#92400e}
+  .audit-REJECTED{background:#fee2e2;color:#991b1b}
+
+  /* 消息页 */
+  .msg-wrap{display:grid;grid-template-columns:280px 1fr;gap:16px;height:calc(100vh - 180px);min-height:420px}
+  .msg-sidebar{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:auto}
+  .msg-conv{padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:center}
+  .msg-conv:hover{background:var(--bg)}
+  .msg-conv.active{background:#eef6f6;border-left:3px solid var(--primary)}
+  .msg-conv-name{font-size:14px;font-weight:600}
+  .msg-conv-preview{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+  .msg-conv .unread-dot{background:var(--danger);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;padding:0 4px;text-align:center;line-height:16px}
+  .msg-panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+  .msg-header{padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600}
+  .msg-list{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+  .msg-bubble{max-width:70%;padding:8px 12px;border-radius:12px;font-size:13px;word-break:break-word}
+  .msg-bubble.mine{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+  .msg-bubble.other{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px}
+  .msg-time{font-size:10px;color:var(--muted);align-self:center}
+  .msg-input{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px}
+  .msg-input input{flex:1;border:1px solid var(--border);border-radius:8px;padding:9px 12px}
+  .msg-input button{background:var(--primary);color:#fff;border-radius:8px;padding:9px 18px}
+  .msg-input button:disabled{opacity:.5}
+
+  /* 公告/反馈 */
+  .notice-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:12px;border-left:4px solid var(--border)}
+  .notice-card.pinned{border-left-color:var(--warning);background:#fffbeb}
+  .notice-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .pin-tag{background:var(--warning);color:#fff;font-size:11px;padding:1px 6px;border-radius:4px}
+  .notice-content{font-size:13px;color:var(--text);margin-top:8px;white-space:pre-wrap}
+  .notice-time{font-size:12px;color:var(--muted);margin-top:6px}
+
+  /* 评分星星 */
+  .star-input{display:flex;gap:4px;font-size:28px}
+  .star-input span{color:#d1d5db;cursor:pointer;transition:color .15s}
+  .star-input span.on{color:var(--warning)}
+  .rating-display{color:var(--warning);font-size:13px}
+
+  /* Toast */
+  #toast-root{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center}
+  .toast{padding:10px 20px;border-radius:8px;color:#fff;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.2);animation:toastIn .25s;max-width:90vw}
+  .toast.success{background:var(--success)}
+  .toast.error{background:var(--danger)}
+  .toast.info{background:var(--accent)}
+  @keyframes toastIn{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  .page-title{font-size:20px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .section-tip{background:#fff;border-radius:var(--radius);padding:12px 16px;color:var(--muted);font-size:13px;margin-bottom:12px}
+
+  /* 响应式 */
+  @media (max-width:900px){
+    .product-grid{grid-template-columns:repeat(3,1fr)}
+    .detail-wrap{grid-template-columns:1fr}
+    .msg-wrap{grid-template-columns:1fr;height:auto}
+    .msg-sidebar{max-height:220px}
+  }
+  @media (max-width:640px){
+    .product-grid{grid-template-columns:repeat(2,1fr)}
+    .nav-inner{height:auto;padding:8px 12px;flex-wrap:wrap}
+    .logo{font-size:16px}
+    .nav-links{order:3;width:100%}
+    .form-row{flex-direction:column}
+    .modal{max-height:94vh}
+  }
+  @media (max-width:380px){
+    .product-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="logo">🎓 校园闲置交易平台</div>
+    <nav class="nav-links" id="navLinks">
+      <a class="nav-item active" data-action="nav" data-page="home">首页</a>
+      <a class="nav-item" data-action="nav" data-page="mine">我的发布</a>
+      <a class="nav-item" data-action="nav" data-page="orders">我的订单</a>
+      <a class="nav-item" data-action="nav" data-page="messages">消息<span class="nav-badge" id="navUnread">0</span></a>
+      <a class="nav-item" data-action="nav" data-page="announcements">公告</a>
+      <a class="nav-item" data-action="nav" data-page="feedback">反馈</a>
+    </nav>
+    <div class="nav-right" id="navRight">
+      <!-- 未登录态/已登录态由 JS 渲染 -->
+    </div>
+  </div>
+</header>
+
+<!-- 公告滚动条 -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <span class="marquee-tag">公告</span>
+    <div class="marquee-track"><div class="marquee-content" id="marqueeContent">加载中...</div></div>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<main id="app">
+  <!-- 首页 -->
+  <section class="page active" id="page-home">
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索商品标题或描述..." maxlength="50">
+        <button data-action="search">搜索</button>
+      </div>
+      <button class="btn btn-accent" data-action="open-publish">＋ 发布闲置</button>
+    </div>
+    <div class="category-tabs" id="categoryTabs"></div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <!-- 我的发布 -->
+  <section class="page" id="page-mine">
+    <div class="page-title">
+      <span>我的发布</span>
+      <button class="btn btn-accent" data-action="open-publish">＋ 发布闲置</button>
+    </div>
+    <div id="mineList"></div>
+  </section>
+
+  <!-- 我的订单 -->
+  <section class="page" id="page-orders">
+    <div class="page-title">我的订单</div>
+    <div id="ordersList"></div>
+  </section>
+
+  <!-- 消息 -->
+  <section class="page" id="page-messages">
+    <div class="page-title">站内消息</div>
+    <div class="msg-wrap">
+      <div class="msg-sidebar" id="msgSidebar"></div>
+      <div class="msg-panel" id="msgPanel">
+        <div class="empty"><div class="empty-icon">💬</div>选择左侧会话或从商品详情联系卖家</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 公告 -->
+  <section class="page" id="page-announcements">
+    <div class="page-title">平台公告</div>
+    <div id="announcementsList"></div>
+  </section>
+
+  <!-- 反馈 -->
+  <section class="page" id="page-feedback">
+    <div class="page-title">意见反馈</div>
+    <div class="section-tip">遇到问题或有建议？欢迎向我们反馈，管理员会及时处理并回复。</div>
+    <div class="list-card" style="max-width:640px">
+      <div class="form-group">
+        <label class="form-label">标题 <span class="req">*</span></label>
+        <input type="text" class="form-control" id="fbTitle" placeholder="一句话概括您的反馈" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">内容 <span class="req">*</span></label>
+        <textarea class="form-control" id="fbContent" placeholder="详细描述您遇到的问题或建议（最多 1000 字）" maxlength="1000"></textarea>
+      </div>
+      <div><button class="btn btn-primary" data-action="submit-feedback">提交反馈</button></div>
+    </div>
+    <h3 style="margin:20px 0 10px;font-size:16px">我的反馈记录</h3>
+    <div id="feedbackList"></div>
+  </section>
+</main>
+
+<!-- 弹窗根节点 -->
+<div id="modalRoot"></div>
+<!-- Toast 根节点 -->
+<div id="toast-root"></div>
+
+<script>
+"use strict";
+/* ============================================================
+ * 校园闲置交易平台 - 前台单页应用
+ * 原生 JS + fetch，session 会话维持（credentials: same-origin）
+ * ============================================================ */
+
+/* ---------- 全局状态 ---------- */
+const state = {
+  user: null,              // 当前登录用户 {id, username, nickname, role}
+  page: "home",            // 当前页面
+  categories: [],          // 商品分类
+  products: [],            // 首页商品列表
+  productPage: 0,          // 当前页码
+  productTotalPages: 0,    // 总页数
+  selectedCategory: null,  // 选中的分类 ID
+  keyword: "",             // 搜索关键词
+  currentProduct: null,    // 当前查看的商品详情
+  currentChatOtherId: null,// 当前消息对话对方 ID
+  msgPollTimer: null,      // 消息轮询定时器
+  appointments: []         // 我的预约缓存
+};
+
+/* 新旧程度选项（与种子数据风格一致，后端为自由字符串） */
+const CONDITION_OPTIONS = ["全新", "几乎全新", "9成新", "8成新", "7成新", "6成新及以下"];
+
+/* ============================================================
+ * 工具函数
+ * ============================================================ */
+
+/**
+ * 统一 fetch 封装：自动带 session、JSON 序列化、错误归一化
+ * @param {string} url 请求地址（相对路径）
+ * @param {object} opts {method, body, headers}
+ * @returns {Promise<any>} 解析后的 JSON
+ * @throws {Error} 非 2xx 或网络异常时抛出带提示信息的错误
+ */
+async function api(url, opts = {}) {
+  const method = (opts.method || "GET").toUpperCase();
+  const headers = Object.assign({"Content-Type": "application/json"}, opts.headers || {});
+  const fetchOpts = {method, credentials: "same-origin", headers};
+  if (opts.body !== undefined && opts.body !== null) {
+    fetchOpts.body = JSON.stringify(opts.body);
+  }
+  let res;
+  try {
+    res = await fetch(url, fetchOpts);
+  } catch (e) {
+    throw new Error("网络异常，请检查连接");
+  }
+  let data = null;
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) {
+    data = await res.json();
+  } else {
+    data = await res.text();
+  }
+  if (!res.ok) {
+    const msg = (data && data.error) ? data.error : `请求失败（${res.status}）`;
+    throw new Error(msg);
+  }
+  return data;
+}
+
+/** 轻量 toast 提示 */
+function toast(msg, type = "info") {
+  const root = document.getElementById("toast-root");
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.textContent = msg;
+  root.appendChild(el);
+  setTimeout(() => { el.style.opacity = "0"; el.style.transition = "opacity .3s"; }, 2200);
+  setTimeout(() => el.remove(), 2600);
+}
+
+/** HTML 转义，防止 XSS */
+function esc(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/** 价格格式化 */
+function priceFmt(v) {
+  if (v === null || v === undefined || v === "") return "面议";
+  const n = Number(v);
+  return isNaN(n) ? "面议" : "¥" + n.toFixed(2);
+}
+
+/** 取商品首图 URL（images 字段以分号分隔） */
+function firstImage(images) {
+  if (!images) return "";
+  const arr = String(images).split(";").map(s => s.trim()).filter(Boolean);
+  return arr.length ? arr[0] : "";
+}
+
+/** 取分类图标（无图时用作占位） */
+function catIcon(categoryName) {
+  const cat = state.categories.find(c => c.name === categoryName);
+  return cat && cat.icon ? cat.icon : "📦";
+}
+
+/** 生成头像首字母 */
+function initial(name) {
+  if (!name) return "?";
+  return name.charAt(0).toUpperCase();
+}
+
+/** 状态文案映射 */
+const STATUS_TEXT = {PENDING: "待付款", PAID: "已付款", COMPLETED: "已完成", CANCELLED: "已取消"};
+const AUDIT_TEXT = {PENDING: "待审核", APPROVED: "已通过", REJECTED: "已驳回"};
+
+/** 登录态检查：未登录则弹登录框并返回 false */
+function requireLogin() {
+  if (state.user) return true;
+  toast("请先登录", "error");
+  openAuthModal("login");
+  return false;
+}
+
+/* ============================================================
+ * 弹窗通用控制
+ * ============================================================ */
+
+/** 打开弹窗 */
+function openModal(html, wide) {
+  const root = document.getElementById("modalRoot");
+  root.innerHTML = '<div class="modal-mask"><div class="modal' + (wide ? " wide" : "") + '">' + html + "</div></div>";
+  // 点击遮罩关闭
+  root.querySelector(".modal-mask").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+}
+
+/** 关闭弹窗 */
+function closeModal() {
+  document.getElementById("modalRoot").innerHTML = "";
+}
+
+/** 通用弹窗骨架 */
+function modalShell(title, bodyHtml, footerHtml, wide) {
+  return '<div class="modal-header"><div class="modal-title">' + title + '</div>' +
+    '<button class="modal-close" data-action="close-modal">&times;</button></div>' +
+    '<div class="modal-body">' + bodyHtml + "</div>" +
+    (footerHtml ? '<div class="modal-footer">' + footerHtml + "</div>" : "");
+}
+
+/* ============================================================
+ * 认证模块
+ * ============================================================ */
+
+/** 检查登录态（GET /api/auth/me） */
+async function checkLogin() {
+  try {
+    const data = await api("/api/auth/me");
+    if (data && data.role === "USER") {
+      state.user = {id: data.id, username: data.username, nickname: data.nickname || data.username, role: "USER"};
+    } else {
+      state.user = null;
+    }
+  } catch (e) {
+    state.user = null;
+  }
+  renderNavRight();
+  startMessagePoll();
+}
+
+/** 渲染右上角登录态 */
+function renderNavRight() {
+  const box = document.getElementById("navRight");
+  if (state.user) {
+    box.innerHTML =
+      '<button class="btn btn-ghost" data-action="open-publish">＋ 发布</button>' +
+      '<div class="user-menu">' +
+        '<div class="user-trigger" data-action="toggle-user-menu">' +
+          '<span class="avatar">' + esc(initial(state.user.nickname)) + "</span>" +
+          "<span>" + esc(state.user.nickname) + '</span><span style="font-size:10px">▼</span>' +
+        "</div>" +
+        '<div class="dropdown" id="userDropdown">' +
+          '<div class="dropdown-item" data-action="open-profile">个人中心</div>' +
+          '<div class="dropdown-item" data-action="open-change-password">修改密码</div>' +
+          '<div class="dropdown-item" data-action="logout" style="color:var(--danger)">退出登录</div>' +
+        "</div>" +
+      "</div>";
+  } else {
+    box.innerHTML =
+      '<button class="btn btn-ghost" data-action="open-login">登录</button>' +
+      '<button class="btn btn-ghost" data-action="open-register">注册</button>';
+  }
+}
+
+/** 打开登录/注册弹窗 */
+function openAuthModal(mode) {
+  const isLogin = mode === "login";
+  const body =
+    '<div class="tab-switch">' +
+      '<button class="' + (isLogin ? "active" : "") + '" data-action="switch-auth" data-mode="login">登录</button>' +
+      '<button class="' + (!isLogin ? "active" : "") + '" data-action="switch-auth" data-mode="register">注册</button>' +
+    "</div>" +
+    (isLogin ? loginFormHtml() : registerFormHtml());
+  openModal(modalShell(isLogin ? "学生登录" : "学生注册", body,
+    '<button class="btn btn-outline" data-action="close-modal">取消</button>' +
+    '<button class="btn btn-primary" data-action="' + (isLogin ? "do-login" : "do-register") + '">' + (isLogin ? "登录" : "注册") + "</button>"));
+}
+
+function loginFormHtml() {
+  return '<div class="form-group"><label class="form-label">用户名 <span class="req">*</span></label>' +
+    '<input type="text" class="form-control" id="loginUsername" placeholder="请输入用户名" autocomplete="username"></div>' +
+    '<div class="form-group"><label class="form-label">密码 <span class="req">*</span></label>' +
+    '<input type="password" class="form-control" id="loginPassword" placeholder="请输入密码" autocomplete="current-password"></div>' +
+    '<div class="form-hint">默认账号：zhangsan / 123456</div>';
+}
+
+function registerFormHtml() {
+  return '<div class="form-row"><div class="form-group"><label class="form-label">学号 <span class="req">*</span></label>' +
+    '<input type="text" class="form-control" id="regStudentId" placeholder="6-20 位学号" maxlength="20"></div>' +
+    '<div class="form-group"><label class="form-label">用户名 <span class="req">*</span></label>' +
+    '<input type="text" class="form-control" id="regUsername" placeholder="3-50 位用户名" maxlength="50"></div></div>' +
+    '<div class="form-row"><div class="form-group"><label class="form-label">密码 <span class="req">*</span></label>' +
+    '<input type="password" class="form-control" id="regPassword" placeholder="6-30 位密码" maxlength="30"></div>' +
+    '<div class="form-group"><label class="form-label">昵称 <span class="req">*</span></label>' +
+    '<input type="text" class="form-control" id="regNickname" placeholder="请输入昵称" maxlength="50"></div></div>' +
+    '<div class="form-group"><label class="form-label">联系电话</label>' +
+    '<input type="text" class="form-control" id="regPhone" placeholder="选填，便于卖家联系" maxlength="20"></div>';
+}
+
+/** 执行登录 */
+async function doLogin() {
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  if (!username || !password) { toast("请填写用户名和密码", "error"); return; }
+  try {
+    const data = await api("/api/users/login", {method: "POST", body: {username, password}});
+    state.user = {id: data.id, username: data.username, nickname: data.displayName || data.username, role: data.role || "USER"};
+    closeModal();
+    toast("登录成功", "success");
+    renderNavRight();
+    startMessagePoll();
+    navigate(state.page); // 刷新当前页
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
+/** 执行注册 */
+async function doRegister() {
+  const studentId = document.getElementById("regStudentId").value.trim();
+  const username = document.getElementById("regUsername").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const nickname = document.getElementById("regNickname").value.trim();
+  const phone = document.getElementById("regPhone").value.trim();
+  if (!studentId || studentId.length < 6) { toast("学号长度需在 6-20 之间", "error"); return; }
+  if (!username || username.length < 3) { toast("用户名长度需在 3-50 之间", "error"); return; }
+  if (!password || password.length < 6) { toast("密码长度需在 6-30 之间", "error"); return; }
+  if (!nickname) { toast("请填写昵称", "error"); return; }
+  try {
+    await api("/api/users/register", {method: "POST", body: {studentId, username, password, nickname, phone}});
+    toast("注册成功，请登录", "success");
+    openAuthModal("login");
+    const u = document.getElementById("loginUsername");
+    if (u) u.value = username;
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
+/** 退出登录 */
+async function doLogout() {
+  try { await api("/api/users/logout", {method: "POST"}); } catch (e) { /* 忽略 */ }
+  state.user = null;
+  state.currentChatOtherId = null;
+  stopMessagePoll();
+  renderNavRight();
+  navigate("home");
+  toast("已退出登录", "info");
+}
+
+/* ============================================================
+ * 导航
+ * ============================================================ */
+
+function navigate(page) {
+  state.page = page;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const el = document.getElementById("page-" + page);
+  if (el) el.classList.add("active");
+  document.querySelectorAll("#navLinks .nav-item").forEach(n => {
+    n.classList.toggle("active", n.dataset.page === page);
+  });
+  // 按页面加载对应数据
+  switch (page) {
+    case "home": loadProducts(); break;
+    case "mine": loadMyProducts(); break;
+    case "orders": loadOrders(); break;
+    case "messages": loadRecentConversations(); break;
+    case "announcements": loadAnnouncementsPage(); break;
+    case "feedback": loadMyFeedbacks(); break;
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ============================================================
+ * 首页：分类 + 商品列表
+ * ============================================================ */
+
+/** 加载分类（GET /api/products/categories） */
+async function loadCategories() {
+  try {
+    const list = await api("/api/products/categories");
+    state.categories = Array.isArray(list) ? list : [];
+  } catch (e) {
+    state.categories = [];
+  }
+  renderCategoryTabs();
+}
+
+function renderCategoryTabs() {
+  const box = document.getElementById("categoryTabs");
+  let html = '<span class="cat-tab ' + (state.selectedCategory === null ? "active" : "") + '" data-action="select-category" data-id="">全部</span>';
+  state.categories.forEach(c => {
+    html += '<span class="cat-tab ' + (state.selectedCategory === c.id ? "active" : "") + '" data-action="select-category" data-id="' + c.id + '">' + esc(c.icon || "") + " " + esc(c.name) + "</span>";
+  });
+  box.innerHTML = html;
+}
+
+/** 加载商品列表（GET /api/products） */
+async function loadProducts() {
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⏳</div>加载中...</div>';
+  try {
+    const params = new URLSearchParams({page: state.productPage, size: 12});
+    if (state.selectedCategory) params.set("categoryId", state.selectedCategory);
+    if (state.keyword) params.set("keyword", state.keyword);
+    const data = await api("/api/products?" + params.toString());
+    state.products = data.content || [];
+    state.productTotalPages = data.totalPages || 0;
+    renderProducts();
+    renderPagination();
+  } catch (e) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⚠️</div>' + esc(e.message) + "</div>";
+  }
+}
+
+function renderProducts() {
+  const grid = document.getElementById("productGrid");
+  if (!state.products.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📦</div>暂无符合条件的商品</div>';
+    return;
+  }
+  grid.innerHTML = state.products.map(p => {
+    const img = firstImage(p.images);
+    const imgHtml = img ? '<img src="' + esc(img) + '" alt="' + esc(p.title) + '" onerror="this.style.display=\'none\'">' : esc(catIcon(p.categoryName));
+    const soldTag = p.sold ? '<span class="sold-tag">已售</span>' : "";
+    return '<div class="product-card" data-action="product-detail" data-id="' + p.id + '">' +
+      '<div class="product-img">' + imgHtml + soldTag + "</div>" +
+      '<div class="product-body">' +
+        '<div class="product-title">' + esc(p.title) + "</div>" +
+        '<div class="product-price">' + priceFmt(p.price) + (p.originalPrice ? "<small>" + priceFmt(p.originalPrice) + "</small>" : "") + "</div>" +
+        '<div class="product-meta">' +
+          "<span>" + esc(p.sellerName || "匿名卖家") + "</span>" +
+          '<span class="product-tag">' + esc(p.conditionLevel || "未知") + "</span>" +
+        "</div>" +
+        '<div class="stats"><span>❤ ' + (p.likeCount || 0) + "</span><span>⭐ " + (p.favoriteCount || 0) + "</span></div>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+}
+
+function renderPagination() {
+  const box = document.getElementById("pagination");
+  if (state.productTotalPages <= 1) { box.innerHTML = ""; return; }
+  let html = '<button data-action="prev-page" ' + (state.productPage === 0 ? "disabled" : "") + ">上一页</button>";
+  for (let i = 0; i < state.productTotalPages; i++) {
+    html += '<button class="' + (i === state.productPage ? "active" : "") + '" data-action="goto-page" data-page="' + i + '">' + (i + 1) + "</button>";
+  }
+  html += '<button data-action="next-page" ' + (state.productPage >= state.productTotalPages - 1 ? "disabled" : "") + ">下一页</button>";
+  box.innerHTML = html;
+}
+
+/* ============================================================
+ * 商品详情弹窗
+ * ============================================================ */
+
+let detailInteractions = {liked: false, favorited: false}; // 当前用户对详情商品的点赞收藏态
+
+/** 打开商品详情 */
+async function openProductDetail(id) {
+  openModal(modalShell("商品详情", '<div class="empty">加载中...</div>', "", true));
+  try {
+    const p = await api("/api/products/" + id);
+    state.currentProduct = p;
+    // 查询当前用户交互态（未登录也返回 false）
+    try {
+      detailInteractions = await api("/api/products/" + id + "/interactions");
+    } catch (e) { detailInteractions = {liked: false, favorited: false}; }
+    renderProductDetail(p);
+    loadComments(id);
+  } catch (e) {
+    openModal(modalShell("商品详情", '<div class="empty">' + esc(e.message) + "</div>", "", true));
+  }
+}
+
+function renderProductDetail(p) {
+  const img = firstImage(p.images);
+  const imgHtml = img ? '<img src="' + esc(img) + '" alt="' + esc(p.title) + '" onerror="this.style.display=\'none\'">' : esc(catIcon(p.categoryName));
+  const likeBtn = detailInteractions.liked ? "btn-danger" : "btn-outline";
+  const favBtn = detailInteractions.favorited ? "btn-primary" : "btn-outline";
+  const body =
+    '<div class="detail-wrap">' +
+      '<div class="detail-img">' + imgHtml + "</div>" +
+      '<div class="detail-info">' +
+        "<h2>" + esc(p.title) + "</h2>" +
+        '<div class="detail-price">' + priceFmt(p.price) + (p.originalPrice ? '<span class="orig">' + priceFmt(p.originalPrice) + "</span>" : "") + "</div>" +
+        '<div class="detail-row"><span class="label">新旧程度</span><span>' + esc(p.conditionLevel || "未标注") + "</span></div>" +
+        '<div class="detail-row"><span class="label">分类</span><span>' + esc(p.categoryName || "未分类") + "</span></div>" +
+        '<div class="detail-row"><span class="label">卖家</span><span>' + esc(p.sellerName || "匿名") + "</span></div>" +
+        '<div class="detail-row"><span class="label">发布时间</span><span>' + esc(p.createdAt || "-") + "</span></div>" +
+        '<div class="detail-row"><span class="label">点赞 / 收藏</span><span>❤ ' + (p.likeCount || 0) + " / ⭐ " + (p.favoriteCount || 0) + "</span></div>" +
+        (p.description ? '<div class="detail-desc">' + esc(p.description) + "</div>" : "") +
+        '<div class="detail-actions">' +
+          '<button class="btn ' + likeBtn + '" data-action="toggle-like" data-id="' + p.id + '">' + (detailInteractions.liked ? "❤ 已点赞" : "♡ 点赞") + "</button>" +
+          '<button class="btn ' + favBtn + '" data-action="toggle-favorite" data-id="' + p.id + '">' + (detailInteractions.favorited ? "⭐ 已收藏" : "☆ 收藏") + "</button>" +
+          '<button class="btn btn-accent" data-action="contact-seller" data-id="' + p.id + '">联系卖家</button>' +
+          '<button class="btn btn-primary" data-action="buy-now" data-id="' + p.id + '" ' + (p.sold ? "disabled" : "") + ">" + (p.sold ? "已售出" : "立即购买") + "</button>" +
+        "</div>" +
+      "</div>" +
+    "</div>" +
+    '<div class="comment-section" id="commentSection">' +
+      "<h3 style=\"font-size:15px;margin-bottom:10px\">商品评论</h3>" +
+      '<div id="commentList"><div class="empty">加载中...</div></div>' +
+      '<div class="form-group" style="margin-top:12px">' +
+        '<textarea class="form-control" id="commentInput" placeholder="' + (state.user ? "说点什么..." : "请先登录后评论") + '" maxlength="500"></textarea>' +
+      "</div>" +
+      '<button class="btn btn-primary btn-sm" data-action="post-comment" data-id="' + p.id + '">发表评论</button>' +
+    "</div>";
+  document.querySelector("#modalRoot .modal-body").innerHTML = body;
+}
+
+/** 加载评论（GET /api/products/{productId}/comments） */
+async function loadComments(productId) {
+  const box = document.getElementById("commentList");
+  if (!box) return;
+  try {
+    const list = await api("/api/products/" + productId + "/comments");
+    if (!list.length) {
+      box.innerHTML = '<div class="empty" style="padding:16px">暂无评论，快来抢沙发~</div>';
+      return;
+    }
+    box.innerHTML = list.map(c =>
+      '<div class="comment-item">' +
+        '<span class="avatar">' + esc(initial(c.username)) + "</span>" +
+        '<div class="comment-body">' +
+          "<div><span class=\"comment-user\">" + esc(c.username || "匿名") + '</span><span class="comment-time">' + esc(c.createdAt || "") + "</span></div>" +
+          '<div class="comment-text">' + esc(c.content) + "</div>" +
+        "</div>" +
+      "</div>"
+    ).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+/** 发表评论（POST /api/products/{productId}/comments） */
+async function postComment(productId) {
+  if (!requireLogin()) return;
+  const input = document.getElementById("commentInput");
+  const content = input.value.trim();
+  if (!content) { toast("评论内容不能为空", "error"); return; }
+  try {
+    await api("/api/products/" + productId + "/comments", {method: "POST", body: {content}});
+    input.value = "";
+    toast("评论成功", "success");
+    loadComments(productId);
+    // 评论数不变更商品接口，无需刷新详情
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
+/** 点赞切换 */
+async function toggleLike(id) {
+  if (!requireLogin()) return;
+  try {
+    const data = await api("/api/products/" + id + "/like", {method: "POST"});
+    detailInteractions.liked = !!data.liked;
+    if (state.currentProduct && state.currentProduct.id === id) {
+      state.currentProduct.likeCount = Math.max(0, (state.currentProduct.likeCount || 0) + (data.liked ? 1 : -1));
+      renderProductDetail(state.currentProduct);
+      // 全量重渲染会重置评论区，需重新加载
+      loadComments(id);
+    }
+    toast(data.liked ? "已点赞" : "已取消点赞", "info");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/** 收藏切换 */
+async function toggleFavorite(id) {
+  if (!requireLogin()) return;
+  try {
+    const data = await api("/api/products/" + id + "/favorite", {method: "POST"});
+    detailInteractions.favorited = !!data.favorited;
+    if (state.currentProduct && state.currentProduct.id === id) {
+      state.currentProduct.favoriteCount = Math.max(0, (state.currentProduct.favoriteCount || 0) + (data.favorited ? 1 : -1));
+      renderProductDetail(state.currentProduct);
+      loadComments(id);
+    }
+    toast(data.favorited ? "已收藏" : "已取消收藏", "info");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/** 立即购买（POST /api/orders） */
+async function buyNow(productId) {
+  if (!requireLogin()) return;
+  if (state.currentProduct && state.currentProduct.sold) { toast("该商品已售出", "error"); return; }
+  if (state.user && state.currentProduct && state.currentProduct.sellerId === state.user.id) {
+    toast("不能购买自己发布的商品", "error"); return;
+  }
+  const remark = window.prompt("买家留言（选填）：", "") || "";
+  try {
+    await api("/api/orders", {method: "POST", body: {productId, buyerRemark: remark}});
+    toast("下单成功，请尽快付款", "success");
+    closeModal();
+    navigate("orders");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/** 联系卖家：跳转到消息页并打开与卖家对话 */
+async function contactSeller(productId) {
+  if (!requireLogin()) return;
+  const p = state.currentProduct;
+  if (!p) return;
+  if (p.sellerId === state.user.id) { toast("不能给自己发消息", "error"); return; }
+  closeModal();
+  navigate("messages");
+  state.currentChatOtherId = p.sellerId;
+  await openConversation(p.sellerId, p.sellerName);
+}
+
+/* ============================================================
+ * 发布商品弹窗（POST /api/products）
+ * ============================================================ */
+
+function openPublishModal() {
+  if (!requireLogin()) return;
+  if (!state.categories.length) { toast("分类加载中，请稍后", "error"); return; }
+  const catOptions = state.categories.map(c => '<option value="' + c.id + '">' + esc(c.icon || "") + " " + esc(c.name) + "</option>").join("");
+  const condOptions = CONDITION_OPTIONS.map(c => "<option>" + c + "</option>").join("");
+  const body =
+    '<div class="form-group"><label class="form-label">标题 <span class="req">*</span></label>' +
+      '<input type="text" class="form-control" id="pubTitle" placeholder="如：高等数学第七版 教材" maxlength="100"></div>' +
+    '<div class="form-row"><div class="form-group"><label class="form-label">期望价格 <span class="req">*</span></label>' +
+      '<input type="number" class="form-control" id="pubPrice" placeholder="0.00" min="0.01" step="0.01"></div>' +
+      '<div class="form-group"><label class="form-label">原价</label>' +
+      '<input type="number" class="form-control" id="pubOriginalPrice" placeholder="选填" min="0" step="0.01"></div></div>' +
+    '<div class="form-row"><div class="form-group"><label class="form-label">分类 <span class="req">*</span></label>' +
+      '<select class="form-control" id="pubCategory"><option value="">请选择</option>' + catOptions + "</select></div>" +
+      '<div class="form-group"><label class="form-label">新旧程度</label>' +
+      '<select class="form-control" id="pubCondition">' + condOptions + "</select></div></div>" +
+    '<div class="form-group"><label class="form-label">图片 URL</label>' +
+      '<input type="text" class="form-control" id="pubImages" placeholder="多张图片用分号 ; 分隔（选填）">' +
+      '<div class="form-hint">暂仅支持填写图片直链地址</div></div>' +
+    '<div class="form-group"><label class="form-label">商品描述</label>' +
+      '<textarea class="form-control" id="pubDescription" placeholder="描述商品成色、配件、交易方式等" maxlength="1000"></textarea></div>';
+  openModal(modalShell("发布闲置", body,
+    '<button class="btn btn-outline" data-action="close-modal">取消</button>' +
+    '<button class="btn btn-primary" data-action="do-publish">发布</button>'));
+}
+
+async function doPublish() {
+  const title = document.getElementById("pubTitle").value.trim();
+  const price = parseFloat(document.getElementById("pubPrice").value);
+  const originalPrice = parseFloat(document.getElementById("pubOriginalPrice").value);
+  const categoryId = document.getElementById("pubCategory").value;
+  const conditionLevel = document.getElementById("pubCondition").value;
+  const images = document.getElementById("pubImages").value.trim();
+  const description = document.getElementById("pubDescription").value.trim();
+  if (!title) { toast("请填写标题", "error"); return; }
+  if (!price || price <= 0 || isNaN(price)) { toast("价格必须大于 0", "error"); return; }
+  if (!categoryId) { toast("请选择分类", "error"); return; }
+  const payload = {title, price, categoryId: Number(categoryId), conditionLevel, description};
+  if (!isNaN(originalPrice) && originalPrice > 0) payload.originalPrice = originalPrice;
+  if (images) payload.images = images;
+  try {
+    await api("/api/products", {method: "POST", body: payload});
+    toast("发布成功，等待管理员审核", "success");
+    closeModal();
+    if (state.page === "mine") loadMyProducts();
+    else navigate("mine");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 我的发布（GET /api/products/mine，DELETE /api/products/{id}）
+ * ============================================================ */
+
+async function loadMyProducts() {
+  const box = document.getElementById("mineList");
+  if (!state.user) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">🔒</div>请先登录查看我的发布</div>';
+    return;
+  }
+  box.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div>加载中...</div>';
+  try {
+    const list = await api("/api/products/mine");
+    if (!list.length) {
+      box.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>您还没有发布过商品</div>';
+      return;
+    }
+    box.innerHTML = list.map(p => {
+      const img = firstImage(p.images);
+      const imgHtml = img ? '<img src="' + esc(img) + '" alt="" onerror="this.style.display=\'none\'">' : esc(catIcon(p.categoryName));
+      const audit = p.auditStatus || "PENDING";
+      const soldTag = p.sold ? '<span class="sold-tag">已售</span>' : "";
+      return '<div class="list-card">' +
+        '<div class="row">' +
+          '<div style="display:flex;gap:12px;align-items:center;flex:1">' +
+            '<div class="product-img" style="width:64px;height:64px;flex-shrink:0;border-radius:8px">' + imgHtml + soldTag + "</div>" +
+            '<div><div style="font-weight:600">' + esc(p.title) + "</div>" +
+            '<div style="font-size:12px;color:var(--muted)">' + priceFmt(p.price) + " · " + esc(p.conditionLevel || "") + " · " + esc(p.categoryName || "") + "</div>" +
+            '<div style="font-size:12px;color:var(--muted)">' + esc(p.createdAt || "") + "</div></div>" +
+          "</div>" +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
+            '<span class="order-status audit-' + audit + '">' + (AUDIT_TEXT[audit] || audit) + "</span>" +
+            (p.auditRemark ? '<span style="font-size:12px;color:var(--danger)">' + esc(p.auditRemark) + "</span>" : "") +
+            '<div><button class="btn btn-sm btn-outline" data-action="product-detail" data-id="' + p.id + '">查看</button> ' +
+            '<button class="btn btn-sm btn-danger" data-action="delete-product" data-id="' + p.id + '">删除</button></div>' +
+          "</div>" +
+        "</div>" +
+      "</div>";
+    }).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+async function deleteProduct(id) {
+  if (!requireLogin()) return;
+  if (!confirm("确定删除该商品吗？删除后不可恢复。")) return;
+  try {
+    await api("/api/products/" + id, {method: "DELETE"});
+    toast("已删除", "success");
+    loadMyProducts();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 我的订单（GET /api/orders/mine 及状态流转）
+ * ============================================================ */
+
+async function loadOrders() {
+  const box = document.getElementById("ordersList");
+  if (!state.user) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">🔒</div>请先登录查看我的订单</div>';
+    return;
+  }
+  box.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div>加载中...</div>';
+  try {
+    const list = await api("/api/orders/mine");
+    if (!list.length) {
+      box.innerHTML = '<div class="empty"><div class="empty-icon">🧾</div>暂无订单</div>';
+      return;
+    }
+    box.innerHTML = list.map(o => {
+      const st = o.status || "PENDING";
+      const isBuyer = state.user && o.buyerId === state.user.id;
+      const actions = [];
+      if (isBuyer) {
+        if (st === "PENDING") {
+          actions.push('<button class="btn btn-sm btn-primary" data-action="pay-order" data-id="' + o.id + '">付款</button>');
+          actions.push('<button class="btn btn-sm btn-outline" data-action="cancel-order" data-id="' + o.id + '">取消</button>');
+        }
+        if (st === "PAID") {
+          actions.push('<button class="btn btn-sm btn-primary" data-action="complete-order" data-id="' + o.id + '">确认完成</button>');
+          actions.push('<button class="btn btn-sm btn-outline" data-action="open-appointment" data-id="' + o.id + '">预约自提</button>');
+        }
+        if (st === "COMPLETED") {
+          actions.push('<button class="btn btn-sm btn-accent" data-action="open-review" data-id="' + o.id + '">评价</button>');
+        }
+      } else {
+        // 卖家视角：可确认完成
+        if (st === "PAID") {
+          actions.push('<button class="btn btn-sm btn-primary" data-action="complete-order" data-id="' + o.id + '">确认完成</button>');
+        }
+      }
+      return '<div class="list-card">' +
+        '<div class="row"><span class="order-no">订单号：' + esc(o.orderNo || o.id) + "</span>" +
+        '<span class="order-status st-' + st + '">' + (STATUS_TEXT[st] || st) + "</span></div>" +
+        '<div class="row"><div><div style="font-weight:600">' + esc(o.productTitle || "商品已删除") + "</div>" +
+        '<div style="font-size:12px;color:var(--muted)">卖家：' + esc(o.sellerName || "-") + " · 买家：" + esc(o.buyerName || "-") + "</div>" +
+        (o.buyerRemark ? '<div style="font-size:12px;color:var(--muted)">留言：' + esc(o.buyerRemark) + "</div>" : "") + "</div>" +
+        '<div style="color:var(--danger);font-weight:700">' + priceFmt(o.price) + "</div></div>" +
+        '<div class="row"><span style="font-size:12px;color:var(--muted)">下单：' + esc(o.createdAt || "-") + (o.completedAt ? " · 完成：" + esc(o.completedAt) : "") + "</span>" +
+        '<div style="display:flex;gap:6px">' + actions.join(" ") + "</div></div>" +
+      "</div>";
+    }).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+async function orderAction(id, action, okMsg) {
+  if (!requireLogin()) return;
+  try {
+    await api("/api/orders/" + id + "/" + action, {method: "POST"});
+    toast(okMsg, "success");
+    loadOrders();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 评价弹窗（POST /api/reviews）
+ * ============================================================ */
+
+let reviewRating = 5;
+
+function openReviewModal(orderId) {
+  if (!requireLogin()) return;
+  reviewRating = 5;
+  const body =
+    '<div class="form-group"><label class="form-label">评分 <span class="req">*</span></label>' +
+      '<div class="star-input" id="starInput">' +
+        [1,2,3,4,5].map(i => '<span data-val="' + i + '" class="' + (i <= reviewRating ? "on" : "") + '">★</span>').join("") +
+      "</div></div>" +
+    '<div class="form-group"><label class="form-label">评价内容</label>' +
+      '<textarea class="form-control" id="reviewContent" placeholder="对本次交易的评价（选填，最多 500 字）" maxlength="500"></textarea></div>' +
+    '<input type="hidden" id="reviewOrderId" value="' + orderId + '">';
+  openModal(modalShell("交易评价", body,
+    '<button class="btn btn-outline" data-action="close-modal">取消</button>' +
+    '<button class="btn btn-primary" data-action="do-review">提交评价</button>'));
+}
+
+async function doReview() {
+  const orderId = Number(document.getElementById("reviewOrderId").value);
+  const content = document.getElementById("reviewContent").value.trim();
+  if (!reviewRating || reviewRating < 1 || reviewRating > 5) { toast("请选择评分", "error"); return; }
+  try {
+    await api("/api/reviews", {method: "POST", body: {orderId, rating: reviewRating, content}});
+    toast("评价成功", "success");
+    closeModal();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 预约自提弹窗（POST /api/appointments）
+ * ============================================================ */
+
+function openAppointmentModal(orderId) {
+  if (!requireLogin()) return;
+  const body =
+    '<div class="form-hint" style="margin-bottom:10px">填写线下自提时间与地点，方便买卖双方完成交易。</div>' +
+    '<input type="hidden" id="apptOrderId" value="' + orderId + '">' +
+    '<div class="form-group"><label class="form-label">预约时间 <span class="req">*</span></label>' +
+      '<input type="datetime-local" class="form-control" id="apptTime"></div>' +
+    '<div class="form-group"><label class="form-label">自提地点 <span class="req">*</span></label>' +
+      '<input type="text" class="form-control" id="apptLocation" placeholder="如：三号宿舍楼大厅" maxlength="200"></div>' +
+    '<div class="form-group"><label class="form-label">备注</label>' +
+      '<input type="text" class="form-control" id="apptRemark" placeholder="选填" maxlength="500"></div>';
+  openModal(modalShell("预约自提", body,
+    '<button class="btn btn-outline" data-action="close-modal">取消</button>' +
+    '<button class="btn btn-primary" data-action="do-appointment">提交预约</button>'));
+  // 默认填充明天 14:00
+  const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(14, 0, 0, 0);
+  const pad = n => String(n).padStart(2, "0");
+  const def = d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  const t = document.getElementById("apptTime");
+  if (t) t.value = def;
+}
+
+async function doAppointment() {
+  const orderId = Number(document.getElementById("apptOrderId").value);
+  let appointmentTime = document.getElementById("apptTime").value;
+  const location = document.getElementById("apptLocation").value.trim();
+  const remark = document.getElementById("apptRemark").value.trim();
+  if (!appointmentTime) { toast("请选择预约时间", "error"); return; }
+  if (!location) { toast("请填写自提地点", "error"); return; }
+  // datetime-local 默认输出 yyyy-MM-ddTHH:mm（无秒），补齐秒以兼容后端 LocalDateTime 解析
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(appointmentTime)) {
+    appointmentTime = appointmentTime + ":00";
+  }
+  try {
+    await api("/api/appointments", {method: "POST", body: {orderId, appointmentTime, location, remark}});
+    toast("预约成功", "success");
+    closeModal();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 消息模块（轮询 5s）
+ * ============================================================ */
+
+function startMessagePoll() {
+  stopMessagePoll();
+  refreshUnread();
+  state.msgPollTimer = setInterval(() => {
+    refreshUnread();
+    // 若在消息页且已选中会话，静默刷新对话
+    if (state.page === "messages" && state.currentChatOtherId) {
+      refreshCurrentConversation();
+    }
+  }, 5000);
+}
+
+function stopMessagePoll() {
+  if (state.msgPollTimer) { clearInterval(state.msgPollTimer); state.msgPollTimer = null; }
+}
+
+/** 刷新未读数（GET /api/messages/unread/count） */
+async function refreshUnread() {
+  if (!state.user) {
+    document.getElementById("navUnread").style.display = "none";
+    return;
+  }
+  try {
+    const data = await api("/api/messages/unread/count");
+    const n = data.count || 0;
+    const badge = document.getElementById("navUnread");
+    if (n > 0) { badge.textContent = n > 99 ? "99+" : n; badge.style.display = "block"; }
+    else { badge.style.display = "none"; }
+  } catch (e) { /* 静默 */ }
+}
+
+/** 加载会话列表（GET /api/messages/recent） */
+async function loadRecentConversations() {
+  const box = document.getElementById("msgSidebar");
+  if (!state.user) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">🔒</div>请先登录</div>';
+    document.getElementById("msgPanel").innerHTML = '<div class="empty">登录后即可与卖家私信沟通</div>';
+    return;
+  }
+  try {
+    const list = await api("/api/messages/recent");
+    if (!list.length) {
+      box.innerHTML = '<div class="empty" style="padding:24px">暂无会话<br><span style="font-size:12px">从商品详情联系卖家开始对话</span></div>';
+      return;
+    }
+    // 按对方用户去重，取最新一条
+    const map = new Map();
+    list.forEach(m => {
+      const otherId = m.senderId === state.user.id ? m.receiverId : m.senderId;
+      const otherName = m.senderId === state.user.id ? m.receiverName : m.senderName;
+      const existing = map.get(otherId);
+      if (!existing || (m.createdAt > existing.createdAt)) {
+        map.set(otherId, {otherId, otherName, content: m.content, read: m.read, createdAt: m.createdAt, senderId: m.senderId});
+      }
+    });
+    const convs = Array.from(map.values()).sort((a, b) => b.createdAt > a.createdAt ? 1 : -1);
+    box.innerHTML = convs.map(c => {
+      const unread = !c.read && c.senderId !== state.user.id;
+      return '<div class="msg-conv ' + (state.currentChatOtherId === c.otherId ? "active" : "") + '" data-action="open-conversation" data-id="' + c.otherId + '" data-name="' + esc(c.otherName || "") + '">' +
+        '<span class="avatar">' + esc(initial(c.otherName)) + "</span>" +
+        '<div style="flex:1;overflow:hidden">' +
+          '<div class="msg-conv-name">' + esc(c.otherName || "用户" + c.otherId) + "</div>" +
+          '<div class="msg-conv-preview">' + esc(c.content || "") + "</div>" +
+        "</div>" +
+        (unread ? '<span class="unread-dot">新</span>' : "") +
+      "</div>";
+    }).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+/** 打开与某用户的对话 */
+async function openConversation(otherId, otherName) {
+  state.currentChatOtherId = Number(otherId);
+  // 高亮会话
+  document.querySelectorAll(".msg-conv").forEach(el => {
+    el.classList.toggle("active", Number(el.dataset.id) === state.currentChatOtherId);
+  });
+  await renderConversation(state.currentChatOtherId, otherName);
+}
+
+/** 渲染对话内容（GET /api/messages/conversation/{otherId}） */
+async function renderConversation(otherId, otherName) {
+  const panel = document.getElementById("msgPanel");
+  panel.innerHTML =
+    '<div class="msg-header">与 ' + esc(otherName || ("用户" + otherId)) + " 的对话</div>" +
+    '<div class="msg-list" id="msgList"></div>' +
+    '<div class="msg-input"><input type="text" id="msgInput" placeholder="输入消息，回车发送" maxlength="1000">' +
+    '<button data-action="send-message">发送</button></div>';
+  const list = document.getElementById("msgList");
+  list.innerHTML = '<div class="msg-time">加载中...</div>';
+  try {
+    const data = await api("/api/messages/conversation/" + otherId);
+    if (!data.length) {
+      list.innerHTML = '<div class="msg-time">暂无消息，发送第一条打招呼吧~</div>';
+    } else {
+      list.innerHTML = data.map(m => {
+        const mine = m.senderId === state.user.id;
+        return '<div class="msg-bubble ' + (mine ? "mine" : "other") + '">' + esc(m.content) + "</div>";
+      }).join('<div class="msg-time">' + esc(data[data.length-1].createdAt || "") + "</div>");
+      list.scrollTop = list.scrollHeight;
+    }
+  } catch (e) {
+    list.innerHTML = '<div class="msg-time">' + esc(e.message) + "</div>";
+  }
+  // 绑定回车发送
+  const input = document.getElementById("msgInput");
+  if (input) {
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); sendMessage(); }
+    });
+    input.focus();
+  }
+}
+
+/** 静默刷新当前对话（轮询用，不重建输入框） */
+async function refreshCurrentConversation() {
+  if (!state.currentChatOtherId || !state.user) return;
+  const list = document.getElementById("msgList");
+  if (!list) return;
+  try {
+    const data = await api("/api/messages/conversation/" + state.currentChatOtherId);
+    if (!data.length) return;
+    list.innerHTML = data.map(m => {
+      const mine = m.senderId === state.user.id;
+      return '<div class="msg-bubble ' + (mine ? "mine" : "other") + '">' + esc(m.content) + "</div>";
+    }).join('<div class="msg-time">' + esc(data[data.length-1].createdAt || "") + "</div>");
+    list.scrollTop = list.scrollHeight;
+    refreshUnread();
+  } catch (e) { /* 静默 */ }
+}
+
+/** 发送消息（POST /api/messages） */
+async function sendMessage() {
+  if (!requireLogin()) return;
+  if (!state.currentChatOtherId) { toast("请选择会话对象", "error"); return; }
+  const input = document.getElementById("msgInput");
+  const content = input.value.trim();
+  if (!content) return;
+  const btn = document.querySelector('.msg-input button');
+  if (btn) btn.disabled = true;
+  try {
+    await api("/api/messages", {method: "POST", body: {receiverId: state.currentChatOtherId, content}});
+    input.value = "";
+    await refreshCurrentConversation();
+  } catch (e) {
+    toast(e.message, "error");
+  } finally {
+    if (btn) btn.disabled = false;
+    if (input) input.focus();
+  }
+}
+
+/* ============================================================
+ * 公告
+ * ============================================================ */
+
+/** 加载公告并填充滚动条 */
+async function loadMarquee() {
+  try {
+    const list = await api("/api/announcements");
+    if (!list.length) { document.getElementById("marqueeContent").textContent = "暂无公告"; return; }
+    const pinned = list.filter(a => a.pinned);
+    const show = (pinned.length ? pinned : list);
+    document.getElementById("marqueeContent").innerHTML = show.map(a => "📢 " + esc(a.title) + "：" + esc(a.content)).join("　　");
+  } catch (e) {
+    document.getElementById("marqueeContent").textContent = "公告加载失败";
+  }
+}
+
+async function loadAnnouncementsPage() {
+  const box = document.getElementById("announcementsList");
+  box.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div>加载中...</div>';
+  try {
+    const list = await api("/api/announcements");
+    if (!list.length) { box.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>暂无公告</div>'; return; }
+    // 置顶在前
+    list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+    box.innerHTML = list.map(a =>
+      '<div class="notice-card ' + (a.pinned ? "pinned" : "") + '">' +
+        '<div class="notice-title">' + (a.pinned ? '<span class="pin-tag">置顶</span>' : "") + esc(a.title) + "</div>" +
+        '<div class="notice-content">' + esc(a.content) + "</div>" +
+        '<div class="notice-time">' + esc(a.createdAt || "") + "</div>" +
+      "</div>"
+    ).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+/* ============================================================
+ * 反馈
+ * ============================================================ */
+
+async function submitFeedback() {
+  if (!requireLogin()) return;
+  const title = document.getElementById("fbTitle").value.trim();
+  const content = document.getElementById("fbContent").value.trim();
+  if (!title) { toast("请填写反馈标题", "error"); return; }
+  if (!content) { toast("请填写反馈内容", "error"); return; }
+  try {
+    await api("/api/feedbacks", {method: "POST", body: {title, content}});
+    toast("反馈已提交", "success");
+    document.getElementById("fbTitle").value = "";
+    document.getElementById("fbContent").value = "";
+    loadMyFeedbacks();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadMyFeedbacks() {
+  const box = document.getElementById("feedbackList");
+  if (!state.user) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">🔒</div>请先登录查看反馈记录</div>';
+    return;
+  }
+  try {
+    const list = await api("/api/feedbacks/mine");
+    if (!list.length) { box.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>暂无反馈记录</div>'; return; }
+    box.innerHTML = list.map(f =>
+      '<div class="notice-card">' +
+        '<div class="notice-title">' + esc(f.title) + ' <span class="order-status ' + (f.handled ? "st-COMPLETED" : "st-PENDING") + '">' + (f.handled ? "已处理" : "待处理") + "</span></div>" +
+        '<div class="notice-content">' + esc(f.content) + "</div>" +
+        (f.reply ? '<div style="margin-top:8px;padding:8px;background:#eef6f6;border-radius:6px;font-size:13px"><b>管理员回复：</b>' + esc(f.reply) + "</div>" : "") +
+        '<div class="notice-time">' + esc(f.createdAt || "") + "</div>" +
+      "</div>"
+    ).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty">' + esc(e.message) + "</div>";
+  }
+}
+
+/* ============================================================
+ * 个人中心（GET/PUT /api/users/profile）
+ * ============================================================ */
+
+async function openProfileModal() {
+  if (!requireLogin()) return;
+  openModal(modalShell("个人中心", '<div class="empty">加载中...</div>'));
+  try {
+    const u = await api("/api/users/profile");
+    const body =
+      '<div class="form-row"><div class="form-group"><label class="form-label">学号</label>' +
+        '<input type="text" class="form-control" value="' + esc(u.studentId || "") + '" disabled></div>' +
+      '<div class="form-group"><label class="form-label">用户名</label>' +
+        '<input type="text" class="form-control" value="' + esc(u.username || "") + '" disabled></div></div>' +
+      '<div class="form-group"><label class="form-label">昵称 <span class="req">*</span></label>' +
+        '<input type="text" class="form-control" id="profNickname" value="' + esc(u.nickname || "") + '" maxlength="50"></div>' +
+      '<div class="form-group"><label class="form-label">联系电话</label>' +
+        '<input type="text" class="form-control" id="profPhone" value="' + esc(u.phone || "") + '" maxlength="20"></div>' +
+      '<div class="form-group"><label class="form-label">头像 URL</label>' +
+        '<input type="text" class="form-control" id="profAvatar" value="' + esc(u.avatar || "") + '" placeholder="选填"></div>' +
+      '<div class="form-hint">注册时间：' + esc(u.createdAt || "-") + " · 状态：" + esc(u.status || "-") + "</div>";
+    document.querySelector("#modalRoot .modal-body").innerHTML = body;
+    const footer = document.querySelector("#modalRoot .modal-footer");
+    if (footer) footer.innerHTML = '<button class="btn btn-outline" data-action="close-modal">取消</button><button class="btn btn-primary" data-action="save-profile">保存</button>';
+    else {
+      // 无 footer 时追加
+      const m = document.querySelector("#modalRoot .modal");
+      const f = document.createElement("div");
+      f.className = "modal-footer";
+      f.innerHTML = '<button class="btn btn-outline" data-action="close-modal">取消</button><button class="btn btn-primary" data-action="save-profile">保存</button>';
+      m.appendChild(f);
+    }
+  } catch (e) {
+    toast(e.message, "error");
+    closeModal();
+  }
+}
+
+async function saveProfile() {
+  const nickname = document.getElementById("profNickname").value.trim();
+  const phone = document.getElementById("profPhone").value.trim();
+  const avatar = document.getElementById("profAvatar").value.trim();
+  if (!nickname) { toast("昵称不能为空", "error"); return; }
+  try {
+    await api("/api/users/profile", {method: "PUT", body: {nickname, phone, avatar}});
+    state.user.nickname = nickname;
+    toast("资料已更新", "success");
+    closeModal();
+    renderNavRight();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 修改密码（POST /api/auth/change-password）
+ * ============================================================ */
+
+function openChangePasswordModal() {
+  if (!requireLogin()) return;
+  const body =
+    '<div class="form-group"><label class="form-label">旧密码 <span class="req">*</span></label>' +
+      '<input type="password" class="form-control" id="cpOld" placeholder="请输入旧密码" autocomplete="current-password"></div>' +
+    '<div class="form-group"><label class="form-label">新密码 <span class="req">*</span></label>' +
+      '<input type="password" class="form-control" id="cpNew" placeholder="6-30 位新密码" autocomplete="new-password"></div>' +
+    '<div class="form-group"><label class="form-label">确认新密码 <span class="req">*</span></label>' +
+      '<input type="password" class="form-control" id="cpConfirm" placeholder="再次输入新密码" autocomplete="new-password"></div>';
+  openModal(modalShell("修改密码", body,
+    '<button class="btn btn-outline" data-action="close-modal">取消</button>' +
+    '<button class="btn btn-primary" data-action="do-change-password">确认修改</button>'));
+}
+
+async function doChangePassword() {
+  const oldPassword = document.getElementById("cpOld").value;
+  const newPassword = document.getElementById("cpNew").value;
+  const confirmPwd = document.getElementById("cpConfirm").value;
+  if (!oldPassword) { toast("请输入旧密码", "error"); return; }
+  if (!newPassword || newPassword.length < 6) { toast("新密码长度需在 6-30 之间", "error"); return; }
+  if (newPassword !== confirmPwd) { toast("两次输入的新密码不一致", "error"); return; }
+  try {
+    await api("/api/auth/change-password", {method: "POST", body: {oldPassword, newPassword}});
+    toast("密码修改成功，请重新登录", "success");
+    closeModal();
+    // 修改密码后端会使 session 失效，前端同步登出
+    state.user = null;
+    stopMessagePoll();
+    renderNavRight();
+    navigate("home");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+/* ============================================================
+ * 全局事件委托
+ * ============================================================ */
+
+document.addEventListener("click", async (e) => {
+  const target = e.target.closest("[data-action]");
+  if (!target) return;
+  const action = target.dataset.action;
+  const id = target.dataset.id;
+
+  switch (action) {
+    case "nav": navigate(target.dataset.page); break;
+    case "close-modal": closeModal(); break;
+    case "open-login": openAuthModal("login"); break;
+    case "open-register": openAuthModal("register"); break;
+    case "switch-auth": openAuthModal(target.dataset.mode); break;
+    case "do-login": doLogin(); break;
+    case "do-register": doRegister(); break;
+    case "logout": doLogout(); break;
+    case "toggle-user-menu":
+      document.getElementById("userDropdown").classList.toggle("show");
+      e.stopPropagation();
+      break;
+    case "open-profile": openProfileModal(); break;
+    case "open-change-password": openChangePasswordModal(); break;
+    case "open-publish": openPublishModal(); break;
+    case "do-publish": doPublish(); break;
+    case "save-profile": saveProfile(); break;
+    case "do-change-password": doChangePassword(); break;
+    case "search":
+      state.keyword = document.getElementById("searchInput").value.trim();
+      state.productPage = 0;
+      loadProducts();
+      break;
+    case "select-category":
+      state.selectedCategory = target.dataset.id ? Number(target.dataset.id) : null;
+      state.productPage = 0;
+      renderCategoryTabs();
+      loadProducts();
+      break;
+    case "product-detail": openProductDetail(id); break;
+    case "toggle-like": toggleLike(id); break;
+    case "toggle-favorite": toggleFavorite(id); break;
+    case "contact-seller": contactSeller(id); break;
+    case "buy-now": buyNow(id); break;
+    case "post-comment": postComment(id); break;
+    case "delete-product": deleteProduct(id); break;
+    case "pay-order": orderAction(id, "pay", "付款成功"); break;
+    case "complete-order": orderAction(id, "complete", "订单已完成"); break;
+    case "cancel-order":
+      if (confirm("确定取消该订单吗？")) orderAction(id, "cancel", "订单已取消");
+      break;
+    case "open-review": openReviewModal(id); break;
+    case "do-review": doReview(); break;
+    case "open-appointment": openAppointmentModal(id); break;
+    case "do-appointment": doAppointment(); break;
+    case "open-conversation": openConversation(id, target.dataset.name); break;
+    case "send-message": sendMessage(); break;
+    case "submit-feedback": submitFeedback(); break;
+    case "prev-page":
+      if (state.productPage > 0) { state.productPage--; loadProducts(); }
+      break;
+    case "next-page":
+      if (state.productPage < state.productTotalPages - 1) { state.productPage++; loadProducts(); }
+      break;
+    case "goto-page":
+      state.productPage = Number(target.dataset.page);
+      loadProducts();
+      break;
+  }
+});
+
+// 评分星星点击
+document.addEventListener("click", (e) => {
+  const star = e.target.closest("#starInput span");
+  if (!star) return;
+  reviewRating = Number(star.dataset.val);
+  document.querySelectorAll("#starInput span").forEach(s => {
+    s.classList.toggle("on", Number(s.dataset.val) <= reviewRating);
+  });
+});
+
+// 点击空白关闭用户下拉
+document.addEventListener("click", (e) => {
+  const dd = document.getElementById("userDropdown");
+  if (dd && dd.classList.contains("show") && !e.target.closest(".user-menu")) {
+    dd.classList.remove("show");
+  }
+});
+
+// 回车搜索
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && document.activeElement && document.activeElement.id === "searchInput") {
+    state.keyword = document.getElementById("searchInput").value.trim();
+    state.productPage = 0;
+    loadProducts();
+  }
+});
+
+// ESC 关闭弹窗
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+});
+
+/* ============================================================
+ * 初始化
+ * ============================================================ */
+(async function init() {
+  await loadCategories();
+  await checkLogin();
+  await loadMarquee();
+  navigate("home");
+})();
+</script>
+</body>
+</html>
