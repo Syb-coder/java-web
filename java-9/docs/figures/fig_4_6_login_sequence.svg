@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="520" viewBox="0 0 750 520">
+  <rect width="750" height="520" fill="#FAFAFA" rx="8"/>
+  <text x="375" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#333" font-family="SimHei">用户登录时序图</text>
+
+  <!-- 生命线 -->
+  <line x1="100" y1="60" x2="100" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="280" y1="60" x2="280" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="460" y1="60" x2="460" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="640" y1="60" x2="640" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- 参与者 -->
+  <rect x="50" y="40" width="100" height="35" fill="#4A90D9" rx="4"/>
+  <text x="100" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">用户</text>
+
+  <rect x="220" y="40" width="120" height="35" fill="#5CB85C" rx="4"/>
+  <text x="280" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">AuthController</text>
+
+  <rect x="400" y="40" width="120" height="35" fill="#5CB85C" rx="4"/>
+  <text x="460" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">AuthService</text>
+
+  <rect x="580" y="40" width="120" height="35" fill="#F0AD4E" rx="4"/>
+  <text x="640" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">UserRepository</text>
+
+  <!-- 消息1: 用户 -> AuthController -->
+  <line x1="100" y1="100" x2="278" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
+  <text x="190" y="93" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">POST /api/auth/user/login</text>
+
+  <!-- 消息2: AuthController -> AuthService -->
+  <line x1="280" y1="140" x2="458" y2="140" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
+  <text x="370" y="133" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">loginUserService(req)</text>
+
+  <!-- 消息3: AuthService -> UserRepository -->
+  <line x1="460" y1="180" x2="638" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
+  <text x="550" y="173" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">findByUsername(username)</text>
+
+  <!-- 消息4: UserRepository -> AuthService (返回) -->
+  <line x1="640" y1="220" x2="462" y2="220" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
+  <text x="550" y="213" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">User实体</text>
+
+  <!-- 消息5: AuthService 自调用 (BCrypt校验) -->
+  <rect x="450" y="245" width="20" height="40" fill="#F0AD4E" rx="2"/>
+  <text x="460" y="270" text-anchor="middle" font-size="11" fill="#333" font-family="SimHei" transform="rotate(-90 460 270)">BCrypt.matches</text>
+
+  <!-- 消息6: AuthService -> AuthController (返回) -->
+  <line x1="460" y1="300" x2="282" y2="300" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
+  <text x="370" y="293" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">LoginResponse</text>
+
+  <!-- 消息7: AuthController 自调用 (Session写入) -->
+  <rect x="270" y="325" width="20" height="40" fill="#F0AD4E" rx="2"/>
+  <text x="280" y="350" text-anchor="middle" font-size="11" fill="#333" font-family="SimHei" transform="rotate(-90 280 350)">session.setAttribute</text>
+
+  <!-- 消息8: AuthController -> 用户 (返回) -->
+  <line x1="280" y1="380" x2="102" y2="380" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
+  <text x="190" y="373" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">200 OK + 用户信息</text>
+
+  <!-- 分支：冻结状态 -->
+  <rect x="400" y="410" width="250" height="60" fill="#FFF3E0" stroke="#FF9800" rx="4"/>
+  <text x="525" y="430" text-anchor="middle" font-size="12" fill="#E65100" font-family="SimHei">alt: 账户冻结时</text>
+  <text x="525" y="450" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">返回 403 Forbidden</text>
+
+  <defs>
+    <marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#333"/>
+    </marker>
+  </defs>
+</svg>

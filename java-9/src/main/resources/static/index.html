@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鑫融宝 - 专业金融理财支付平台</title>
+    <style>
+        /* ===== 全局变量与重置 ===== */
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b5bdb;
+            --primary-dark: #172554;
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --text-lighter: #94a3b8;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 8px;
+            --radius-sm: 6px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+            outline: none;
+        }
+
+        /* ===== 顶部导航栏 ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .nav-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--gold-light);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .nav-user-avatar {
+            width: 28px;
+            height: 28px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 13px;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            color: #fff;
+            font-size: 24px;
+            padding: 4px;
+        }
+
+        /* ===== 按钮 ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--primary-dark);
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== 主内容区 ===== */
+        .main {
+            flex: 1;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 首页 Banner ===== */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            border-radius: var(--radius-lg);
+            padding: 48px 40px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .hero-title .highlight {
+            color: var(--gold-light);
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ===== 数据统计卡片 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .stat-icon.gold {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-icon.green {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .stat-icon.purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* ===== 区块标题 ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        /* ===== 产品卡片网格 ===== */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .product-name-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .product-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .product-type-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-rate {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--danger);
+        }
+
+        .product-rate .percent {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .product-rate-label {
+            font-size: 12px;
+            color: var(--text-lighter);
+            margin-top: 2px;
+        }
+
+        .product-card-body {
+            padding: 16px 24px;
+            flex: 1;
+        }
+
+        .product-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .product-meta-item {
+            font-size: 13px;
+        }
+
+        .product-meta-label {
+            color: var(--text-lighter);
+            margin-bottom: 2px;
+        }
+
+        .product-meta-value {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .product-progress {
+            margin-top: 14px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-lighter);
+            margin-top: 6px;
+        }
+
+        .product-card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== 风险等级标签 ===== */
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-low {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .risk-mid {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .risk-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* ===== 支付收银台 ===== */
+        .payment-container {
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .payment-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #fff;
+            padding: 24px 32px;
+        }
+
+        .payment-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .payment-header p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .payment-body {
+            padding: 32px;
+        }
+
+        /* ===== 表单 ===== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            color: var(--text);
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-lighter);
+            margin-top: 6px;
+        }
+
+        .channel-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .channel-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .channel-option:hover {
+            border-color: var(--primary-light);
+        }
+
+        .channel-option.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .channel-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .channel-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* ===== 支付结果 ===== */
+        .payment-result {
+            text-align: center;
+            padding: 40px 32px;
+        }
+
+        .result-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .result-success {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .result-error {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .result-desc {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* ===== 活动卡片 ===== */
+        .activity-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .activity-banner {
+            padding: 20px 24px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-banner.coupon {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .activity-banner.interest {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        }
+
+        .activity-banner.signin {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .activity-type-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .activity-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .activity-body {
+            padding: 20px 24px;
+            flex: 1;
+        }
+
+        .activity-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .activity-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== 我的页面 ===== */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            color: #fff;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            flex-shrink: 0;
+        }
+
+        .profile-details {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .profile-meta {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .profile-balance {
+            text-align: right;
+        }
+
+        .profile-balance-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 4px;
+        }
+
+        .profile-balance-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--gold-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .status-frozen {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .status-verified {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        /* ===== Tab 导航 ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 6px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-item {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .tab-item.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrapper {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table thead {
+            background: var(--bg);
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 13px;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f0f7ff;
+        }
+
+        .amount-positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-lighter);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 15px;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal.modal-lg {
+            max-width: 560px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: none;
+            font-size: 24px;
+            color: var(--text-lighter);
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* ===== 登录注册切换 ===== */
+        .auth-tabs {
+            display: flex;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== Toast 通知 ===== */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid var(--info);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast.success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast.info .toast-icon {
+            color: var(--info);
+        }
+
+        .toast-message {
+            font-size: 14px;
+            color: var(--text);
+            flex: 1;
+        }
+
+        /* ===== 加载动画 ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-lighter);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            background: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 32px 24px;
+            text-align: center;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+
+        .footer-brand {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold-light);
+        }
+
+        /* ===== 特性卡片 ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* ===== 优惠券卡片 ===== */
+        .coupon-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coupon-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gold);
+        }
+
+        .coupon-amount {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .coupon-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--danger);
+        }
+
+        .coupon-unit {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .coupon-info {
+            flex: 1;
+        }
+
+        .coupon-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .coupon-condition {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .coupon-expire {
+            font-size: 12px;
+            color: var(--text-lighter);
+        }
+
+        /* ===== 工单状态 ===== */
+        .ticket-status {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .ticket-open {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .ticket-replied {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .ticket-closed {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--primary-dark);
+                flex-direction: column;
+                padding: 12px;
+                gap: 4px;
+            }
+
+            .nav-menu.show {
+                display: flex;
+            }
+
+            .nav-item {
+                width: 100%;
+                padding: 12px 16px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-title {
+                font-size: 18px;
+            }
+
+            .main {
+                padding: 16px;
+            }
+
+            .hero-banner {
+                padding: 32px 24px;
+            }
+
+            .hero-title {
+                font-size: 26px;
+            }
+
+            .profile-header {
+                padding: 24px;
+            }
+
+            .profile-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .profile-balance {
+                text-align: left;
+            }
+
+            .channel-options {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-actions .btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .hero-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== 顶部导航栏 ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="switchView('home')">
+                <div class="nav-logo">鑫</div>
+                <span class="nav-title">鑫融宝</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-item active" data-view="home" onclick="switchView('home')">首页</div>
+                <div class="nav-item" data-view="finance" onclick="switchView('finance')">理财</div>
+                <div class="nav-item" data-view="payment" onclick="switchView('payment')">支付</div>
+                <div class="nav-item" data-view="activity" onclick="switchView('activity')">活动</div>
+                <div class="nav-item" data-view="profile" onclick="switchView('profile')">我的</div>
+            </div>
+            <div class="nav-actions">
+                <div id="navUserArea"></div>
+                <button class="nav-toggle" onclick="toggleNavMenu()">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== 主内容区 ===== -->
+    <main class="main">
+        <!-- 首页视图 -->
+        <div class="view active" id="view-home">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h1 class="hero-title">专业理财 <span class="highlight">稳健增值</span><br>安全支付 全球通达</h1>
+                    <p class="hero-subtitle">鑫融宝为您提供一站式金融服务，涵盖定期理财、基金投资、保险理财、在线支付等全场景产品，资金银行级存管，交易安全有保障。</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-gold" onclick="switchView('finance')">立即理财</button>
+                        <button class="btn btn-secondary" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="switchView('payment')">在线支付</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 平台数据亮点 -->
+            <div class="stats-grid" id="homeStats">
+                <div class="loading"><div class="spinner"></div>数据加载中...</div>
+            </div>
+
+            <!-- 平台特色 -->
+            <div class="section-header">
+                <h2 class="section-title">平台特色</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#dbeafe;color:#2563eb">🛡</div>
+                    <h3 class="feature-title">银行级安全</h3>
+                    <p class="feature-desc">资金银行存管，SSL加密传输，多重风控体系保障资产安全</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#fef3c7;color:#d97706">📈</div>
+                    <h3 class="feature-title">稳健收益</h3>
+                    <p class="feature-desc">精选优质理财产品，历史兑付率100%，年化收益最高可达8%+</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#d1fae5;color:#059669">⚡</div>
+                    <h3 class="feature-title">极速到账</h3>
+                    <p class="feature-desc">充值提现秒级到账，支付清算高效便捷，7×24小时服务</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#ede9fe;color:#7c3aed">🎁</div>
+                    <h3 class="feature-title">福利多多</h3>
+                    <p class="feature-desc">新户注册立享优惠券，定期活动加息福利，投资返现不停歇</p>
+                </div>
+            </div>
+
+            <!-- 热门产品 -->
+            <div class="section-header">
+                <h2 class="section-title">热门理财产品</h2>
+                <button class="btn btn-secondary btn-sm" onclick="switchView('finance')">查看全部 →</button>
+            </div>
+            <div class="product-grid" id="homeProducts">
+                <div class="loading"><div class="spinner"></div>产品加载中...</div>
+            </div>
+        </div>
+
+        <!-- 理财视图 -->
+        <div class="view" id="view-finance">
+            <div class="section-header">
+                <h2 class="section-title">理财产品</h2>
+            </div>
+            <div class="product-grid" id="financeProducts">
+                <div class="loading"><div class="spinner"></div>产品加载中...</div>
+            </div>
+        </div>
+
+        <!-- 支付视图 -->
+        <div class="view" id="view-payment">
+            <div class="section-header">
+                <h2 class="section-title">在线支付</h2>
+            </div>
+            <div class="payment-container">
+                <div class="payment-card" id="paymentPanel">
+                    <div class="payment-header">
+                        <h2>支付收银台</h2>
+                        <p>支持支付宝、微信、银行卡多渠道支付</p>
+                    </div>
+                    <div class="payment-body">
+                        <div class="form-group">
+                            <label class="form-label">收款商户ID <span style="color:var(--text-lighter);font-weight:400">(可选)</span></label>
+                            <input type="number" class="form-input" id="payMerchantId" placeholder="留空表示无商户场景">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">支付金额 <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="payAmount" placeholder="请输入支付金额" step="0.01" min="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">支付渠道 <span class="required">*</span></label>
+                            <div class="channel-options" id="channelOptions">
+                                <div class="channel-option selected" data-channel="ALIPAY" onclick="selectChannel(this)">
+                                    <div class="channel-icon">💳</div>
+                                    <div class="channel-name">支付宝</div>
+                                </div>
+                                <div class="channel-option" data-channel="WECHAT" onclick="selectChannel(this)">
+                                    <div class="channel-icon">💚</div>
+                                    <div class="channel-name">微信支付</div>
+                                </div>
+                                <div class="channel-option" data-channel="BANK" onclick="selectChannel(this)">
+                                    <div class="channel-icon">🏦</div>
+                                    <div class="channel-name">银行卡</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">支付描述</label>
+                            <textarea class="form-textarea" id="payDescription" placeholder="请输入支付描述（可选）"></textarea>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="submitPayment()">确认支付</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活动视图 -->
+        <div class="view" id="view-activity">
+            <div class="section-header">
+                <h2 class="section-title">营销活动</h2>
+            </div>
+            <div class="activity-list" id="activityList">
+                <div class="loading"><div class="spinner"></div>活动加载中...</div>
+            </div>
+        </div>
+
+        <!-- 我的视图 -->
+        <div class="view" id="view-profile">
+            <div id="profileContent">
+                <div class="empty-state">
+                    <div class="empty-icon">🔒</div>
+                    <p class="empty-text">请先登录查看个人中心</p>
+                    <button class="btn btn-primary" style="margin-top:16px" onclick="showAuthModal('login')">立即登录</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="footer-brand">鑫融宝 XINRONGBAO</div>
+        <div class="footer-links">
+            <a onclick="switchView('home')">首页</a>
+            <a onclick="switchView('finance')">理财产品</a>
+            <a onclick="switchView('payment')">支付服务</a>
+            <a onclick="switchView('activity')">活动中心</a>
+        </div>
+        <p>© 2026 鑫融宝金融科技 · 仅供学习演示 · 投资有风险，理财需谨慎</p>
+    </footer>
+
+    <!-- ===== 登录/注册模态框 ===== -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">账户登录</span>
+                <button class="modal-close" onclick="closeModal('authModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-mode="login" onclick="switchAuthMode('login')">登录</div>
+                    <div class="auth-tab" data-mode="register" onclick="switchAuthMode('register')">注册</div>
+                </div>
+                <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">用户名 <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="authUsername" required minlength="3" maxlength="20" placeholder="3-20位字符">
+                    </div>
+                    <div class="form-group" id="phoneGroup" style="display:none">
+                        <label class="form-label">手机号 <span class="required">*</span></label>
+                        <input type="tel" class="form-input" id="authPhone" placeholder="请输入手机号">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码 <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="authPassword" required minlength="6" maxlength="20" placeholder="6-20位字符">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="authSubmitBtn">登录</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 投资模态框 ===== -->
+    <div class="modal-overlay" id="investModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">投资申购</span>
+                <button class="modal-close" onclick="closeModal('investModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="investProductInfo" style="background:var(--bg);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px"></div>
+                <div class="form-group">
+                    <label class="form-label">投资金额 <span class="required">*</span></label>
+                    <input type="number" class="form-input" id="investAmount" placeholder="请输入投资金额" step="0.01" min="0.01">
+                    <div class="form-hint" id="investHint"></div>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="confirmInvest()">确认投资</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 充值/提现模态框 ===== -->
+    <div class="modal-overlay" id="amountModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="amountModalTitle">充值</span>
+                <button class="modal-close" onclick="closeModal('amountModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">金额 <span class="required">*</span></label>
+                    <input type="number" class="form-input" id="amountValue" placeholder="请输入金额" step="0.01" min="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <input type="text" class="form-input" id="amountRemark" placeholder="请输入备注（可选）">
+                </div>
+                <button class="btn btn-primary btn-block" id="amountSubmitBtn" onclick="confirmAmount()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 实名认证模态框 ===== -->
+    <div class="modal-overlay" id="verifyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">实名认证</span>
+                <button class="modal-close" onclick="closeModal('verifyModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:#fff7ed;border-radius:var(--radius-sm);padding:12px;margin-bottom:20px;font-size:13px;color:#9a3412">
+                    实名认证后可享受充值、提现、投资等完整功能
+                </div>
+                <div class="form-group">
+                    <label class="form-label">真实姓名 <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="verifyRealName" placeholder="请输入真实姓名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">身份证号 <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="verifyIdCard" placeholder="请输入18位身份证号" maxlength="18">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="confirmVerify()">提交认证</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Toast 容器 ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ===== 全局状态 =====
+        // 当前登录用户信息（登录后保存完整 UserResponse）
+        var currentUser = null;
+        // 当前选中的支付渠道
+        var selectedChannel = 'ALIPAY';
+        // 当前认证模式：login / register
+        var authMode = 'login';
+        // 当前金额操作类型：recharge / withdraw
+        var amountAction = 'recharge';
+        // 当前投资选中的产品
+        var investProduct = null;
+
+        // ===== 工具函数 =====
+
+        /**
+         * 金额格式化：转为带 ¥ 前缀的两位小数字符串
+         * @param {number|string|null} value 金额值
+         * @returns {string} 格式化后的金额，如 "¥1,234.56"
+         */
+        function formatMoney(value) {
+            if (value === null || value === undefined || value === '') {
+                return '¥0.00';
+            }
+            var num = Number(value);
+            if (isNaN(num)) {
+                return '¥0.00';
+            }
+            return '¥' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        /**
+         * 时间格式化：将 ISO 时间字符串转为 yyyy-MM-dd HH:mm
+         * @param {string|null} dateStr 时间字符串
+         * @returns {string} 格式化后的时间
+         */
+        function formatTime(dateStr) {
+            if (!dateStr) {
+                return '-';
+            }
+            var date = new Date(dateStr);
+            if (isNaN(date.getTime())) {
+                return '-';
+            }
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var day = String(date.getDate()).padStart(2, '0');
+            var hours = String(date.getHours()).padStart(2, '0');
+            var minutes = String(date.getMinutes()).padStart(2, '0');
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+        }
+
+        /**
+         * 显示 Toast 通知
+         * @param {string} message 消息内容
+         * @param {string} type 类型：success/error/warning/info
+         */
+        function showToast(message, type) {
+            type = type || 'info';
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            var icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠',
+                info: 'ℹ'
+            };
+            toast.innerHTML = '<span class="toast-icon">' + (icons[type] || icons.info) + '</span>' +
+                '<span class="toast-message">' + escapeHtml(message) + '</span>';
+            container.appendChild(toast);
+            // 3秒后自动消失
+            setTimeout(function () {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        /**
+         * HTML 转义，防止 XSS
+         * @param {string} text 原始文本
+         * @returns {string} 转义后的安全文本
+         */
+        function escapeHtml(text) {
+            if (text === null || text === undefined) {
+                return '';
+            }
+            var div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        /**
+         * 获取风险等级标签 HTML
+         * @param {number} level 风险等级 1-5
+         * @returns {string} 标签 HTML
+         */
+        function getRiskBadge(level) {
+            var cls, text;
+            if (level <= 2) {
+                cls = 'risk-low';
+                text = '低风险';
+            } else if (level === 3) {
+                cls = 'risk-mid';
+                text = '中风险';
+            } else {
+                cls = 'risk-high';
+                text = '高风险';
+            }
+            return '<span class="risk-badge ' + cls + '">R' + level + ' ' + text + '</span>';
+        }
+
+        /**
+         * 获取产品类型中文名
+         * @param {string} type 产品类型枚举值
+         * @returns {string} 中文名
+         */
+        function getProductTypeName(type) {
+            var map = {
+                'DEPOSIT': '定期存款',
+                'FUND': '基金',
+                'INSURANCE': '保险理财'
+            };
+            return map[type] || type || '-';
+        }
+
+        /**
+         * 获取交易类型中文名
+         * @param {string} type 交易类型枚举值
+         * @returns {string} 中文名
+         */
+        function getTransactionTypeName(type) {
+            var map = {
+                'RECHARGE': '充值',
+                'WITHDRAW': '提现',
+                'INVEST': '投资',
+                'REDEEM': '赎回',
+                'PAY': '支付',
+                'REFUND': '退款'
+            };
+            return map[type] || type || '-';
+        }
+
+        /**
+         * 获取投资订单状态中文名
+         * @param {string} status 状态枚举值
+         * @returns {string} 中文名
+         */
+        function getInvestmentStatusName(status) {
+            var map = {
+                'PENDING': '待确认',
+                'CONFIRMED': '已确认(计息中)',
+                'REDEEMED': '已赎回'
+            };
+            return map[status] || status || '-';
+        }
+
+        /**
+         * 获取活动类型中文名
+         * @param {string} type 活动类型枚举值
+         * @returns {string} 中文名
+         */
+        function getActivityTypeName(type) {
+            var map = {
+                'COUPON': '理财优惠券',
+                'INTEREST_RATE': '加息活动',
+                'SIGN_IN': '签到福利'
+            };
+            return map[type] || type || '-';
+        }
+
+        /**
+         * 获取活动样式类名
+         * @param {string} type 活动类型枚举值
+         * @returns {string} CSS 类名
+         */
+        function getActivityClass(type) {
+            var map = {
+                'COUPON': 'coupon',
+                'INTEREST_RATE': 'interest',
+                'SIGN_IN': 'signin'
+            };
+            return map[type] || 'coupon';
+        }
+
+        // ===== API 封装 =====
+
+        /**
+         * 统一 fetch 封装，自动处理 JSON 与 401 跳转登录
+         * @param {string} url 请求地址
+         * @param {object} options fetch 配置项
+         * @returns {Promise<object|null>} 响应 JSON（无内容时返回 null）
+         */
+        async function apiRequest(url, options) {
+            options = options || {};
+            options.headers = options.headers || {};
+            // GET 请求不加 Content-Type，避免触发预检
+            if (options.method && options.method !== 'GET') {
+                options.headers['Content-Type'] = 'application/json';
+            }
+            options.credentials = 'same-origin';
+
+            try {
+                var response = await fetch(url, options);
+                // 401 未登录：清除用户态并弹出登录框
+                if (response.status === 401) {
+                    // 如果是登录接口失败（密码错误），显示具体错误；否则提示未登录
+                    if (url.indexOf('/login') !== -1) {
+                        var errBody = await response.json().catch(function () { return { error: '用户名或密码错误' }; });
+                        showToast(errBody.error || '用户名或密码错误', 'error');
+                        return null;
+                    }
+                    currentUser = null;
+                    updateNavUserArea();
+                    showToast('请先登录', 'warning');
+                    showAuthModal('login');
+                    return null;
+                }
+                // 204 无内容（如登出）
+                if (response.status === 204) {
+                    return null;
+                }
+                // 403 权限不足
+                if (response.status === 403) {
+                    var errBody = await response.json().catch(function () { return {}; });
+                    showToast(errBody.error || '账户状态异常，请联系客服', 'error');
+                    return null;
+                }
+                // 其他错误
+                if (!response.ok) {
+                    var errorBody = await response.json().catch(function () { return { error: '请求失败' }; });
+                    showToast(errorBody.error || ('请求失败 (' + response.status + ')'), 'error');
+                    return null;
+                }
+                // 尝试解析 JSON
+                var text = await response.text();
+                if (!text) {
+                    return null;
+                }
+                return JSON.parse(text);
+            } catch (err) {
+                showToast('网络错误，请检查连接', 'error');
+                return null;
+            }
+        }
+
+        // ===== 视图切换 =====
+
+        /**
+         * 切换主视图
+         * @param {string} viewName 视图名称：home/finance/payment/activity/profile
+         */
+        function switchView(viewName) {
+            // 隐藏所有视图
+            var views = document.querySelectorAll('.view');
+            for (var i = 0; i < views.length; i++) {
+                views[i].classList.remove('active');
+            }
+            // 显示目标视图
+            var target = document.getElementById('view-' + viewName);
+            if (target) {
+                target.classList.add('active');
+            }
+            // 更新导航高亮
+            var navItems = document.querySelectorAll('.nav-item');
+            for (var j = 0; j < navItems.length; j++) {
+                navItems[j].classList.remove('active');
+            }
+            var activeNav = document.querySelector('.nav-item[data-view="' + viewName + '"]');
+            if (activeNav) {
+                activeNav.classList.add('active');
+            }
+            // 关闭移动端菜单
+            document.getElementById('navMenu').classList.remove('show');
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+            // 按视图加载数据
+            if (viewName === 'home') {
+                loadHomeData();
+            } else if (viewName === 'finance') {
+                loadProducts();
+            } else if (viewName === 'activity') {
+                loadActivities();
+            } else if (viewName === 'profile') {
+                loadProfile();
+            }
+        }
+
+        /**
+         * 切换移动端导航菜单
+         */
+        function toggleNavMenu() {
+            document.getElementById('navMenu').classList.toggle('show');
+        }
+
+        // ===== 导航栏用户区域渲染 =====
+
+        /**
+         * 更新导航栏右侧用户区域
+         */
+        function updateNavUserArea() {
+            var area = document.getElementById('navUserArea');
+            if (currentUser) {
+                var initial = (currentUser.username || 'U').charAt(0).toUpperCase();
+                area.innerHTML = '<div class="nav-user" onclick="switchView(\'profile\')" style="cursor:pointer">' +
+                    '<div class="nav-user-avatar">' + escapeHtml(initial) + '</div>' +
+                    '<span>' + escapeHtml(currentUser.username) + '</span></div>' +
+                    '<button class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="handleLogout()">登出</button>';
+            } else {
+                area.innerHTML = '<button class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="showAuthModal(\'login\')">登录</button>' +
+                    '<button class="btn btn-gold btn-sm" onclick="showAuthModal(\'register\')">注册</button>';
+            }
+        }
+
+        // ===== 登录态检查 =====
+
+        /**
+         * 检查登录态：页面加载时调用
+         * <p>
+         * 直接使用 fetch 而非 apiRequest，避免未登录时弹出登录框（页面初始化场景不需要强制登录）。
+         * </p>
+         */
+        async function checkLoginState() {
+            try {
+                var response = await fetch('/api/auth/me', { credentials: 'same-origin' });
+                if (response.ok) {
+                    var data = await response.json();
+                    if (data && data.role === 'USER') {
+                        // 登录态有效，获取完整用户信息
+                        await refreshUserInfo();
+                        return;
+                    }
+                }
+            } catch (err) {
+                // 网络错误时静默处理，不影响页面加载
+            }
+            currentUser = null;
+            updateNavUserArea();
+        }
+
+        /**
+         * 刷新当前用户信息（调用 /api/users/me）
+         */
+        async function refreshUserInfo() {
+            var data = await apiRequest('/api/users/me');
+            if (data) {
+                currentUser = data;
+                updateNavUserArea();
+                return true;
+            }
+            return false;
+        }
+
+        // ===== 首页数据加载 =====
+
+        /**
+         * 加载首页统计数据与热门产品
+         */
+        async function loadHomeData() {
+            loadStats();
+            loadHomeProducts();
+        }
+
+        /**
+         * 加载平台统计数据
+         */
+        async function loadStats() {
+            var container = document.getElementById('homeStats');
+            var data = await apiRequest('/api/stats');
+            if (!data) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p class="empty-text">暂无数据</p></div>';
+                return;
+            }
+            container.innerHTML =
+                buildStatCard('blue', '👥', data.userCount || 0, '注册用户') +
+                buildStatCard('gold', '📦', data.productCount || 0, '在售产品') +
+                buildStatCard('green', '💰', formatMoney(data.totalInvestmentAmount), '累计投资额') +
+                buildStatCard('purple', '💸', formatMoney(data.totalPaymentAmount), '累计支付额');
+        }
+
+        /**
+         * 构建统计卡片 HTML
+         */
+        function buildStatCard(iconClass, icon, value, label) {
+            return '<div class="stat-card">' +
+                '<div class="stat-icon ' + iconClass + '">' + icon + '</div>' +
+                '<div class="stat-info">' +
+                '<div class="stat-label">' + escapeHtml(label) + '</div>' +
+                '<div class="stat-value">' + escapeHtml(value) + '</div>' +
+                '</div></div>';
+        }
+
+        /**
+         * 加载首页热门产品（取前4个）
+         */
+        async function loadHomeProducts() {
+            var container = document.getElementById('homeProducts');
+            var data = await apiRequest('/api/products');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><p class="empty-text">暂无在售产品</p></div>';
+                return;
+            }
+            var html = '';
+            var count = Math.min(data.length, 4);
+            for (var i = 0; i < count; i++) {
+                html += buildProductCard(data[i]);
+            }
+            container.innerHTML = html;
+        }
+
+        // ===== 理财产品 =====
+
+        /**
+         * 加载理财产品列表
+         */
+        async function loadProducts() {
+            var container = document.getElementById('financeProducts');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>产品加载中...</div>';
+            var data = await apiRequest('/api/products');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><p class="empty-text">暂无在售产品</p></div>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                html += buildProductCard(data[i]);
+            }
+            container.innerHTML = html;
+        }
+
+        /**
+         * 构建产品卡片 HTML
+         * @param {object} p 产品数据
+         * @returns {string} 卡片 HTML
+         */
+        function buildProductCard(p) {
+            var remainAmount = p.remainAmount !== null && p.remainAmount !== undefined ? Number(p.remainAmount) : 0;
+            var totalAmount = p.totalAmount !== null && p.totalAmount !== undefined ? Number(p.totalAmount) : 0;
+            var investedAmount = p.investedAmount !== null && p.investedAmount !== undefined ? Number(p.investedAmount) : 0;
+            var progress = totalAmount > 0 ? Math.min(100, (investedAmount / totalAmount) * 100) : 0;
+            var typeColors = {
+                'DEPOSIT': 'background:#dbeafe;color:#2563eb',
+                'FUND': 'background:#ede9fe;color:#7c3aed',
+                'INSURANCE': 'background:#d1fae5;color:#059669'
+            };
+            var typeStyle = typeColors[p.type] || 'background:#f1f5f9;color:#64748b';
+
+            return '<div class="product-card">' +
+                '<div class="product-card-header">' +
+                    '<div class="product-name-row">' +
+                        '<span class="product-name">' + escapeHtml(p.name) + '</span>' +
+                        '<span class="product-type-badge" style="' + typeStyle + '">' + getProductTypeName(p.type) + '</span>' +
+                    '</div>' +
+                    '<div class="product-rate">' + escapeHtml(p.annualRate) + '<span class="percent">%</span></div>' +
+                    '<div class="product-rate-label">预期年化收益率</div>' +
+                '</div>' +
+                '<div class="product-card-body">' +
+                    '<div class="product-meta">' +
+                        '<div class="product-meta-item"><div class="product-meta-label">产品期限</div><div class="product-meta-value">' + (p.duration || '-') + ' 天</div></div>' +
+                        '<div class="product-meta-item"><div class="product-meta-label">起投金额</div><div class="product-meta-value">' + formatMoney(p.minAmount) + '</div></div>' +
+                        '<div class="product-meta-item"><div class="product-meta-label">风险等级</div><div>' + getRiskBadge(p.riskLevel) + '</div></div>' +
+                        '<div class="product-meta-item"><div class="product-meta-label">可投余额</div><div class="product-meta-value">' + formatMoney(remainAmount) + '</div></div>' +
+                    '</div>' +
+                    '<div class="product-progress">' +
+                        '<div class="progress-bar"><div class="progress-fill" style="width:' + progress.toFixed(1) + '%"></div></div>' +
+                        '<div class="progress-text"><span>已募集 ' + formatMoney(investedAmount) + '</span><span>' + progress.toFixed(1) + '%</span></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="product-card-footer">' +
+                    '<button class="btn btn-primary btn-block" onclick="openInvestModal(' + p.id + ',\'' + escapeHtml(p.name) + '\',' + (p.minAmount || 0) + ',' + remainAmount + ')">立即投资</button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        // ===== 投资功能 =====
+
+        /**
+         * 打开投资模态框
+         * @param {number} productId 产品ID
+         * @param {string} productName 产品名称
+         * @param {number} minAmount 起投金额
+         * @param {number} remainAmount 剩余可投金额
+         */
+        function openInvestModal(productId, productName, minAmount, remainAmount) {
+            // 检查登录态
+            if (!currentUser) {
+                showToast('请先登录后再投资', 'warning');
+                showAuthModal('login');
+                return;
+            }
+            investProduct = {
+                id: productId,
+                name: productName,
+                minAmount: minAmount,
+                remainAmount: remainAmount
+            };
+            document.getElementById('investProductInfo').innerHTML =
+                '<div style="font-size:14px;color:var(--text-light);margin-bottom:4px">投资产品</div>' +
+                '<div style="font-size:16px;font-weight:700">' + escapeHtml(productName) + '</div>' +
+                '<div style="display:flex;gap:20px;margin-top:8px;font-size:13px">' +
+                    '<span>起投金额：<strong>' + formatMoney(minAmount) + '</strong></span>' +
+                    '<span>可投余额：<strong>' + formatMoney(remainAmount) + '</strong></span>' +
+                '</div>';
+            document.getElementById('investHint').textContent = '最低投资 ' + formatMoney(minAmount) + '，最多可投 ' + formatMoney(remainAmount);
+            document.getElementById('investAmount').value = '';
+            openModal('investModal');
+        }
+
+        /**
+         * 确认投资
+         */
+        async function confirmInvest() {
+            if (!investProduct) {
+                return;
+            }
+            var amount = parseFloat(document.getElementById('investAmount').value);
+            if (isNaN(amount) || amount <= 0) {
+                showToast('请输入有效金额', 'error');
+                return;
+            }
+            if (amount < investProduct.minAmount) {
+                showToast('投资金额不能低于起投金额 ' + formatMoney(investProduct.minAmount), 'error');
+                return;
+            }
+            if (amount > investProduct.remainAmount) {
+                showToast('投资金额不能超过可投余额', 'error');
+                return;
+            }
+            var result = await apiRequest('/api/users/invest', {
+                method: 'POST',
+                body: JSON.stringify({
+                    productId: investProduct.id,
+                    amount: amount
+                })
+            });
+            if (result !== null) {
+                showToast('投资成功', 'success');
+                closeModal('investModal');
+                await refreshUserInfo();
+                // 刷新产品列表
+                loadProducts();
+            }
+        }
+
+        // ===== 支付功能 =====
+
+        /**
+         * 选择支付渠道
+         * @param {HTMLElement} el 渠道选项元素
+         */
+        function selectChannel(el) {
+            var options = document.querySelectorAll('.channel-option');
+            for (var i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected');
+            }
+            el.classList.add('selected');
+            selectedChannel = el.getAttribute('data-channel');
+        }
+
+        /**
+         * 提交支付
+         */
+        async function submitPayment() {
+            // 检查登录态
+            if (!currentUser) {
+                showToast('请先登录后再支付', 'warning');
+                showAuthModal('login');
+                return;
+            }
+            var merchantIdStr = document.getElementById('payMerchantId').value.trim();
+            var amount = parseFloat(document.getElementById('payAmount').value);
+            var description = document.getElementById('payDescription').value.trim();
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast('请输入有效支付金额', 'error');
+                return;
+            }
+
+            var body = {
+                amount: amount,
+                channel: selectedChannel,
+                description: description
+            };
+            // 商户ID可空
+            if (merchantIdStr) {
+                var merchantId = parseInt(merchantIdStr, 10);
+                if (!isNaN(merchantId)) {
+                    body.merchantId = merchantId;
+                }
+            }
+
+            var result = await apiRequest('/api/users/pay', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            if (result !== null) {
+                showPaymentResult(true, '支付成功', result.orderNo ? '订单号：' + result.orderNo : '');
+                // 清空表单
+                document.getElementById('payAmount').value = '';
+                document.getElementById('payDescription').value = '';
+                document.getElementById('payMerchantId').value = '';
+                await refreshUserInfo();
+            }
+        }
+
+        /**
+         * 显示支付结果
+         * @param {boolean} success 是否成功
+         * @param {string} title 标题
+         * @param {string} desc 描述
+         */
+        function showPaymentResult(success, title, desc) {
+            var panel = document.getElementById('paymentPanel');
+            var iconClass = success ? 'result-success' : 'result-error';
+            var icon = success ? '✓' : '✕';
+            panel.innerHTML =
+                '<div class="payment-result">' +
+                    '<div class="result-icon ' + iconClass + '">' + icon + '</div>' +
+                    '<div class="result-title">' + escapeHtml(title) + '</div>' +
+                    '<div class="result-desc">' + escapeHtml(desc || '') + '</div>' +
+                    '<button class="btn btn-primary" onclick="resetPaymentPanel()">再次支付</button>' +
+                '</div>';
+        }
+
+        /**
+         * 重置支付面板
+         */
+        function resetPaymentPanel() {
+            var panel = document.getElementById('paymentPanel');
+            panel.innerHTML =
+                '<div class="payment-header">' +
+                    '<h2>支付收银台</h2>' +
+                    '<p>支持支付宝、微信、银行卡多渠道支付</p>' +
+                '</div>' +
+                '<div class="payment-body">' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">收款商户ID <span style="color:var(--text-lighter);font-weight:400">(可选)</span></label>' +
+                        '<input type="number" class="form-input" id="payMerchantId" placeholder="留空表示无商户场景">' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">支付金额 <span class="required">*</span></label>' +
+                        '<input type="number" class="form-input" id="payAmount" placeholder="请输入支付金额" step="0.01" min="0.01">' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">支付渠道 <span class="required">*</span></label>' +
+                        '<div class="channel-options" id="channelOptions">' +
+                            '<div class="channel-option selected" data-channel="ALIPAY" onclick="selectChannel(this)">' +
+                                '<div class="channel-icon">💳</div><div class="channel-name">支付宝</div>' +
+                            '</div>' +
+                            '<div class="channel-option" data-channel="WECHAT" onclick="selectChannel(this)">' +
+                                '<div class="channel-icon">💚</div><div class="channel-name">微信支付</div>' +
+                            '</div>' +
+                            '<div class="channel-option" data-channel="BANK" onclick="selectChannel(this)">' +
+                                '<div class="channel-icon">🏦</div><div class="channel-name">银行卡</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">支付描述</label>' +
+                        '<textarea class="form-textarea" id="payDescription" placeholder="请输入支付描述（可选）"></textarea>' +
+                    '</div>' +
+                    '<button class="btn btn-primary btn-block" onclick="submitPayment()">确认支付</button>' +
+                '</div>';
+            selectedChannel = 'ALIPAY';
+        }
+
+        // ===== 活动功能 =====
+
+        /**
+         * 加载活动列表
+         */
+        async function loadActivities() {
+            var container = document.getElementById('activityList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>活动加载中...</div>';
+            var data = await apiRequest('/api/activities');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎁</div><p class="empty-text">暂无进行中的活动</p></div>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                html += buildActivityCard(data[i]);
+            }
+            container.innerHTML = html;
+        }
+
+        /**
+         * 构建活动卡片 HTML
+         * @param {object} a 活动数据
+         * @returns {string} 卡片 HTML
+         */
+        function buildActivityCard(a) {
+            return '<div class="activity-card">' +
+                '<div class="activity-banner ' + getActivityClass(a.type) + '">' +
+                    '<span class="activity-type-tag">' + getActivityTypeName(a.type) + '</span>' +
+                    '<div class="activity-title">' + escapeHtml(a.title) + '</div>' +
+                    '<div class="activity-time">' + formatTime(a.startTime) + ' ~ ' + formatTime(a.endTime) + '</div>' +
+                '</div>' +
+                '<div class="activity-body">' +
+                    '<p class="activity-desc">' + escapeHtml(a.description || '暂无描述') + '</p>' +
+                '</div>' +
+                '<div class="activity-footer">' +
+                    '<button class="btn btn-gold btn-block" onclick="claimCoupon(' + a.id + ')">立即领取</button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        /**
+         * 领取优惠券
+         * @param {number} activityId 活动ID
+         */
+        async function claimCoupon(activityId) {
+            if (!currentUser) {
+                showToast('请先登录后领取', 'warning');
+                showAuthModal('login');
+                return;
+            }
+            var result = await apiRequest('/api/activities/' + activityId + '/claim', {
+                method: 'POST'
+            });
+            if (result !== null) {
+                showToast('优惠券领取成功', 'success');
+            }
+        }
+
+        // ===== 我的页面 =====
+
+        /**
+         * 加载我的页面
+         */
+        async function loadProfile() {
+            var container = document.getElementById('profileContent');
+            if (!currentUser) {
+                container.innerHTML = '<div class="empty-state">' +
+                    '<div class="empty-icon">🔒</div>' +
+                    '<p class="empty-text">请先登录查看个人中心</p>' +
+                    '<button class="btn btn-primary" style="margin-top:16px" onclick="showAuthModal(\'login\')">立即登录</button>' +
+                '</div>';
+                return;
+            }
+            // 刷新用户信息
+            await refreshUserInfo();
+            renderProfile();
+            // 默认加载资产管理 tab
+            switchProfileTab('assets');
+        }
+
+        /**
+         * 渲染个人中心顶部信息
+         */
+        function renderProfile() {
+            var container = document.getElementById('profileContent');
+            if (!currentUser) {
+                return;
+            }
+            var initial = (currentUser.username || 'U').charAt(0).toUpperCase();
+            var verifiedBadge = currentUser.verified ?
+                '<span class="status-badge status-verified">已实名</span>' :
+                '<span class="status-badge status-frozen">未实名</span>';
+            var statusBadge = currentUser.status === 'ACTIVE' ?
+                '<span class="status-badge status-active">正常</span>' :
+                '<span class="status-badge status-frozen">' + escapeHtml(currentUser.status || '异常') + '</span>';
+
+            container.innerHTML =
+                '<div class="profile-header">' +
+                    '<div class="profile-info">' +
+                        '<div class="profile-avatar">' + escapeHtml(initial) + '</div>' +
+                        '<div class="profile-details">' +
+                            '<div class="profile-name">' + escapeHtml(currentUser.username || '用户') + verifiedBadge + statusBadge + '</div>' +
+                            '<div class="profile-meta">' +
+                                '<span>👤 ' + escapeHtml(currentUser.realName || '未实名') + '</span>' +
+                                '<span>📱 ' + escapeHtml(currentUser.phone || '-') + '</span>' +
+                                '<span>🕐 注册于 ' + formatTime(currentUser.createdAt) + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="profile-balance">' +
+                            '<div class="profile-balance-label">账户余额</div>' +
+                            '<div class="profile-balance-value">' + formatMoney(currentUser.balance) + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                // 实名认证入口（未实名时显示）
+                (currentUser.verified ? '' :
+                    '<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">' +
+                        '<div><div style="font-weight:600;color:#9a3412;margin-bottom:4px">⚠ 您还未完成实名认证</div>' +
+                        '<div style="font-size:13px;color:#c2410c">完成实名认证后可享受充值、提现、投资等完整功能</div></div>' +
+                        '<button class="btn btn-gold" onclick="openVerifyModal()">立即认证</button>' +
+                    '</div>'
+                ) +
+                // Tab 导航
+                '<div class="tabs">' +
+                    '<div class="tab-item active" data-tab="assets" onclick="switchProfileTab(\'assets\')">资产管理</div>' +
+                    '<div class="tab-item" data-tab="investments" onclick="switchProfileTab(\'investments\')">我的投资</div>' +
+                    '<div class="tab-item" data-tab="coupons" onclick="switchProfileTab(\'coupons\')">我的优惠券</div>' +
+                    '<div class="tab-item" data-tab="tickets" onclick="switchProfileTab(\'tickets\')">客服工单</div>' +
+                '</div>' +
+                // 各 Tab 内容容器
+                '<div class="tab-content active" id="tab-assets"></div>' +
+                '<div class="tab-content" id="tab-investments"></div>' +
+                '<div class="tab-content" id="tab-coupons"></div>' +
+                '<div class="tab-content" id="tab-tickets"></div>';
+        }
+
+        /**
+         * 切换个人中心 Tab
+         * @param {string} tabName Tab 名称：assets/investments/coupons/tickets
+         */
+        function switchProfileTab(tabName) {
+            // 更新 Tab 高亮
+            var tabs = document.querySelectorAll('.tab-item');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var activeTab = document.querySelector('.tab-item[data-tab="' + tabName + '"]');
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            // 切换内容显示
+            var contents = document.querySelectorAll('.tab-content');
+            for (var j = 0; j < contents.length; j++) {
+                contents[j].classList.remove('active');
+            }
+            var target = document.getElementById('tab-' + tabName);
+            if (target) {
+                target.classList.add('active');
+            }
+            // 按需加载数据
+            if (tabName === 'assets') {
+                loadAssetsTab();
+            } else if (tabName === 'investments') {
+                loadInvestments();
+            } else if (tabName === 'coupons') {
+                loadCoupons();
+            } else if (tabName === 'tickets') {
+                loadTickets();
+            }
+        }
+
+        /**
+         * 加载资产管理 Tab（充值/提现按钮 + 流水列表）
+         */
+        function loadAssetsTab() {
+            var container = document.getElementById('tab-assets');
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">' +
+                    '<button class="btn btn-primary" onclick="openAmountModal(\'recharge\')">💰 充值</button>' +
+                    '<button class="btn btn-secondary" onclick="openAmountModal(\'withdraw\')">💸 提现</button>' +
+                '</div>' +
+                '<div class="section-header"><h3 class="section-title" style="font-size:18px">资产流水</h3></div>' +
+                '<div id="transactionsList"><div class="loading"><div class="spinner"></div>加载中...</div></div>';
+            loadTransactions();
+        }
+
+        /**
+         * 加载资产流水列表
+         */
+        async function loadTransactions() {
+            var container = document.getElementById('transactionsList');
+            if (!container) {
+                return;
+            }
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+            var data = await apiRequest('/api/users/transactions');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p class="empty-text">暂无交易记录</p></div>';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table class="data-table"><thead><tr>' +
+                '<th>时间</th><th>类型</th><th>金额</th><th>余额</th><th>备注</th>' +
+                '</tr></thead><tbody>';
+            for (var i = 0; i < data.length; i++) {
+                var t = data[i];
+                var amount = Number(t.amount);
+                var amountClass = amount >= 0 ? 'amount-positive' : 'amount-negative';
+                var amountSign = amount >= 0 ? '+' : '';
+                html += '<tr>' +
+                    '<td>' + formatTime(t.createdAt) + '</td>' +
+                    '<td>' + getTransactionTypeName(t.type) + '</td>' +
+                    '<td class="' + amountClass + '">' + amountSign + formatMoney(t.amount) + '</td>' +
+                    '<td>' + formatMoney(t.balanceAfter) + '</td>' +
+                    '<td>' + escapeHtml(t.remark || '-') + '</td>' +
+                '</tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * 加载我的投资订单
+         */
+        async function loadInvestments() {
+            var container = document.getElementById('tab-investments');
+            if (!container) {
+                return;
+            }
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+            var data = await apiRequest('/api/investments');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📈</div><p class="empty-text">暂无投资记录</p></div>';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table class="data-table"><thead><tr>' +
+                '<th>订单号</th><th>产品名称</th><th>投资金额</th><th>预期收益</th><th>状态</th><th>创建时间</th><th>操作</th>' +
+                '</tr></thead><tbody>';
+            for (var i = 0; i < data.length; i++) {
+                var inv = data[i];
+                var canRedeem = inv.status === 'CONFIRMED';
+                html += '<tr>' +
+                    '<td style="font-size:12px">' + escapeHtml(inv.orderNo || '-') + '</td>' +
+                    '<td>' + escapeHtml(inv.productName || '产品已下架') + '</td>' +
+                    '<td>' + formatMoney(inv.amount) + '</td>' +
+                    '<td class="amount-positive">' + formatMoney(inv.expectedReturn) + '</td>' +
+                    '<td>' + getInvestmentStatusName(inv.status) + '</td>' +
+                    '<td>' + formatTime(inv.createdAt) + '</td>' +
+                    '<td>' + (canRedeem ?
+                        '<button class="btn btn-secondary btn-sm" onclick="redeemInvestment(' + inv.id + ')">赎回</button>' :
+                        '<span style="color:var(--text-lighter);font-size:13px">-</span>') + '</td>' +
+                '</tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * 赎回投资
+         * @param {number} orderId 投资订单 ID
+         */
+        async function redeemInvestment(orderId) {
+            if (!confirm('确认赎回该投资订单？')) {
+                return;
+            }
+            var result = await apiRequest('/api/investments/' + orderId + '/redeem', {
+                method: 'POST'
+            });
+            if (result !== null) {
+                showToast('赎回成功', 'success');
+                await refreshUserInfo();
+                loadInvestments();
+            }
+        }
+
+        /**
+         * 加载我的优惠券
+         */
+        async function loadCoupons() {
+            var container = document.getElementById('tab-coupons');
+            if (!container) {
+                return;
+            }
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+            var data = await apiRequest('/api/activities/coupons');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎫</div><p class="empty-text">暂无优惠券</p></div>';
+                return;
+            }
+            var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px">';
+            for (var i = 0; i < data.length; i++) {
+                var c = data[i];
+                var statusText = c.status === 'UNUSED' ? '可使用' : (c.status === 'USED' ? '已使用' : '已过期');
+                var statusColor = c.status === 'UNUSED' ? 'var(--success)' : 'var(--text-lighter)';
+                html += '<div class="coupon-card" style="' + (c.status !== 'UNUSED' ? 'opacity:0.6' : '') + '">' +
+                    '<div class="coupon-amount">' +
+                        '<div class="coupon-value">' + escapeHtml(c.amount) + '</div>' +
+                        '<div class="coupon-unit">元</div>' +
+                    '</div>' +
+                    '<div class="coupon-info">' +
+                        '<div class="coupon-title">' + escapeHtml(c.title) + '</div>' +
+                        '<div class="coupon-condition">满 ' + formatMoney(c.minAmount) + ' 元可用</div>' +
+                        '<div class="coupon-expire">有效期至 ' + formatTime(c.expiredAt) + '</div>' +
+                    '</div>' +
+                    '<div style="text-align:right">' +
+                        '<span style="font-size:12px;font-weight:600;color:' + statusColor + '">' + statusText + '</span>' +
+                    '</div>' +
+                '</div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * 加载客服工单 Tab（提交表单 + 工单列表）
+         */
+        function loadTickets() {
+            var container = document.getElementById('tab-tickets');
+            if (!container) {
+                return;
+            }
+            container.innerHTML =
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">' +
+                    '<div>' +
+                        '<div class="section-header"><h3 class="section-title" style="font-size:18px">提交工单</h3></div>' +
+                        '<div class="form-group">' +
+                            '<label class="form-label">工单标题 <span class="required">*</span></label>' +
+                            '<input type="text" class="form-input" id="ticketTitle" placeholder="请简要描述问题">' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<label class="form-label">问题描述 <span class="required">*</span></label>' +
+                            '<textarea class="form-textarea" id="ticketDescription" placeholder="请详细描述您遇到的问题" style="min-height:120px"></textarea>' +
+                        '</div>' +
+                        '<button class="btn btn-primary btn-block" onclick="submitTicket()">提交工单</button>' +
+                    '</div>' +
+                    '<div>' +
+                        '<div class="section-header"><h3 class="section-title" style="font-size:18px">我的工单</h3></div>' +
+                        '<div id="ticketsList"><div class="loading"><div class="spinner"></div>加载中...</div></div>' +
+                    '</div>' +
+                '</div>';
+            loadTicketsList();
+        }
+
+        /**
+         * 加载工单列表
+         */
+        async function loadTicketsList() {
+            var container = document.getElementById('ticketsList');
+            if (!container) {
+                return;
+            }
+            var data = await apiRequest('/api/users/tickets');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p class="empty-text">暂无工单</p></div>';
+                return;
+            }
+            var html = '<div style="display:flex;flex-direction:column;gap:12px">';
+            for (var i = 0; i < data.length; i++) {
+                var t = data[i];
+                var statusClass = t.status === 'OPEN' ? 'ticket-open' : (t.status === 'REPLIED' ? 'ticket-replied' : 'ticket-closed');
+                var statusText = t.status === 'OPEN' ? '待处理' : (t.status === 'REPLIED' ? '已回复' : '已关闭');
+                html += '<div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px">' +
+                    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+                        '<span style="font-weight:700;font-size:15px">' + escapeHtml(t.title) + '</span>' +
+                        '<span class="ticket-status ' + statusClass + '">' + statusText + '</span>' +
+                    '</div>' +
+                    '<div style="font-size:13px;color:var(--text-light);margin-bottom:8px">' + escapeHtml(t.description) + '</div>' +
+                    (t.reply ? '<div style="background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;color:var(--text)">' +
+                        '<div style="font-weight:600;margin-bottom:4px">客服回复：</div>' + escapeHtml(t.reply) + '</div>' : '') +
+                    '<div style="font-size:12px;color:var(--text-lighter);margin-top:8px">提交时间：' + formatTime(t.createdAt) + '</div>' +
+                '</div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * 提交工单
+         */
+        async function submitTicket() {
+            var title = document.getElementById('ticketTitle').value.trim();
+            var description = document.getElementById('ticketDescription').value.trim();
+            if (!title) {
+                showToast('请输入工单标题', 'error');
+                return;
+            }
+            if (!description) {
+                showToast('请输入问题描述', 'error');
+                return;
+            }
+            var result = await apiRequest('/api/users/tickets', {
+                method: 'POST',
+                body: JSON.stringify({
+                    title: title,
+                    description: description
+                })
+            });
+            if (result !== null) {
+                showToast('工单提交成功', 'success');
+                document.getElementById('ticketTitle').value = '';
+                document.getElementById('ticketDescription').value = '';
+                loadTicketsList();
+            }
+        }
+
+        /**
+         * 打开充值/提现模态框
+         * @param {string} action 操作类型：recharge/withdraw
+         */
+        function openAmountModal(action) {
+            amountAction = action;
+            var title = action === 'recharge' ? '账户充值' : '账户提现';
+            var btnText = action === 'recharge' ? '确认充值' : '确认提现';
+            document.getElementById('amountModalTitle').textContent = title;
+            document.getElementById('amountSubmitBtn').textContent = btnText;
+            document.getElementById('amountValue').value = '';
+            document.getElementById('amountRemark').value = '';
+            // 显示当前余额提示
+            var hint = action === 'withdraw' ?
+                '当前余额：' + formatMoney(currentUser ? currentUser.balance : 0) :
+                '充值将实时到账';
+            if (!document.getElementById('amountHint')) {
+                var hintDiv = document.createElement('div');
+                hintDiv.id = 'amountHint';
+                hintDiv.style.cssText = 'font-size:12px;color:var(--text-lighter);margin-top:-12px;margin-bottom:16px';
+                document.getElementById('amountValue').parentNode.appendChild(hintDiv);
+            }
+            document.getElementById('amountHint').textContent = hint;
+            openModal('amountModal');
+        }
+
+        /**
+         * 确认充值/提现
+         */
+        async function confirmAmount() {
+            var amount = parseFloat(document.getElementById('amountValue').value);
+            var remark = document.getElementById('amountRemark').value.trim();
+            if (isNaN(amount) || amount <= 0) {
+                showToast('请输入有效金额', 'error');
+                return;
+            }
+            var url = amountAction === 'recharge' ? '/api/users/recharge' : '/api/users/withdraw';
+            var result = await apiRequest(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                    amount: amount,
+                    remark: remark
+                })
+            });
+            if (result !== null) {
+                var msg = amountAction === 'recharge' ? '充值成功' : '提现成功';
+                showToast(msg, 'success');
+                closeModal('amountModal');
+                // 更新用户信息
+                currentUser = result;
+                updateNavUserArea();
+                renderProfile();
+                switchProfileTab('assets');
+            }
+        }
+
+        /**
+         * 打开实名认证模态框
+         */
+        function openVerifyModal() {
+            document.getElementById('verifyRealName').value = '';
+            document.getElementById('verifyIdCard').value = '';
+            openModal('verifyModal');
+        }
+
+        /**
+         * 确认实名认证
+         */
+        async function confirmVerify() {
+            var realName = document.getElementById('verifyRealName').value.trim();
+            var idCard = document.getElementById('verifyIdCard').value.trim();
+            if (!realName) {
+                showToast('请输入真实姓名', 'error');
+                return;
+            }
+            if (!idCard || idCard.length !== 18) {
+                showToast('请输入有效的18位身份证号', 'error');
+                return;
+            }
+            var result = await apiRequest('/api/users/verify', {
+                method: 'POST',
+                body: JSON.stringify({
+                    realName: realName,
+                    idCard: idCard
+                })
+            });
+            if (result !== null) {
+                showToast('实名认证成功', 'success');
+                closeModal('verifyModal');
+                await refreshUserInfo();
+                renderProfile();
+                switchProfileTab('assets');
+            }
+        }
+
+        // ===== 登录/注册 =====
+
+        /**
+         * 显示登录/注册模态框
+         * @param {string} mode 模式：login/register
+         */
+        function showAuthModal(mode) {
+            switchAuthMode(mode);
+            openModal('authModal');
+        }
+
+        /**
+         * 切换登录/注册模式
+         * @param {string} mode 模式：login/register
+         */
+        function switchAuthMode(mode) {
+            authMode = mode;
+            var tabs = document.querySelectorAll('.auth-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var activeTab = document.querySelector('.auth-tab[data-mode="' + mode + '"]');
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            // 注册模式显示手机号字段
+            document.getElementById('phoneGroup').style.display = (mode === 'register') ? 'block' : 'none';
+            // 更新标题与按钮文字
+            document.querySelector('#authModal .modal-title').textContent = (mode === 'login') ? '账户登录' : '注册新账户';
+            document.getElementById('authSubmitBtn').textContent = (mode === 'login') ? '登录' : '注册';
+            // 清空表单
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authPhone').value = '';
+        }
+
+        /**
+         * 处理登录/注册表单提交
+         * @param {Event} event 表单事件
+         */
+        async function handleAuthSubmit(event) {
+            event.preventDefault();
+            var username = document.getElementById('authUsername').value.trim();
+            var password = document.getElementById('authPassword').value.trim();
+            if (!username || !password) {
+                showToast('请填写用户名和密码', 'error');
+                return;
+            }
+            var url, body;
+            if (authMode === 'login') {
+                url = '/api/users/login';
+                body = { username: username, password: password };
+            } else {
+                var phone = document.getElementById('authPhone').value.trim();
+                if (!phone) {
+                    showToast('请填写手机号', 'error');
+                    return;
+                }
+                url = '/api/users/register';
+                body = { username: username, password: password, phone: phone };
+            }
+            var result = await apiRequest(url, {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            if (result === null) {
+                return; // 错误已由 apiRequest 处理
+            }
+            if (authMode === 'register') {
+                showToast('注册成功，请登录', 'success');
+                switchAuthMode('login');
+                document.getElementById('authUsername').value = username;
+                document.getElementById('authPassword').value = '';
+            } else {
+                // 登录成功，获取完整用户信息
+                showToast('登录成功', 'success');
+                closeModal('authModal');
+                await refreshUserInfo();
+                // 跳转到"我的"页面
+                switchView('profile');
+            }
+        }
+
+        /**
+         * 登出
+         */
+        async function handleLogout() {
+            if (!confirm('确认退出登录？')) {
+                return;
+            }
+            await apiRequest('/api/users/logout', { method: 'POST' });
+            currentUser = null;
+            updateNavUserArea();
+            showToast('已退出登录', 'info');
+            switchView('home');
+        }
+
+        // ===== 模态框工具函数 =====
+
+        /**
+         * 打开模态框
+         * @param {string} id 模态框 ID
+         */
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        /**
+         * 关闭模态框
+         * @param {string} id 模态框 ID
+         */
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // 点击遮罩层关闭模态框
+        document.addEventListener('click', function (e) {
+            if (e.target.classList && e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
+            }
+        });
+
+        // ESC 键关闭模态框
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                var modals = document.querySelectorAll('.modal-overlay.show');
+                for (var i = 0; i < modals.length; i++) {
+                    modals[i].classList.remove('show');
+                }
+            }
+        });
+
+        // ===== 页面初始化 =====
+
+        /**
+         * 页面加载完成后执行：检查登录态并加载首页数据
+         */
+        (async function init() {
+            updateNavUserArea();
+            await checkLoginState();
+            loadHomeData();
+        })();
+    </script>
+</body>
+</html>

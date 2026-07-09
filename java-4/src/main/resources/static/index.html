@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校园图书馆 - 借阅管理系统</title>
+<style>
+/* ============ 设计变量（图书馆主题：蓝白配色） ============ */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #dbeafe;
+  --primary-hover: #1e40af;
+  --bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: 14px; }
+
+/* ============ 顶部导航栏 ============ */
+.navbar {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 64px;
+}
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.navbar-brand .logo {
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.nav-search {
+  flex: 1;
+  max-width: 480px;
+  display: flex;
+  gap: 8px;
+}
+.nav-search input {
+  flex: 1;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+}
+.nav-search select {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  max-width: 140px;
+}
+.nav-search button {
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.nav-search button:hover { background: var(--primary-hover); }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.nav-btn {
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.15); }
+.nav-btn.primary {
+  background: #fff;
+  color: var(--primary);
+  font-weight: 600;
+}
+.nav-btn.primary:hover { background: #f0f7ff; }
+.cart-badge {
+  background: #ef4444;
+  color: #fff;
+  border-radius: 10px;
+  padding: 0 6px;
+  font-size: 11px;
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+}
+.mobile-menu-btn { display: none; }
+
+/* ============ 主内容容器 ============ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* ============ 首页 Hero ============ */
+.hero {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  border-radius: 16px;
+  padding: 48px 32px;
+  margin-bottom: 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "📚";
+  position: absolute;
+  font-size: 200px;
+  opacity: 0.08;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.hero h1 {
+  font-size: 32px;
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+  position: relative;
+}
+.hero p {
+  color: var(--text-muted);
+  font-size: 16px;
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============ 区块标题 ============ */
+.section {
+  margin-bottom: 40px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: "";
+  width: 4px;
+  height: 22px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* ============ 分类导航 ============ */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.category-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+}
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+.category-card .icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.category-card .name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.category-card .count {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ============ 图书卡片网格 ============ */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.book-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+}
+.book-cover-wrap {
+  position: relative;
+}
+.book-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.book-cover.placeholder {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  padding: 16px;
+  text-align: center;
+  word-break: break-all;
+}
+.book-cover.placeholder.teacher { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.book-cover.placeholder.green { background: linear-gradient(135deg, #34d399 0%, #059669 100%); }
+.book-cover.placeholder.purple { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); }
+.book-cover .availability-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.book-cover .availability-tag.out { background: rgba(220,38,38,0.85); }
+.book-info {
+  padding: 12px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.book-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+.book-author {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.book-category-tag {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+/* ============ 分页控件 ============ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.page-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.page-info {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0 8px;
+}
+
+/* ============ 加载与空状态 ============ */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.loading .spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+/* ============ 模态框 ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.2s ease;
+}
+.modal.large { max-width: 800px; }
+.modal.small { max-width: 420px; }
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+  border-radius: 12px 12px 0 0;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.modal-close {
+  font-size: 24px;
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.modal-close:hover { background: var(--bg); color: var(--text); }
+.modal-body { padding: 24px; }
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+}
+
+/* ============ 表单 ============ */
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.form-switch {
+  text-align: center;
+  margin-top: 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.form-switch a {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+.form-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.form-tab {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+.form-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* ============ 按钮 ============ */
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { filter: brightness(0.92); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { filter: brightness(0.92); }
+.btn-warning { background: var(--warning); color: #fff; }
+.btn-warning:hover { filter: brightness(0.92); }
+.btn-outline {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+.btn-ghost { background: transparent; color: var(--text-muted); }
+.btn-ghost:hover { background: var(--bg); }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
+/* ============ 图书详情 ============ */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+}
+.detail-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detail-cover.placeholder {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  padding: 20px;
+  word-break: break-all;
+}
+.detail-info h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.detail-info .author {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+.detail-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.detail-meta .label { color: var(--text-muted); }
+.detail-meta .value { font-weight: 500; }
+.detail-description {
+  background: var(--bg);
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-top: 12px;
+}
+.availability-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-weight: 600;
+}
+.availability-box.ok { background: #dcfce7; color: #166534; }
+.availability-box.out { background: #fee2e2; color: #991b1b; }
+
+/* ============ 借阅车列表 ============ */
+.cart-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.cart-item:last-child { border-bottom: none; }
+.cart-item-cover {
+  width: 50px;
+  height: 66px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px;
+  word-break: break-all;
+}
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-item-meta { font-size: 12px; color: var(--text-muted); }
+
+/* ============ 借阅记录 ============ */
+.borrow-record {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.borrow-record-info { flex: 1; min-width: 0; }
+.borrow-record-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.borrow-record-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.status-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-tag.BORROWING { background: #dbeafe; color: #1e40af; }
+.status-tag.OVERDUE { background: #fee2e2; color: #991b1b; }
+.status-tag.RETURNED { background: #dcfce7; color: #166534; }
+.borrow-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ============ 个人中心 ============ */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-bottom: 20px;
+}
+.profile-item .label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.profile-item .value {
+  font-size: 15px;
+  font-weight: 500;
+}
+.progress-bar {
+  background: var(--border);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-bar .fill {
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s;
+}
+
+/* ============ 提示 Toast ============ */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 18px;
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--primary);
+  font-size: 14px;
+  min-width: 240px;
+  max-width: 360px;
+  animation: toastIn 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
+.toast .icon { font-size: 18px; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 768px) {
+  .navbar-inner { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
+  .navbar-brand { font-size: 18px; }
+  .nav-search { order: 3; width: 100%; max-width: none; flex-basis: 100%; }
+  .nav-search select { display: none; }
+  .nav-actions { margin-left: 0; flex-wrap: wrap; }
+  .nav-btn { padding: 6px 10px; font-size: 13px; }
+  .hero { padding: 32px 20px; }
+  .hero h1 { font-size: 24px; }
+  .detail-layout { grid-template-columns: 1fr; }
+  .detail-cover { max-width: 200px; margin: 0 auto; }
+  .book-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .borrow-record { flex-direction: column; align-items: flex-start; }
+  .borrow-actions { flex-direction: row; width: 100%; }
+  .borrow-actions .btn { flex: 1; }
+  .modal { max-height: 95vh; }
+  .form-row { grid-template-columns: 1fr; }
+  .detail-meta { grid-template-columns: 1fr; }
+  .profile-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .book-grid { grid-template-columns: repeat(2, 1fr); }
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶部导航栏 ============ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-brand" onclick="goHome()">
+      <span class="logo">📖</span>
+      <span>校园图书馆</span>
+    </div>
+    <div class="nav-search">
+      <input type="text" id="searchInput" placeholder="搜索书名、作者、ISBN..." onkeydown="if(event.key==='Enter')doSearch()">
+      <select id="categorySelect" onchange="onCategoryChange()">
+        <option value="">全部分类</option>
+      </select>
+      <button onclick="doSearch()">搜索</button>
+    </div>
+    <div class="nav-actions" id="navActions">
+      <!-- 未登录状态由 JS 渲染 -->
+    </div>
+  </div>
+</nav>
+
+<!-- ============ 主内容区 ============ -->
+<main class="container" id="mainContent">
+  <!-- 视图由 JS 动态渲染 -->
+</main>
+
+<!-- ============ 模态框容器 ============ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <!-- 模态框内容由 JS 渲染 -->
+  </div>
+</div>
+
+<!-- ============ Toast 容器 ============ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ============================================================
+ * 校园图书借阅管理系统 - 用户端前端
+ * 单文件实现：API 对接 + 视图渲染 + 交互逻辑
+ * 后端地址：http://localhost:8090
+ * ============================================================ */
+
+// 后端 API 基础地址
+const API_BASE = '';
+
+// 分类图标映射（按分类名首字/关键词匹配，提升视觉识别）
+const CATEGORY_ICONS = {
+  '文学': '📚', '小说': '📖', '历史': '🏛️', '哲学': '🤔', '科学': '🔬',
+  '计算机': '💻', '技术': '⚙️', '艺术': '🎨', '经济': '💰', '管理': '📊',
+  '教育': '🎓', '医学': '⚕️', '工程': '🔧', '法律': '⚖️', '政治': '🏛️',
+  '心理': '🧠', '社会': '👥', '生物': '🧬', '物理': '⚛️', '化学': '🧪',
+  '数学': '🔢', '地理': '🗺️', '体育': '⚽', '音乐': '🎵', ' default': '📕'
+};
+
+// 占位封面渐变样式池（用于无封面图书）
+const COVER_GRADIENTS = ['', 'teacher', 'green', 'purple'];
+
+/* ============ 全局状态 ============ */
+const state = {
+  currentUser: null,       // 当前登录用户
+  categories: [],          // 分类缓存
+  cartCount: 0,            // 借阅车数量
+  view: 'home',            // 当前视图：home / books / borrows
+  books: {                 // 图书列表状态
+    keyword: '',
+    categoryId: '',
+    page: 0,
+    size: 12,
+    data: null
+  },
+  borrows: {               // 借阅记录状态
+    status: 'BORROWING',
+    page: 0,
+    size: 10,
+    data: null
+  }
+};
+
+/* ============ API 工具层 ============ */
+/**
+ * 发送 fetch 请求的统一封装
+ * @param {string} url - 接口路径（相对 API_BASE）
+ * @param {object} options - fetch 配置项
+ * @returns {Promise<any>} 解析后的 JSON，空响应返回 null
+ * @throws {Error} 请求失败或业务异常时抛出带 message 的错误
+ */
+async function request(url, options = {}) {
+  try {
+    const res = await fetch(API_BASE + url, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      ...options
+    });
+    // 非 2xx 状态码处理
+    if (!res.ok) {
+      let msg = `请求失败 (${res.status})`;
+      try {
+        const data = await res.json();
+        msg = data.message || data.error || data.msg || msg;
+      } catch (e) { /* 响应非 JSON，使用默认提示 */ }
+      throw new Error(msg);
+    }
+    // 处理可能为空的响应体
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch (err) {
+    // 网络错误统一提示
+    if (err instanceof TypeError) {
+      throw new Error('网络连接失败，请确认后端服务已启动');
+    }
+    throw err;
+  }
+}
+
+// API 接口集合
+const api = {
+  // 认证
+  login: (body) => request('/api/auth/login', { method: 'POST', body: JSON.stringify(body) }),
+  register: (body) => request('/api/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+  logout: () => request('/api/auth/logout', { method: 'POST' }),
+  me: () => request('/api/auth/me'),
+  changePassword: (body) => request('/api/auth/change-password', { method: 'POST', body: JSON.stringify(body) }),
+  // 图书
+  books: (params) => request('/api/books?' + new URLSearchParams(params)),
+  booksByCategory: (categoryId, params) => request(`/api/books/category/${categoryId}?` + new URLSearchParams(params)),
+  latestBooks: (params) => request('/api/books/latest?' + new URLSearchParams(params)),
+  bookDetail: (id) => request(`/api/books/${id}`),
+  // 分类
+  categories: () => request('/api/categories'),
+  // 借阅
+  borrow: (bookId) => request(`/api/borrow/${bookId}`, { method: 'POST' }),
+  renew: (recordId) => request('/api/borrow/renew', { method: 'POST', body: JSON.stringify({ recordId }) }),
+  returnBook: (recordId) => request('/api/borrow/return', { method: 'POST', body: JSON.stringify({ recordId }) }),
+  myBorrows: (params) => request('/api/borrow/my?' + new URLSearchParams(params)),
+  // 借阅车
+  cart: () => request('/api/cart'),
+  addToCart: (bookId) => request(`/api/cart/${bookId}`, { method: 'POST' }),
+  removeFromCart: (itemId) => request(`/api/cart/${itemId}`, { method: 'DELETE' }),
+  submitCart: () => request('/api/cart/submit', { method: 'POST' }),
+  cartCount: () => request('/api/cart/count'),
+  // 读者信息
+  readerProfile: () => request('/api/reader/profile'),
+  updateProfile: (body) => request('/api/reader/profile', { method: 'PUT', body: JSON.stringify(body) })
+};
+
+/* ============ Toast 提示 ============ */
+/**
+ * 显示 Toast 提示
+ * @param {string} message - 提示内容
+ * @param {string} type - 类型：success / error / warning / info
+ * @param {number} duration - 显示时长（毫秒）
+ */
+function showToast(message, type = 'info', duration = 2800) {
+  const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="icon">${icons[type] || icons.info}</span><span>${escapeHtml(message)}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(40px)';
+    toast.style.transition = 'all 0.25s';
+    setTimeout(() => toast.remove(), 250);
+  }, duration);
+}
+
+/* ============ 工具函数 ============ */
+/**
+ * HTML 转义，防止 XSS
+ * @param {string} str - 原始字符串
+ * @returns {string} 转义后的安全字符串
+ */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * 根据分类名获取图标
+ * @param {string} name - 分类名
+ * @returns {string} 图标 emoji
+ */
+function getCategoryIcon(name) {
+  if (!name) return '📕';
+  // 精确匹配
+  if (CATEGORY_ICONS[name]) return CATEGORY_ICONS[name];
+  // 关键词包含匹配
+  for (const key in CATEGORY_ICONS) {
+    if (key !== ' default' && name.includes(key)) return CATEGORY_ICONS[key];
+  }
+  return '📕';
+}
+
+/**
+ * 生成图书占位封面 HTML
+ * @param {object} book - 图书对象
+ * @param {string} extraClass - 额外样式类
+ * @returns {string} 封面 HTML
+ */
+function placeholderCover(book, extraClass = '') {
+  const title = book.title || '未知';
+  // 根据书名长度截取显示文字
+  const display = title.length > 6 ? title.substring(0, 6) + '…' : title;
+  // 根据图书 id 哈希选择渐变色，保证同一图书颜色稳定
+  const idx = (book.id || 0) % COVER_GRADIENTS.length;
+  const grad = COVER_GRADIENTS[idx];
+  const gradClass = grad ? ' ' + grad : '';
+  return `<div class="book-cover placeholder${gradClass}${extraClass ? ' ' + extraClass : ''}">${escapeHtml(display)}</div>`;
+}
+
+/**
+ * 渲染图书封面（有图用图，无图用占位）
+ * @param {object} book - 图书对象
+ * @param {string} sizeClass - 尺寸样式类（如 detail-cover）
+ * @returns {string} 封面 HTML
+ */
+function renderCover(book, sizeClass = 'book-cover') {
+  if (book.coverImage) {
+    return `<div class="${sizeClass}" style="background-image:url('${escapeHtml(book.coverImage)}')"></div>`;
+  }
+  if (sizeClass === 'detail-cover') {
+    return placeholderCover(book, 'detail-cover');
+  }
+  return placeholderCover(book);
+}
+
+/* ============ 初始化 ============ */
+/**
+ * 页面初始化入口
+ */
+async function init() {
+  // 并行加载分类与当前用户信息
+  await Promise.all([
+    loadCategories(),
+    checkLogin()
+  ]);
+  renderNav();
+  goHome();
+}
+
+/**
+ * 加载分类列表并填充下拉
+ */
+async function loadCategories() {
+  try {
+    const data = await api.categories();
+    state.categories = Array.isArray(data) ? data : [];
+    // 填充分类下拉
+    const select = document.getElementById('categorySelect');
+    select.innerHTML = '<option value="">全部分类</option>' +
+      state.categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  } catch (err) {
+    console.warn('分类加载失败:', err.message);
+  }
+}
+
+/**
+ * 检查登录状态
+ */
+async function checkLogin() {
+  try {
+    const user = await api.me();
+    state.currentUser = user;
+    if (user) {
+      // 已登录则同步借阅车数量
+      refreshCartCount();
+    }
+  } catch (err) {
+    state.currentUser = null;
+  }
+}
+
+/**
+ * 刷新借阅车数量
+ */
+async function refreshCartCount() {
+  if (!state.currentUser) { state.cartCount = 0; renderNav(); return; }
+  try {
+    const res = await api.cartCount();
+    state.cartCount = res.count || 0;
+  } catch (err) {
+    state.cartCount = 0;
+  }
+  renderNav();
+}
+
+/* ============ 导航栏渲染 ============ */
+function renderNav() {
+  const el = document.getElementById('navActions');
+  if (state.currentUser) {
+    // 已登录：显示用户信息与功能入口
+    const displayName = state.currentUser.displayName || state.currentUser.username || '用户';
+    el.innerHTML = `
+      <span class="user-info">👤 ${escapeHtml(displayName)}</span>
+      <button class="nav-btn" onclick="openCartModal()">🛒 借阅车${state.cartCount > 0 ? `<span class="cart-badge">${state.cartCount}</span>` : ''}</button>
+      <button class="nav-btn" onclick="goBorrows()">📋 我的借阅</button>
+      <button class="nav-btn" onclick="openProfileModal()">⚙️ 个人中心</button>
+      <button class="nav-btn" onclick="doLogout()">退出</button>
+    `;
+  } else {
+    // 未登录：显示登录注册按钮
+    el.innerHTML = `
+      <button class="nav-btn" onclick="openAuthModal('login')">登录</button>
+      <button class="nav-btn primary" onclick="openAuthModal('register')">注册</button>
+    `;
+  }
+}
+
+/* ============ 视图路由 ============ */
+function goHome() {
+  state.view = 'home';
+  renderHome();
+}
+
+function goBooks() {
+  state.view = 'books';
+  renderBooksView();
+}
+
+function goBorrows() {
+  if (!state.currentUser) {
+    showToast('请先登录', 'warning');
+    openAuthModal('login');
+    return;
+  }
+  state.view = 'borrows';
+  state.borrows.page = 0;
+  renderBorrowsView();
+}
+
+/* ============ 首页视图 ============ */
+async function renderHome() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="hero">
+      <h1>欢迎来到校园图书馆</h1>
+      <p>海量图书资源，便捷的在线借阅服务。读万卷书，行万里路。</p>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">📚 最新入库</div>
+        <button class="btn btn-outline btn-sm" onclick="goBooks()">查看更多 →</button>
+      </div>
+      <div id="latestBooks"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">🏷️ 图书分类</div>
+      </div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+  `;
+  // 渲染分类导航
+  renderCategoryGrid();
+  // 加载最新图书
+  try {
+    const data = await api.latestBooks({ page: 0, size: 8 });
+    renderBookGrid(document.getElementById('latestBooks'), data);
+  } catch (err) {
+    document.getElementById('latestBooks').innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 渲染分类导航网格
+ */
+function renderCategoryGrid() {
+  const grid = document.getElementById('categoryGrid');
+  if (!state.categories.length) {
+    grid.innerHTML = '<div class="empty-state">暂无分类</div>';
+    return;
+  }
+  grid.innerHTML = state.categories.map(c => `
+    <div class="category-card" onclick="selectCategory(${c.id})">
+      <div class="icon">${getCategoryIcon(c.name)}</div>
+      <div class="name">${escapeHtml(c.name)}</div>
+      <div class="count">${c.bookCount || 0} 本</div>
+    </div>
+  `).join('');
+}
+
+/* ============ 图书列表视图 ============ */
+async function renderBooksView() {
+  const main = document.getElementById('mainContent');
+  // 构建标题：分类名或搜索关键词
+  let title = '全部图书';
+  if (state.books.categoryId) {
+    const cat = state.categories.find(c => c.id == state.books.categoryId);
+    title = cat ? cat.name + '分类' : '分类图书';
+  }
+  if (state.books.keyword) {
+    title = `搜索：${state.books.keyword}`;
+  }
+  main.innerHTML = `
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">📖 ${escapeHtml(title)}</div>
+      </div>
+      <div id="booksList"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+      <div id="booksPagination"></div>
+    </div>
+  `;
+  await loadBooks();
+}
+
+/**
+ * 加载图书列表数据
+ */
+async function loadBooks() {
+  const listEl = document.getElementById('booksList');
+  const pageEl = document.getElementById('booksPagination');
+  if (!listEl) return;
+  listEl.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+  try {
+    const params = { page: state.books.page, size: state.books.size };
+    if (state.books.keyword) params.keyword = state.books.keyword;
+    let data;
+    if (state.books.categoryId) {
+      data = await api.booksByCategory(state.books.categoryId, params);
+    } else {
+      data = await api.books(params);
+    }
+    state.books.data = data;
+    renderBookGrid(listEl, data);
+    // 渲染分页
+    renderPagination(pageEl, data, (page) => {
+      state.books.page = page;
+      loadBooks();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  } catch (err) {
+    listEl.innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 渲染图书卡片网格
+ * @param {HTMLElement} container - 容器元素
+ * @param {object} data - Spring Data Page 对象
+ */
+function renderBookGrid(container, data) {
+  if (!data) { container.innerHTML = ''; return; }
+  const books = data.content || [];
+  if (!books.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div>暂无图书</div>';
+    return;
+  }
+  container.innerHTML = `<div class="book-grid">` + books.map(book => {
+    const available = book.availableCopies > 0;
+    return `
+      <div class="book-card" onclick="openBookDetail(${book.id})">
+        <div class="book-cover-wrap">
+          ${renderCover(book)}
+          <div class="availability-tag ${available ? '' : 'out'}">${available ? `可借 ${book.availableCopies}` : '已借完'}</div>
+        </div>
+        <div class="book-info">
+          <div class="book-title">${escapeHtml(book.title)}</div>
+          <div class="book-author">${escapeHtml(book.author || '佚名')}</div>
+          <div class="book-meta">
+            ${book.categoryName ? `<span class="book-category-tag">${escapeHtml(book.categoryName)}</span>` : '<span></span>'}
+            <span>${book.publishYear || ''}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('') + `</div>`;
+}
+
+/**
+ * 渲染分页控件
+ * @param {HTMLElement} container - 容器
+ * @param {object} data - Page 对象
+ * @param {function} onPage - 点击页码回调，参数为页码
+ */
+function renderPagination(container, data, onPage) {
+  if (!container) return;
+  const total = data.totalPages || 0;
+  const current = data.number != null ? data.number : (state.books.page);
+  if (total <= 1) { container.innerHTML = ''; return; }
+  // 生成分页按钮：首页 + 前后页 + 当前页附近
+  let buttons = [];
+  buttons.push(`<button class="page-btn" ${current === 0 ? 'disabled' : ''} onclick="void(0)" data-page="${current - 1}">上一页</button>`);
+  // 页码范围（最多显示 5 个）
+  let start = Math.max(0, current - 2);
+  let end = Math.min(total - 1, start + 4);
+  start = Math.max(0, end - 4);
+  for (let i = start; i <= end; i++) {
+    buttons.push(`<button class="page-btn ${i === current ? 'active' : ''}" data-page="${i}">${i + 1}</button>`);
+  }
+  buttons.push(`<button class="page-btn" ${current >= total - 1 ? 'disabled' : ''} data-page="${current + 1}">下一页</button>`);
+  container.innerHTML = `<div class="pagination">${buttons.join('')}
+    <span class="page-info">共 ${data.totalElements} 条 / ${total} 页</span></div>`;
+  // 绑定点击事件
+  container.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (this.disabled) return;
+      const page = parseInt(this.getAttribute('data-page'));
+      if (isNaN(page)) return;
+      onPage(page);
+    });
+  });
+}
+
+/* ============ 搜索与分类筛选 ============ */
+function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  const categoryId = document.getElementById('categorySelect').value;
+  state.books.keyword = keyword;
+  state.books.categoryId = categoryId;
+  state.books.page = 0;
+  goBooks();
+}
+
+function onCategoryChange() {
+  doSearch();
+}
+
+function selectCategory(categoryId) {
+  document.getElementById('categorySelect').value = categoryId;
+  state.books.categoryId = categoryId;
+  state.books.keyword = '';
+  document.getElementById('searchInput').value = '';
+  state.books.page = 0;
+  goBooks();
+}
+
+/* ============ 图书详情模态框 ============ */
+async function openBookDetail(bookId) {
+  showModal();
+  const box = document.getElementById('modalBox');
+  box.className = 'modal large';
+  box.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">图书详情</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  `;
+  try {
+    const book = await api.bookDetail(bookId);
+    const available = book.availableCopies > 0;
+    box.querySelector('.modal-body').innerHTML = `
+      <div class="detail-layout">
+        ${renderCover(book, 'detail-cover')}
+        <div class="detail-info">
+          <h2>${escapeHtml(book.title)}</h2>
+          <div class="author">作者：${escapeHtml(book.author || '佚名')}</div>
+          <div class="detail-meta">
+            <div><div class="label">分类</div><div class="value">${escapeHtml(book.categoryName || '未分类')}</div></div>
+            <div><div class="label">出版社</div><div class="value">${escapeHtml(book.publisher || '-')}</div></div>
+            <div><div class="label">出版年份</div><div class="value">${book.publishYear || '-'}</div></div>
+            <div><div class="label">ISBN</div><div class="value">${escapeHtml(book.isbn || '-')}</div></div>
+            <div><div class="label">馆藏地点</div><div class="value">${escapeHtml(book.location || '-')}</div></div>
+            <div><div class="label">总复本数</div><div class="value">${book.totalCopies || 0}</div></div>
+            <div><div class="label">入库时间</div><div class="value">${formatDate(book.createTime)}</div></div>
+            <div><div class="label">最后修改</div><div class="value">${formatDate(book.updateTime)}</div></div>
+          </div>
+          <div class="availability-box ${available ? 'ok' : 'out'}">
+            ${available ? `✓ 可借 ${book.availableCopies} 本` : '✕ 当前已全部借出'}
+          </div>
+          ${book.description ? `<div class="detail-description">${escapeHtml(book.description)}</div>` : ''}
+        </div>
+      </div>
+    `;
+    // 设置底部操作按钮
+    setupDetailFooter(box, book, available);
+  } catch (err) {
+    box.querySelector('.modal-body').innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 设置图书详情底部按钮
+ * @param {HTMLElement} box - 模态框元素
+ * @param {object} book - 图书对象
+ * @param {boolean} available - 是否可借
+ */
+function setupDetailFooter(box, book, available) {
+  // 移除已有 footer
+  const oldFooter = box.querySelector('.modal-footer');
+  if (oldFooter) oldFooter.remove();
+  if (!state.currentUser) {
+    // 未登录：提示登录
+    box.insertAdjacentHTML('beforeend', `
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+        <button class="btn btn-primary" onclick="closeModal();openAuthModal('login')">登录后借阅</button>
+      </div>
+    `);
+    return;
+  }
+  const footer = document.createElement('div');
+  footer.className = 'modal-footer';
+  footer.innerHTML = `
+    <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+    <button class="btn btn-outline" onclick="addToCart(${book.id})">🛒 加入借阅车</button>
+    <button class="btn btn-primary" onclick="borrowDirect(${book.id})" ${available ? '' : 'disabled'}>立即借阅</button>
+  `;
+  box.appendChild(footer);
+}
+
+/* ============ 借阅车操作 ============ */
+/**
+ * 加入借阅车
+ * @param {number} bookId - 图书 ID
+ */
+async function addToCart(bookId) {
+  if (!state.currentUser) { openAuthModal('login'); return; }
+  try {
+    await api.addToCart(bookId);
+    showToast('已加入借阅车', 'success');
+    refreshCartCount();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 直接借阅单本
+ * @param {number} bookId - 图书 ID
+ */
+async function borrowDirect(bookId) {
+  if (!state.currentUser) { openAuthModal('login'); return; }
+  if (!confirm('确认借阅这本书吗？')) return;
+  try {
+    await api.borrow(bookId);
+    showToast('借阅成功！', 'success');
+    closeModal();
+    refreshCartCount();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/* ============ 借阅车模态框 ============ */
+async function openCartModal() {
+  if (!state.currentUser) { openAuthModal('login'); return; }
+  showModal();
+  const box = document.getElementById('modalBox');
+  box.className = 'modal';
+  box.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">🛒 我的借阅车</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  `;
+  try {
+    const items = await api.cart();
+    renderCartList(box, items);
+  } catch (err) {
+    box.querySelector('.modal-body').innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 渲染借阅车列表
+ * @param {HTMLElement} box - 模态框
+ * @param {Array} items - 借阅车项
+ */
+function renderCartList(box, items) {
+  const body = box.querySelector('.modal-body');
+  if (!items || !items.length) {
+    body.innerHTML = '<div class="empty-state"><div class="icon">🛒</div>借阅车是空的<br>去挑选你喜欢的图书吧</div>';
+    // 移除 footer
+    const f = box.querySelector('.modal-footer');
+    if (f) f.remove();
+    return;
+  }
+  body.innerHTML = items.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-cover">${escapeHtml((item.bookTitle || '').substring(0, 4))}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-title">${escapeHtml(item.bookTitle)}</div>
+        <div class="cart-item-meta">
+          ${escapeHtml(item.bookAuthor || '')} · ${escapeHtml(item.categoryName || '')}<br>
+          ${item.availableCopies > 0 ? `<span style="color:var(--success)">可借 ${item.availableCopies} 本</span>` : '<span style="color:var(--danger)">已借完</span>'}
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="removeFromCart(${item.id})">移除</button>
+    </div>
+  `).join('');
+  // 渲染底部提交按钮
+  let footer = box.querySelector('.modal-footer');
+  if (!footer) {
+    footer = document.createElement('div');
+    footer.className = 'modal-footer';
+    box.appendChild(footer);
+  }
+  footer.innerHTML = `
+    <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+    <button class="btn btn-success" onclick="submitCart()">提交借阅（${items.length} 本）</button>
+  `;
+}
+
+/**
+ * 移除借阅车项
+ * @param {number} itemId - 借阅车项 ID
+ */
+async function removeFromCart(itemId) {
+  try {
+    await api.removeFromCart(itemId);
+    showToast('已移除', 'success');
+    refreshCartCount();
+    // 重新加载借阅车
+    const items = await api.cart();
+    renderCartList(document.getElementById('modalBox'), items);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 提交借阅车
+ */
+async function submitCart() {
+  if (!confirm('确认提交借阅申请吗？')) return;
+  try {
+    const res = await api.submitCart();
+    showToast(res.message || `成功借阅 ${res.successCount} 本`, 'success');
+    closeModal();
+    refreshCartCount();
+  } catch (err) {
+    showToast(err.message, 'error');
+    // 提交后刷新借阅车列表
+    try {
+      const items = await api.cart();
+      renderCartList(document.getElementById('modalBox'), items);
+    } catch (e) { /* 忽略 */ }
+    refreshCartCount();
+  }
+}
+
+/* ============ 我的借阅视图 ============ */
+async function renderBorrowsView() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">📋 我的借阅</div>
+      </div>
+      <div class="form-tabs" id="borrowTabs">
+        <div class="form-tab ${state.borrows.status === 'BORROWING' ? 'active' : ''}" data-status="BORROWING">借阅中</div>
+        <div class="form-tab ${state.borrows.status === 'OVERDUE' ? 'active' : ''}" data-status="OVERDUE">已逾期</div>
+        <div class="form-tab ${state.borrows.status === 'RETURNED' ? 'active' : ''}" data-status="RETURNED">已归还</div>
+      </div>
+      <div id="borrowsList"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+      <div id="borrowsPagination"></div>
+    </div>
+  `;
+  // 绑定标签切换
+  document.querySelectorAll('#borrowTabs .form-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('#borrowTabs .form-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      state.borrows.status = this.getAttribute('data-status');
+      state.borrows.page = 0;
+      loadBorrows();
+    });
+  });
+  await loadBorrows();
+}
+
+/**
+ * 加载借阅记录
+ */
+async function loadBorrows() {
+  const listEl = document.getElementById('borrowsList');
+  const pageEl = document.getElementById('borrowsPagination');
+  if (!listEl) return;
+  listEl.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+  try {
+    const data = await api.myBorrows({
+      status: state.borrows.status,
+      page: state.borrows.page,
+      size: state.borrows.size
+    });
+    renderBorrowRecords(listEl, data);
+    renderPagination(pageEl, data, (page) => {
+      state.borrows.page = page;
+      loadBorrows();
+    });
+  } catch (err) {
+    listEl.innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 渲染借阅记录列表
+ * @param {HTMLElement} container - 容器
+ * @param {object} data - Page 对象
+ */
+function renderBorrowRecords(container, data) {
+  if (!data) { container.innerHTML = ''; return; }
+  const records = data.content || [];
+  if (!records.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div>暂无借阅记录</div>';
+    return;
+  }
+  container.innerHTML = records.map(r => {
+    const status = r.status || state.borrows.status;
+    const statusText = { BORROWING: '借阅中', OVERDUE: '已逾期', RETURNED: '已归还' }[status] || status;
+    return `
+      <div class="borrow-record">
+        <div class="borrow-record-info">
+          <div class="borrow-record-title">${escapeHtml(r.bookTitle || '未知图书')}
+            <span class="status-tag ${status}">${statusText}</span>
+          </div>
+          <div class="borrow-record-meta">
+            <span>📖 ${escapeHtml(r.bookAuthor || '佚名')}</span>
+            <span>📅 借阅：${formatDate(r.borrowDate)}</span>
+            <span>⏰ 应还：${formatDate(r.dueDate)}</span>
+            ${r.returnDate ? `<span>✅ 归还：${formatDate(r.returnDate)}</span>` : ''}
+            ${r.renewCount != null ? `<span>🔄 续借 ${r.renewCount} 次</span>` : ''}
+          </div>
+        </div>
+        <div class="borrow-actions">
+          ${status === 'BORROWING' || status === 'OVERDUE' ? `
+            <button class="btn btn-warning btn-sm" onclick="renewBook(${r.id})">续借</button>
+            <button class="btn btn-success btn-sm" onclick="returnBook(${r.id})">归还</button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * 格式化日期
+ * @param {string|number} dateStr - 日期字符串或时间戳
+ * @returns {string} 格式化后的日期
+ */
+function formatDate(dateStr) {
+  if (!dateStr) return '-';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr).substring(0, 10);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  } catch (e) {
+    return String(dateStr).substring(0, 10);
+  }
+}
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+/**
+ * 续借
+ * @param {number} recordId - 借阅记录 ID
+ */
+async function renewBook(recordId) {
+  if (!confirm('确认续借这本书吗？')) return;
+  try {
+    await api.renew(recordId);
+    showToast('续借成功', 'success');
+    loadBorrows();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 归还
+ * @param {number} recordId - 借阅记录 ID
+ */
+async function returnBook(recordId) {
+  if (!confirm('确认归还这本书吗？')) return;
+  try {
+    await api.returnBook(recordId);
+    showToast('归还成功', 'success');
+    loadBorrows();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/* ============ 个人中心模态框 ============ */
+async function openProfileModal() {
+  if (!state.currentUser) { openAuthModal('login'); return; }
+  showModal();
+  const box = document.getElementById('modalBox');
+  box.className = 'modal';
+  box.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">⚙️ 个人中心</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  `;
+  try {
+    const profile = await api.readerProfile();
+    renderProfile(box, profile);
+  } catch (err) {
+    box.querySelector('.modal-body').innerHTML = `<div class="empty-state"><div class="icon">😓</div>${escapeHtml(err.message)}</div>`;
+  }
+}
+
+/**
+ * 渲染个人信息
+ * @param {HTMLElement} box - 模态框
+ * @param {object} p - 个人信息
+ */
+function renderProfile(box, p) {
+  const body = box.querySelector('.modal-body');
+  const readerTypeText = p.readerType === 'TEACHER' ? '教师' : '学生';
+  const maxBorrow = p.maxBorrowCount || 0;
+  const current = p.currentBorrowCount || 0;
+  const percent = maxBorrow > 0 ? Math.min(100, (current / maxBorrow) * 100) : 0;
+  body.innerHTML = `
+    <div class="profile-grid">
+      <div class="profile-item"><div class="label">借书证号</div><div class="value">${escapeHtml(p.readerNo || '-')}</div></div>
+      <div class="profile-item"><div class="label">读者类型</div><div class="value">${readerTypeText}</div></div>
+      <div class="profile-item"><div class="label">姓名</div><div class="value">${escapeHtml(p.name || '-')}</div></div>
+      <div class="profile-item"><div class="label">院系</div><div class="value">${escapeHtml(p.department || '-')}</div></div>
+      <div class="profile-item"><div class="label">手机</div><div class="value">${escapeHtml(p.phone || '-')}</div></div>
+       <div class="profile-item"><div class="label">注册时间</div><div class="value">${formatDate(p.createTime)}</div></div>
+      <div class="profile-item"><div class="label">最后修改</div><div class="value">${formatDate(p.updateTime)}</div></div>
+    </div>
+    <div class="profile-item" style="margin-bottom:20px">
+      <div class="label">借阅额度：${current} / ${maxBorrow}</div>
+      <div class="progress-bar"><div class="fill" style="width:${percent}%"></div></div>
+    </div>
+
+    <div class="form-tabs">
+      <div class="form-tab active" data-tab="edit">修改信息</div>
+      <div class="form-tab" data-tab="pwd">修改密码</div>
+    </div>
+
+    <div id="tab-edit">
+      <form id="profileForm" onsubmit="event.preventDefault();submitProfile()">
+        <div class="form-group">
+          <label>姓名</label>
+          <input type="text" id="pf-name" value="${escapeHtml(p.name || '')}" required>
+        </div>
+        <div class="form-group">
+          <label>院系</label>
+          <input type="text" id="pf-department" value="${escapeHtml(p.department || '')}">
+        </div>
+        <div class="form-group">
+          <label>手机</label>
+          <input type="text" id="pf-phone" value="${escapeHtml(p.phone || '')}">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">保存修改</button>
+      </form>
+    </div>
+
+    <div id="tab-pwd" style="display:none">
+      <form id="passwordForm" onsubmit="event.preventDefault();submitPassword()">
+        <div class="form-group">
+          <label>原密码</label>
+          <input type="password" id="pf-oldpwd" required placeholder="请输入原密码">
+        </div>
+        <div class="form-group">
+          <label>新密码</label>
+          <input type="password" id="pf-newpwd" required placeholder="请输入新密码（至少6位）" minlength="6">
+        </div>
+        <div class="form-group">
+          <label>确认新密码</label>
+          <input type="password" id="pf-confirmpwd" required placeholder="请再次输入新密码">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">修改密码</button>
+      </form>
+    </div>
+  `;
+  // 绑定标签切换
+  box.querySelectorAll('.form-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      box.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const tabName = this.getAttribute('data-tab');
+      document.getElementById('tab-edit').style.display = tabName === 'edit' ? 'block' : 'none';
+      document.getElementById('tab-pwd').style.display = tabName === 'pwd' ? 'block' : 'none';
+    });
+  });
+}
+
+/**
+ * 提交个人信息修改
+ */
+async function submitProfile() {
+  const body = {
+    name: document.getElementById('pf-name').value.trim(),
+    department: document.getElementById('pf-department').value.trim(),
+    phone: document.getElementById('pf-phone').value.trim()
+  };
+  try {
+    await api.updateProfile(body);
+    showToast('信息修改成功', 'success');
+    // 同步导航栏用户名
+    if (state.currentUser) {
+      state.currentUser.displayName = body.name;
+      renderNav();
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 提交密码修改
+ */
+async function submitPassword() {
+  const oldPwd = document.getElementById('pf-oldpwd').value;
+  const newPwd = document.getElementById('pf-newpwd').value;
+  const confirmPwd = document.getElementById('pf-confirmpwd').value;
+  if (newPwd.length < 6) {
+    showToast('新密码至少 6 位', 'warning');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    showToast('两次输入的新密码不一致', 'warning');
+    return;
+  }
+  try {
+    await api.changePassword({ oldPassword: oldPwd, newPassword: newPwd });
+    showToast('密码修改成功', 'success');
+    document.getElementById('passwordForm').reset();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/* ============ 登录 / 注册模态框 ============ */
+/**
+ * 打开认证模态框
+ * @param {string} mode - 模式：login / register
+ */
+function openAuthModal(mode) {
+  showModal();
+  const box = document.getElementById('modalBox');
+  box.className = 'modal small';
+  box.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">${mode === 'register' ? '读者注册' : '用户登录'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-tabs">
+        <div class="form-tab ${mode === 'login' ? 'active' : ''}" data-auth="login">登录</div>
+        <div class="form-tab ${mode === 'register' ? 'active' : ''}" data-auth="register">注册</div>
+      </div>
+
+      <div id="auth-login" style="display:${mode === 'login' ? 'block' : 'none'}">
+        <form onsubmit="event.preventDefault();doLogin()">
+          <div class="form-group">
+            <label>用户名 / 借书证号</label>
+            <input type="text" id="loginUsername" placeholder="如 S001" required>
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="loginPassword" placeholder="请输入密码" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">登录</button>
+          <div class="form-switch">
+            还没有账号？<a onclick="switchAuth('register')">立即注册</a>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:var(--bg);border-radius:6px;font-size:12px;color:var(--text-muted)">
+            <strong>测试账号：</strong><br>
+            学生：S001 / student123<br>
+            教师：T001 / teacher123
+          </div>
+        </form>
+      </div>
+
+      <div id="auth-register" style="display:${mode === 'register' ? 'block' : 'none'}">
+        <form onsubmit="event.preventDefault();doRegister()">
+          <div class="form-group">
+            <label>借书证号</label>
+            <input type="text" id="regReaderNo" placeholder="如 S001" required>
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="regPassword" placeholder="至少 6 位" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>姓名</label>
+            <input type="text" id="regName" placeholder="请输入真实姓名" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>读者类型</label>
+              <select id="regReaderType">
+                <option value="STUDENT">学生</option>
+                <option value="TEACHER">教师</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>院系</label>
+              <input type="text" id="regDepartment" placeholder="如 计算机学院">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>手机号</label>
+            <input type="text" id="regPhone" placeholder="请输入手机号">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">注册</button>
+          <div class="form-switch">
+            已有账号？<a onclick="switchAuth('login')">返回登录</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  // 绑定标签切换
+  box.querySelectorAll('.form-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      switchAuth(this.getAttribute('data-auth'));
+    });
+  });
+}
+
+/**
+ * 切换登录/注册表单
+ * @param {string} mode - login / register
+ */
+function switchAuth(mode) {
+  const box = document.getElementById('modalBox');
+  box.querySelectorAll('.form-tab').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('data-auth') === mode);
+  });
+  document.getElementById('auth-login').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = mode === 'register' ? 'block' : 'none';
+}
+
+/**
+ * 执行登录
+ */
+async function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!username || !password) {
+    showToast('请输入用户名和密码', 'warning');
+    return;
+  }
+  try {
+    const user = await api.login({ username, password, loginType: 'reader' });
+    state.currentUser = user;
+    showToast(`欢迎回来，${user.displayName || user.username}`, 'success');
+    closeModal();
+    renderNav();
+    refreshCartCount();
+    // 登录后回到首页或当前视图
+    if (state.view === 'home') goHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 执行注册
+ */
+async function doRegister() {
+  const body = {
+    readerNo: document.getElementById('regReaderNo').value.trim(),
+    password: document.getElementById('regPassword').value,
+    name: document.getElementById('regName').value.trim(),
+    readerType: document.getElementById('regReaderType').value,
+    department: document.getElementById('regDepartment').value.trim(),
+    phone: document.getElementById('regPhone').value.trim()
+  };
+  if (!body.readerNo || !body.password || !body.name) {
+    showToast('请填写必填项', 'warning');
+    return;
+  }
+  if (body.password.length < 6) {
+    showToast('密码至少 6 位', 'warning');
+    return;
+  }
+  try {
+    await api.register(body);
+    showToast('注册成功，请登录', 'success');
+    switchAuth('login');
+    // 自动填充用户名方便登录
+    document.getElementById('loginUsername').value = body.readerNo;
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * 退出登录
+ */
+async function doLogout() {
+  if (!confirm('确认退出登录吗？')) return;
+  try {
+    await api.logout();
+  } catch (e) { /* 忽略退出失败 */ }
+  state.currentUser = null;
+  state.cartCount = 0;
+  showToast('已退出登录', 'info');
+  renderNav();
+  goHome();
+}
+
+/* ============ 模态框通用控制 ============ */
+function showModal() {
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('modalBox').innerHTML = '';
+}
+
+// 点击遮罩关闭模态框
+document.getElementById('modalOverlay').addEventListener('click', function (e) {
+  if (e.target === this) closeModal();
+});
+
+// ESC 键关闭模态框
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ============ 启动 ============ */
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园图书借阅管理系统 - 后台管理</title>
+    <style>
+        /* ===== 全局重置与基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --sidebar-active: #3b82f6;
+            --content-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --sidebar-width: 220px;
+            --topbar-height: 60px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ===== 登录页面样式 ===== */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        /* ===== 表单通用样式 ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* ===== 按钮样式 ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: var(--success-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: var(--danger-hover);
+        }
+
+        .btn-default {
+            background: #fff;
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-default:hover:not(:disabled) {
+            background: #f8fafc;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        /* ===== 管理后台主布局 ===== */
+        .admin-layout {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .admin-layout.active {
+            display: block;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: #cbd5e1;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            height: var(--topbar-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            padding: 0 14px;
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 12px 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: #fff;
+            border-left-color: var(--sidebar-active);
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-style: normal;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .topbar {
+            height: var(--topbar-height);
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        /* 内容容器 */
+        .content-area {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* ===== 卡片样式 ===== */
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* ===== 统计卡片 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.success { border-left-color: var(--success); }
+        .stat-card.warning { border-left-color: var(--warning); }
+        .stat-card.danger { border-left-color: var(--danger); }
+        .stat-card.info { border-left-color: #06b6d4; }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* ===== 表格样式 ===== */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* ===== 状态标签 ===== */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-borrowing {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-returned {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-overdue {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .badge-type-student {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-type-teacher {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        /* ===== 工具栏 ===== */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 360px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* ===== 标签页 ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            padding: 10px 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-dark);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ===== 分页 ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .page-btn {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-dark);
+            transition: background 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--text-muted);
+            line-height: 1;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* ===== 提示框 ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 12px 18px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 240px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--primary); }
+
+        /* ===== 加载提示 ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* ===== 操作按钮组 ===== */
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 登录页面 ===== -->
+<div id="loginView" class="login-container">
+    <div class="login-card">
+        <h1 class="login-title">校园图书借阅管理系统</h1>
+        <p class="login-subtitle">管理员登录</p>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">用户名</label>
+                <input type="text" id="loginUsername" placeholder="请输入用户名" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">密码</label>
+                <input type="password" id="loginPassword" placeholder="请输入密码" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">登 录</button>
+        </form>
+        <p class="login-subtitle" style="margin-top: 20px; margin-bottom: 0;">测试账号：admin / admin123</p>
+    </div>
+</div>
+
+<!-- ===== 管理后台主界面 ===== -->
+<div id="adminLayout" class="admin-layout">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">图书管理系统</div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-view="dashboard">
+                <i class="nav-icon">▣</i><span>仪表盘</span>
+            </div>
+            <div class="nav-item" data-view="books">
+                <i class="nav-icon">▤</i><span>图书管理</span>
+            </div>
+            <div class="nav-item" data-view="categories">
+                <i class="nav-icon">▥</i><span>分类管理</span>
+            </div>
+            <div class="nav-item" data-view="readers">
+                <i class="nav-icon">▦</i><span>读者管理</span>
+            </div>
+            <div class="nav-item" data-view="borrowRecords">
+                <i class="nav-icon">▧</i><span>借阅记录</span>
+            </div>
+            <div class="nav-item" data-view="changePassword">
+                <i class="nav-icon">▨</i><span>修改密码</span>
+            </div>
+            <div class="nav-item" id="logoutBtn">
+                <i class="nav-icon">▣</i><span>退出登录</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部栏 -->
+        <header class="topbar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <span class="topbar-title" id="topbarTitle">仪表盘</span>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <span id="adminName">管理员</span>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <main class="content-area">
+
+            <!-- 仪表盘视图 -->
+            <section id="view-dashboard" class="view active">
+                <div class="stats-grid" id="statsGrid">
+                    <!-- 统计卡片由 JS 动态渲染 -->
+                </div>
+                <div class="dashboard-row">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">分类统计</span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>分类名称</th>
+                                        <th class="text-center">图书数量</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoryStatsBody">
+                                    <tr><td colspan="2" class="empty">加载中...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">热门图书</span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>书名</th>
+                                        <th>作者</th>
+                                        <th class="text-center">借阅次数</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hotBooksBody">
+                                    <tr><td colspan="3" class="empty">加载中...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 图书管理视图 -->
+            <section id="view-books" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="search-box">
+                            <input type="text" id="bookSearchInput" placeholder="搜索书名、作者、ISBN...">
+                        </div>
+                        <button class="btn btn-primary" id="addBookBtn">+ 新增图书</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>书名</th>
+                                    <th>作者</th>
+                                    <th>分类</th>
+                                    <th>出版社</th>
+                                    <th class="text-center">库存</th>
+                                    <th class="text-center">可借</th>
+                                    <th>最后修改时间</th>
+                                    <th class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booksTableBody">
+                                <tr><td colspan="8" class="empty">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="bookPagination"></div>
+                </div>
+            </section>
+
+            <!-- 分类管理视图 -->
+            <section id="view-categories" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">分类列表</span>
+                        <button class="btn btn-primary" id="addCategoryBtn">+ 新增分类</button>
+                    </div>
+                    <div class="table-wrapper">
+                            <table>
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>描述</th>
+                                    <th class="text-center">排序</th>
+                                    <th class="text-center">图书数量</th>
+                                    <th>最后修改时间</th>
+                                    <th class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <tr><td colspan="6" class="empty">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 读者管理视图 -->
+            <section id="view-readers" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="search-box">
+                            <input type="text" id="readerSearchInput" placeholder="搜索学号/工号、姓名...">
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>学号/工号</th>
+                                    <th>姓名</th>
+                                    <th class="text-center">类型</th>
+                                    <th>院系</th>
+                                    <th>电话</th>
+                                    <th class="text-center">当前借阅</th>
+                                    <th>注册时间</th>
+                                    <th>最后修改时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="readersTableBody">
+                                <tr><td colspan="8" class="empty">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="readerPagination"></div>
+                </div>
+            </section>
+
+            <!-- 借阅记录视图 -->
+            <section id="view-borrowRecords" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">借阅记录</span>
+                    </div>
+                    <div class="tabs" id="borrowTabs">
+                        <div class="tab active" data-status="">全部</div>
+                        <div class="tab" data-status="BORROWING">借阅中</div>
+                        <div class="tab" data-status="RETURNED">已归还</div>
+                        <div class="tab" data-status="OVERDUE">已逾期</div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>读者</th>
+                                    <th>图书</th>
+                                    <th>借出日期</th>
+                                    <th>应还日期</th>
+                                    <th>归还日期</th>
+                                    <th>最后修改时间</th>
+                                    <th class="text-center">状态</th>
+                                    <th class="text-center">罚款</th>
+                                    <th class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="borrowRecordsTableBody">
+                                <tr><td colspan="9" class="empty">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="borrowPagination"></div>
+                </div>
+            </section>
+
+            <!-- 修改密码视图 -->
+            <section id="view-changePassword" class="view">
+                <div class="card" style="max-width: 480px;">
+                    <div class="card-header">
+                        <span class="card-title">修改密码</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label for="oldPassword">旧密码</label>
+                                <input type="password" id="oldPassword" placeholder="请输入旧密码" required autocomplete="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">新密码</label>
+                                <input type="password" id="newPassword" placeholder="请输入新密码（至少6位）" required autocomplete="new-password" minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">确认新密码</label>
+                                <input type="password" id="confirmPassword" placeholder="请再次输入新密码" required autocomplete="new-password">
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="changePasswordBtn">确认修改</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- ===== 图书模态框 ===== -->
+<div class="modal-overlay" id="bookModal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title" id="bookModalTitle">新增图书</span>
+            <button class="modal-close" data-close-modal="bookModal">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="bookForm">
+                <input type="hidden" id="bookId">
+                <div class="form-group">
+                    <label for="bookTitle">书名 *</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookAuthor">作者 *</label>
+                        <input type="text" id="bookAuthor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookIsbn">ISBN</label>
+                        <input type="text" id="bookIsbn">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookCategoryId">分类 *</label>
+                        <select id="bookCategoryId" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookPublisher">出版社</label>
+                        <input type="text" id="bookPublisher">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookPublishYear">出版年份</label>
+                        <input type="number" id="bookPublishYear" min="1000" max="2999">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookTotalCopies">总馆藏 *</label>
+                        <input type="number" id="bookTotalCopies" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bookLocation">存放位置</label>
+                    <input type="text" id="bookLocation" placeholder="如：A区3排">
+                </div>
+                <div class="form-group">
+                    <label for="bookCoverImage">封面图片URL</label>
+                    <input type="text" id="bookCoverImage" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="bookDescription">简介</label>
+                    <textarea id="bookDescription"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" data-close-modal="bookModal">取消</button>
+            <button class="btn btn-primary" id="saveBookBtn">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 分类模态框 ===== -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title" id="categoryModalTitle">新增分类</span>
+            <button class="modal-close" data-close-modal="categoryModal">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label for="categoryName">分类名称 *</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryDescription">描述</label>
+                    <textarea id="categoryDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="categorySortOrder">排序值</label>
+                    <input type="number" id="categorySortOrder" value="0" min="0">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" data-close-modal="categoryModal">取消</button>
+            <button class="btn btn-primary" id="saveCategoryBtn">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 提示框容器 -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    /* ===== 全局配置 ===== */
+    // API 基础地址
+    const API_BASE = '';
+    // 分页大小常量
+    const PAGE_SIZE = 10;
+
+    /* ===== 全局状态 ===== */
+    // 当前登录用户信息
+    let currentUser = null;
+    // 图书分页状态
+    let bookPage = { number: 0, totalPages: 0, totalElements: 0 };
+    // 读者分页状态
+    let readerPage = { number: 0, totalPages: 0, totalElements: 0 };
+    // 借阅记录分页状态与当前筛选状态
+    let borrowPage = { number: 0, totalPages: 0, totalElements: 0 };
+    let borrowStatusFilter = '';
+    // 分类列表缓存（用于图书表单下拉选择）
+    let categoriesCache = [];
+    // 当前图书列表缓存（用于删除时按 ID 查找书名，避免内联拼接字符串导致注入）
+    let booksCache = [];
+
+    /* ===== 通用工具函数 ===== */
+
+    /**
+     * HTML 转义，防止 XSS 注入
+     * @param {string} text - 待转义的文本
+     * @returns {string} 转义后的安全文本
+     */
+    function escapeHtml(text) {
+        if (text === null || text === undefined) {
+            return '';
+        }
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+
+    /**
+     * 封装 fetch 请求，统一处理认证、JSON 序列化与错误
+     * @param {string} url - 请求路径（相对 API_BASE）
+     * @param {object} options - fetch 配置项
+     * @returns {Promise<object>} 响应 JSON 数据
+     */
+    async function apiRequest(url, options = {}) {
+        const fullUrl = url.startsWith('http') ? url : API_BASE + url;
+        const defaultOptions = {
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        };
+        const mergedOptions = { ...defaultOptions, ...options };
+        // 合并请求头
+        mergedOptions.headers = { ...defaultOptions.headers, ...(options.headers || {}) };
+
+        let response;
+        try {
+            response = await fetch(fullUrl, mergedOptions);
+        } catch (err) {
+            throw new Error('网络请求失败，请检查服务是否启动');
+        }
+
+        // 401 未授权，跳转登录
+        if (response.status === 401) {
+            showLoginView();
+            throw new Error('登录已过期，请重新登录');
+        }
+
+        // 解析响应体
+        const contentType = response.headers.get('content-type') || '';
+        let data = null;
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            data = await response.text();
+        }
+
+        if (!response.ok) {
+            // 提取后端错误信息
+            const message = (data && data.message) ? data.message : '请求失败（HTTP ' + response.status + '）';
+            throw new Error(message);
+        }
+
+        return data;
+    }
+
+    /**
+     * 显示提示框
+     * @param {string} message - 提示内容
+     * @param {string} type - 类型：success / error / info
+     */
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.textContent = message;
+        container.appendChild(toast);
+        // 3秒后自动移除
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    /**
+     * 格式化日期字符串为 YYYY-MM-DD
+     * @param {string|number} dateInput - 日期输入
+     * @returns {string} 格式化后的日期
+     */
+    function formatDate(dateInput) {
+        if (!dateInput) return '-';
+        const date = new Date(dateInput);
+        if (isNaN(date.getTime())) return '-';
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+    }
+
+    /* ===== 视图切换 ===== */
+
+    /**
+     * 显示登录视图
+     */
+    function showLoginView() {
+        document.getElementById('loginView').style.display = 'flex';
+        document.getElementById('adminLayout').classList.remove('active');
+        currentUser = null;
+    }
+
+    /**
+     * 显示管理后台主界面
+     * @param {object} user - 用户信息
+     */
+    function showAdminView(user) {
+        currentUser = user;
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('adminLayout').classList.add('active');
+        // 渲染顶部用户信息
+        document.getElementById('adminName').textContent = user.displayName || user.username;
+        const initial = (user.displayName || user.username || 'A').charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = initial;
+        // 默认加载仪表盘
+        switchView('dashboard');
+    }
+
+    /**
+     * 切换内容视图
+     * @param {string} viewName - 视图名称
+     */
+    function switchView(viewName) {
+        // 切换视图显示
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const targetView = document.getElementById('view-' + viewName);
+        if (targetView) {
+            targetView.classList.add('active');
+        }
+        // 切换侧边栏高亮
+        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+            item.classList.toggle('active', item.dataset.view === viewName);
+        });
+        // 更新顶部标题
+        const titleMap = {
+            dashboard: '仪表盘',
+            books: '图书管理',
+            categories: '分类管理',
+            readers: '读者管理',
+            borrowRecords: '借阅记录',
+            changePassword: '修改密码'
+        };
+        document.getElementById('topbarTitle').textContent = titleMap[viewName] || '';
+        // 移动端关闭侧边栏
+        document.getElementById('sidebar').classList.remove('show');
+        // 按需加载数据
+        if (viewName === 'dashboard') {
+            loadDashboard();
+        } else if (viewName === 'books') {
+            loadBooks();
+        } else if (viewName === 'categories') {
+            loadCategories();
+        } else if (viewName === 'readers') {
+            loadReaders();
+        } else if (viewName === 'borrowRecords') {
+            loadBorrowRecords();
+        }
+    }
+
+    /* ===== 认证相关 ===== */
+
+    /**
+     * 登录表单提交处理
+     */
+    async function handleLogin(event) {
+        event.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const loginBtn = document.getElementById('loginBtn');
+
+        if (!username || !password) {
+            showToast('请输入用户名和密码', 'error');
+            return;
+        }
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = '登录中...';
+
+        try {
+            const data = await apiRequest('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    loginType: 'admin'
+                })
+            });
+            showToast('登录成功', 'success');
+            showAdminView(data);
+        } catch (err) {
+            showToast(err.message || '登录失败', 'error');
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = '登 录';
+        }
+    }
+
+    /**
+     * 退出登录
+     */
+    async function handleLogout() {
+        if (!confirm('确定要退出登录吗？')) return;
+        try {
+            await apiRequest('/api/auth/logout', { method: 'POST' });
+        } catch (err) {
+            // 即使退出接口失败也返回登录页
+        }
+        showToast('已退出登录', 'info');
+        showLoginView();
+        // 清空登录表单
+        document.getElementById('loginForm').reset();
+    }
+
+    /**
+     * 检查当前登录状态（页面加载时调用）
+     */
+    async function checkAuthStatus() {
+        try {
+            const data = await apiRequest('/api/auth/me');
+            if (data && data.id) {
+                showAdminView(data);
+            } else {
+                showLoginView();
+            }
+        } catch (err) {
+            showLoginView();
+        }
+    }
+
+    /**
+     * 修改密码表单提交
+     */
+    async function handleChangePassword(event) {
+        event.preventDefault();
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const btn = document.getElementById('changePasswordBtn');
+
+        // 前端校验
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            showToast('请填写所有字段', 'error');
+            return;
+        }
+        if (newPassword.length < 6) {
+            showToast('新密码至少6位', 'error');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showToast('两次输入的新密码不一致', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = '修改中...';
+        try {
+            await apiRequest('/api/auth/change-password', {
+                method: 'POST',
+                body: JSON.stringify({
+                    oldPassword: oldPassword,
+                    newPassword: newPassword
+                })
+            });
+            showToast('密码修改成功', 'success');
+            document.getElementById('changePasswordForm').reset();
+        } catch (err) {
+            showToast(err.message || '密码修改失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '确认修改';
+        }
+    }
+
+    /* ===== 仪表盘 ===== */
+
+    /**
+     * 加载仪表盘统计数据
+     */
+    async function loadDashboard() {
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = '<div class="loading">加载中...</div>';
+        try {
+            const data = await apiRequest('/api/admin/stats');
+            renderStatsCards(data);
+            renderCategoryStats(data.categoryStats || []);
+            renderHotBooks(data.hotBooks || []);
+        } catch (err) {
+            statsGrid.innerHTML = '<div class="empty">加载失败：' + escapeHtml(err.message) + '</div>';
+        }
+    }
+
+    /**
+     * 渲染统计数字卡片
+     */
+    function renderStatsCards(data) {
+        const cards = [
+            { label: '图书种类', value: data.totalBooks, cls: '' },
+            { label: '总馆藏', value: data.totalCopies, cls: 'info' },
+            { label: '可借数量', value: data.availableCopies, cls: 'success' },
+            { label: '读者总数', value: data.totalReaders, cls: '' },
+            { label: '学生读者', value: data.studentCount, cls: 'info' },
+            { label: '教师读者', value: data.teacherCount, cls: 'info' },
+            { label: '借阅中', value: data.borrowingCount, cls: 'warning' },
+            { label: '已归还', value: data.returnedCount, cls: 'success' },
+            { label: '已逾期', value: data.overdueCount, cls: 'danger' },
+            { label: '借阅记录总数', value: data.totalBorrowRecords, cls: '' }
+        ];
+        const html = cards.map(c => (
+            '<div class="stat-card ' + c.cls + '">' +
+            '<div class="stat-label">' + escapeHtml(c.label) + '</div>' +
+            '<div class="stat-value">' + escapeHtml(c.value) + '</div>' +
+            '</div>'
+        )).join('');
+        document.getElementById('statsGrid').innerHTML = html;
+    }
+
+    /**
+     * 渲染分类统计表格
+     */
+    function renderCategoryStats(list) {
+        const body = document.getElementById('categoryStatsBody');
+        if (!list.length) {
+            body.innerHTML = '<tr><td colspan="2" class="empty">暂无数据</td></tr>';
+            return;
+        }
+        body.innerHTML = list.map(item => (
+            '<tr><td>' + escapeHtml(item.name) + '</td>' +
+            '<td class="text-center">' + escapeHtml(item.count) + '</td></tr>'
+        )).join('');
+    }
+
+    /**
+     * 渲染热门图书表格
+     */
+    function renderHotBooks(list) {
+        const body = document.getElementById('hotBooksBody');
+        if (!list.length) {
+            body.innerHTML = '<tr><td colspan="3" class="empty">暂无数据</td></tr>';
+            return;
+        }
+        body.innerHTML = list.map(item => (
+            '<tr><td>' + escapeHtml(item.title) + '</td>' +
+            '<td>' + escapeHtml(item.author) + '</td>' +
+            '<td class="text-center">' + escapeHtml(item.count) + '</td></tr>'
+        )).join('');
+    }
+
+    /* ===== 图书管理 ===== */
+
+    /**
+     * 加载图书列表
+     */
+    async function loadBooks() {
+        const keyword = document.getElementById('bookSearchInput').value.trim();
+        const body = document.getElementById('booksTableBody');
+        body.innerHTML = '<tr><td colspan="8" class="loading">加载中...</td></tr>';
+
+        try {
+            const params = new URLSearchParams({
+                page: bookPage.number,
+                size: PAGE_SIZE
+            });
+            if (keyword) {
+                params.append('keyword', keyword);
+            }
+            const data = await apiRequest('/api/books?' + params.toString());
+            // 适配 Page 响应结构
+            const content = data.content || [];
+            bookPage.totalPages = data.totalPages || 0;
+            bookPage.totalElements = data.totalElements || 0;
+            // 缓存当前页图书列表，供删除时按 ID 查找书名
+            booksCache = content;
+
+            if (!content.length) {
+                body.innerHTML = '<tr><td colspan="8" class="empty">暂无图书数据</td></tr>';
+            } else {
+                body.innerHTML = content.map(book => (
+                    '<tr>' +
+                    '<td>' + escapeHtml(book.title) + '</td>' +
+                    '<td>' + escapeHtml(book.author) + '</td>' +
+                    '<td>' + escapeHtml(book.categoryName || book.category || '-') + '</td>' +
+                    '<td>' + escapeHtml(book.publisher || '-') + '</td>' +
+                    '<td class="text-center">' + escapeHtml(book.totalCopies) + '</td>' +
+                    '<td class="text-center">' + escapeHtml(book.availableCopies) + '</td>' +
+                    '<td>' + formatDate(book.updateTime) + '</td>' +
+                    '<td class="text-center"><div class="action-group">' +
+                    '<button class="btn btn-primary btn-sm" onclick="editBook(' + book.id + ')">编辑</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteBook(' + book.id + ')">删除</button>' +
+                    '</div></td>' +
+                    '</tr>'
+                )).join('');
+            }
+            renderBookPagination();
+        } catch (err) {
+            body.innerHTML = '<tr><td colspan="8" class="empty">加载失败：' + escapeHtml(err.message) + '</td></tr>';
+        }
+    }
+
+    /**
+     * 渲染图书分页控件
+     */
+    function renderBookPagination() {
+        renderPagination('bookPagination', bookPage, null, (newPage) => {
+            bookPage.number = newPage;
+            loadBooks();
+        });
+    }
+
+    /**
+     * 打开图书模态框（新增或编辑）
+     */
+    async function openBookModal(bookId) {
+        // 先加载分类列表用于下拉选择
+        await loadCategoriesForSelect();
+
+        const modal = document.getElementById('bookModal');
+        const title = document.getElementById('bookModalTitle');
+        const form = document.getElementById('bookForm');
+
+        if (bookId) {
+            // 编辑模式：加载图书详情
+            title.textContent = '编辑图书';
+            try {
+                const book = await apiRequest('/api/books/' + bookId);
+                document.getElementById('bookId').value = book.id || '';
+                document.getElementById('bookTitle').value = book.title || '';
+                document.getElementById('bookAuthor').value = book.author || '';
+                document.getElementById('bookIsbn').value = book.isbn || '';
+                document.getElementById('bookCategoryId').value = book.categoryId || '';
+                document.getElementById('bookPublisher').value = book.publisher || '';
+                document.getElementById('bookPublishYear').value = book.publishYear || '';
+                document.getElementById('bookTotalCopies').value = book.totalCopies !== undefined ? book.totalCopies : '';
+                document.getElementById('bookLocation').value = book.location || '';
+                document.getElementById('bookCoverImage').value = book.coverImage || '';
+                document.getElementById('bookDescription').value = book.description || '';
+            } catch (err) {
+                showToast('加载图书详情失败：' + err.message, 'error');
+                return;
+            }
+        } else {
+            // 新增模式：重置表单
+            title.textContent = '新增图书';
+            form.reset();
+            document.getElementById('bookId').value = '';
+        }
+        modal.classList.add('active');
+    }
+
+    /**
+     * 加载分类列表填充到图书表单下拉框
+     */
+    async function loadCategoriesForSelect() {
+        try {
+            const data = await apiRequest('/api/categories');
+            categoriesCache = Array.isArray(data) ? data : (data.content || []);
+            const select = document.getElementById('bookCategoryId');
+            select.innerHTML = '<option value="">请选择分类</option>' +
+                categoriesCache.map(c => (
+                    '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>'
+                )).join('');
+        } catch (err) {
+            showToast('加载分类列表失败', 'error');
+        }
+    }
+
+    /**
+     * 保存图书（新增或编辑）
+     */
+    async function saveBook() {
+        const id = document.getElementById('bookId').value;
+        const title = document.getElementById('bookTitle').value.trim();
+        const author = document.getElementById('bookAuthor').value.trim();
+        const categoryId = document.getElementById('bookCategoryId').value;
+        const totalCopies = document.getElementById('bookTotalCopies').value;
+
+        if (!title || !author || !categoryId || totalCopies === '') {
+            showToast('请填写必填字段', 'error');
+            return;
+        }
+
+        const payload = {
+            title: title,
+            author: author,
+            isbn: document.getElementById('bookIsbn').value.trim(),
+            categoryId: parseInt(categoryId, 10),
+            publisher: document.getElementById('bookPublisher').value.trim(),
+            publishYear: document.getElementById('bookPublishYear').value ?
+                parseInt(document.getElementById('bookPublishYear').value, 10) : null,
+            description: document.getElementById('bookDescription').value.trim(),
+            coverImage: document.getElementById('bookCoverImage').value.trim(),
+            totalCopies: parseInt(totalCopies, 10),
+            location: document.getElementById('bookLocation').value.trim()
+        };
+
+        const btn = document.getElementById('saveBookBtn');
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+
+        try {
+            if (id) {
+                await apiRequest('/api/admin/books/' + id, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+                showToast('图书修改成功', 'success');
+            } else {
+                await apiRequest('/api/admin/books', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('图书新增成功', 'success');
+            }
+            closeModal('bookModal');
+            loadBooks();
+        } catch (err) {
+            showToast(err.message || '保存失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '保存';
+        }
+    }
+
+    /**
+     * 编辑图书（供 onclick 调用）
+     */
+    function editBook(id) {
+        openBookModal(id);
+    }
+
+    /**
+     * 删除图书（从缓存中按 ID 查找书名用于确认提示）
+     */
+    async function deleteBook(id) {
+        // 从当前页缓存中查找书名，避免内联拼接字符串导致 XSS
+        const book = booksCache.find(b => b.id === id);
+        const title = book ? book.title : '';
+        if (!confirm('确定要删除图书「' + title + '」吗？此操作不可恢复。')) return;
+        try {
+            await apiRequest('/api/admin/books/' + id, { method: 'DELETE' });
+            showToast('删除成功', 'success');
+            loadBooks();
+        } catch (err) {
+            showToast(err.message || '删除失败', 'error');
+        }
+    }
+
+    /* ===== 分类管理 ===== */
+
+    /**
+     * 加载分类列表
+     */
+    async function loadCategories() {
+        const body = document.getElementById('categoriesTableBody');
+        body.innerHTML = '<tr><td colspan="6" class="loading">加载中...</td></tr>';
+        try {
+            const data = await apiRequest('/api/categories');
+            const list = Array.isArray(data) ? data : (data.content || []);
+            // 缓存分类列表，供编辑和删除时按 ID 查找
+            categoriesCache = list;
+            if (!list.length) {
+                body.innerHTML = '<tr><td colspan="6" class="empty">暂无分类数据</td></tr>';
+            } else {
+                body.innerHTML = list.map(cat => (
+                    '<tr>' +
+                    '<td>' + escapeHtml(cat.name) + '</td>' +
+                    '<td>' + escapeHtml(cat.description || '-') + '</td>' +
+                    '<td class="text-center">' + escapeHtml(cat.sortOrder) + '</td>' +
+                    '<td class="text-center">' + escapeHtml(cat.bookCount !== undefined ? cat.bookCount : '-') + '</td>' +
+                    '<td>' + formatDate(cat.updateTime) + '</td>' +
+                    '<td class="text-center"><div class="action-group">' +
+                    '<button class="btn btn-primary btn-sm" onclick="editCategory(' + cat.id + ')">编辑</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteCategory(' + cat.id + ')">删除</button>' +
+                    '</div></td>' +
+                    '</tr>'
+                )).join('');
+            }
+        } catch (err) {
+            body.innerHTML = '<tr><td colspan="6" class="empty">加载失败：' + escapeHtml(err.message) + '</td></tr>';
+        }
+    }
+
+    /**
+     * 打开分类模态框
+     */
+    function openCategoryModal() {
+        document.getElementById('categoryModalTitle').textContent = '新增分类';
+        document.getElementById('categoryForm').reset();
+        document.getElementById('categoryId').value = '';
+        document.getElementById('categorySortOrder').value = '0';
+        document.getElementById('categoryModal').classList.add('active');
+    }
+
+    /**
+     * 编辑分类（优先从缓存查找，缓存为空时重新加载）
+     */
+    async function editCategory(id) {
+        try {
+            // 缓存为空时先加载
+            if (!categoriesCache.length) {
+                const list = await apiRequest('/api/categories');
+                categoriesCache = Array.isArray(list) ? list : (list.content || []);
+            }
+            const cat = categoriesCache.find(c => c.id === id);
+            if (!cat) {
+                showToast('分类不存在', 'error');
+                return;
+            }
+            document.getElementById('categoryModalTitle').textContent = '编辑分类';
+            document.getElementById('categoryId').value = cat.id;
+            document.getElementById('categoryName').value = cat.name || '';
+            document.getElementById('categoryDescription').value = cat.description || '';
+            document.getElementById('categorySortOrder').value = cat.sortOrder !== undefined ? cat.sortOrder : 0;
+            document.getElementById('categoryModal').classList.add('active');
+        } catch (err) {
+            showToast('加载分类信息失败：' + err.message, 'error');
+        }
+    }
+
+    /**
+     * 保存分类
+     */
+    async function saveCategory() {
+        const id = document.getElementById('categoryId').value;
+        const name = document.getElementById('categoryName').value.trim();
+        const description = document.getElementById('categoryDescription').value.trim();
+        const sortOrder = document.getElementById('categorySortOrder').value;
+
+        if (!name) {
+            showToast('请填写分类名称', 'error');
+            return;
+        }
+
+        const payload = {
+            name: name,
+            description: description,
+            sortOrder: sortOrder !== '' ? parseInt(sortOrder, 10) : 0
+        };
+
+        const btn = document.getElementById('saveCategoryBtn');
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+
+        try {
+            if (id) {
+                await apiRequest('/api/admin/categories/' + id, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+                showToast('分类修改成功', 'success');
+            } else {
+                await apiRequest('/api/admin/categories', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('分类新增成功', 'success');
+            }
+            closeModal('categoryModal');
+            loadCategories();
+        } catch (err) {
+            showToast(err.message || '保存失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '保存';
+        }
+    }
+
+    /**
+     * 删除分类（从缓存中按 ID 查找名称用于确认提示）
+     */
+    async function deleteCategory(id) {
+        const cat = categoriesCache.find(c => c.id === id);
+        const name = cat ? cat.name : '';
+        if (!confirm('确定要删除分类「' + name + '」吗？')) return;
+        try {
+            await apiRequest('/api/admin/categories/' + id, { method: 'DELETE' });
+            showToast('删除成功', 'success');
+            loadCategories();
+        } catch (err) {
+            showToast(err.message || '删除失败', 'error');
+        }
+    }
+
+    /* ===== 读者管理 ===== */
+
+    /**
+     * 加载读者列表
+     */
+    async function loadReaders() {
+        const keyword = document.getElementById('readerSearchInput').value.trim();
+        const body = document.getElementById('readersTableBody');
+        body.innerHTML = '<tr><td colspan="8" class="loading">加载中...</td></tr>';
+
+        try {
+            const params = new URLSearchParams({
+                page: readerPage.number,
+                size: PAGE_SIZE
+            });
+            if (keyword) {
+                params.append('keyword', keyword);
+            }
+            const data = await apiRequest('/api/admin/readers?' + params.toString());
+            const content = data.content || [];
+            readerPage.totalPages = data.totalPages || 0;
+            readerPage.totalElements = data.totalElements || 0;
+
+            if (!content.length) {
+                body.innerHTML = '<tr><td colspan="8" class="empty">暂无读者数据</td></tr>';
+            } else {
+                body.innerHTML = content.map(reader => {
+                    const typeBadge = reader.readerType === 'TEACHER' ?
+                        '<span class="badge badge-type-teacher">教师</span>' :
+                        '<span class="badge badge-type-student">学生</span>';
+                    return (
+                        '<tr>' +
+                        '<td>' + escapeHtml(reader.userCode || reader.username || '-') + '</td>' +
+                        '<td>' + escapeHtml(reader.name || reader.displayName || '-') + '</td>' +
+                        '<td class="text-center">' + typeBadge + '</td>' +
+                        '<td>' + escapeHtml(reader.department || '-') + '</td>' +
+                        '<td>' + escapeHtml(reader.phone || '-') + '</td>' +
+                        '<td class="text-center">' + escapeHtml(reader.currentBorrowCount !== undefined ? reader.currentBorrowCount : '-') + '</td>' +
+                        '<td>' + formatDate(reader.registerTime || reader.createTime) + '</td>' +
+                        '<td>' + formatDate(reader.updateTime) + '</td>' +
+                        '</tr>'
+                    );
+                }).join('');
+            }
+            renderReaderPagination();
+        } catch (err) {
+            body.innerHTML = '<tr><td colspan="8" class="empty">加载失败：' + escapeHtml(err.message) + '</td></tr>';
+        }
+    }
+
+    /**
+     * 渲染读者分页
+     */
+    function renderReaderPagination() {
+        renderPagination('readerPagination', readerPage, null, (newPage) => {
+            readerPage.number = newPage;
+            loadReaders();
+        });
+    }
+
+    /* ===== 借阅记录管理 ===== */
+
+    /**
+     * 加载借阅记录
+     */
+    async function loadBorrowRecords() {
+        const body = document.getElementById('borrowRecordsTableBody');
+        body.innerHTML = '<tr><td colspan="9" class="loading">加载中...</td></tr>';
+
+        try {
+            const params = new URLSearchParams({
+                page: borrowPage.number,
+                size: PAGE_SIZE
+            });
+            if (borrowStatusFilter) {
+                params.append('status', borrowStatusFilter);
+            }
+            const data = await apiRequest('/api/admin/borrow-records?' + params.toString());
+            const content = data.content || [];
+            borrowPage.totalPages = data.totalPages || 0;
+            borrowPage.totalElements = data.totalElements || 0;
+
+            if (!content.length) {
+                body.innerHTML = '<tr><td colspan="9" class="empty">暂无借阅记录</td></tr>';
+            } else {
+                body.innerHTML = content.map(record => {
+                    const statusBadge = renderBorrowStatusBadge(record.status);
+                    const returnBtn = record.status === 'BORROWING' || record.status === 'OVERDUE' ?
+                        '<button class="btn btn-success btn-sm" onclick="handleReturn(' + record.id + ')">处理归还</button>' :
+                        '-';
+                    return (
+                        '<tr>' +
+                        '<td>' + escapeHtml(record.readerName || record.reader || '-') + '</td>' +
+                        '<td>' + escapeHtml(record.bookTitle || record.book || '-') + '</td>' +
+                        '<td>' + formatDate(record.borrowDate) + '</td>' +
+                        '<td>' + formatDate(record.dueDate) + '</td>' +
+                        '<td>' + formatDate(record.returnDate) + '</td>' +
+                        '<td>' + formatDate(record.updateTime) + '</td>' +
+                        '<td class="text-center">' + statusBadge + '</td>' +
+                        '<td class="text-center">' + escapeHtml(record.fine !== undefined && record.fine !== null ? ('¥' + record.fine) : '-') + '</td>' +
+                        '<td class="text-center">' + returnBtn + '</td>' +
+                        '</tr>'
+                    );
+                }).join('');
+            }
+            renderBorrowPagination();
+        } catch (err) {
+            body.innerHTML = '<tr><td colspan="9" class="empty">加载失败：' + escapeHtml(err.message) + '</td></tr>';
+        }
+    }
+
+    /**
+     * 渲染借阅状态标签
+     */
+    function renderBorrowStatusBadge(status) {
+        const map = {
+            'BORROWING': '<span class="badge badge-borrowing">借阅中</span>',
+            'RETURNED': '<span class="badge badge-returned">已归还</span>',
+            'OVERDUE': '<span class="badge badge-overdue">已逾期</span>'
+        };
+        return map[status] || escapeHtml(status || '-');
+    }
+
+    /**
+     * 渲染借阅记录分页
+     */
+    function renderBorrowPagination() {
+        renderPagination('borrowPagination', borrowPage, null, (newPage) => {
+            borrowPage.number = newPage;
+            loadBorrowRecords();
+        });
+    }
+
+    /**
+     * 处理归还
+     */
+    async function handleReturn(recordId) {
+        if (!confirm('确认处理该借阅记录的归还？')) return;
+        try {
+            await apiRequest('/api/admin/borrow-records/return/' + recordId, { method: 'POST' });
+            showToast('归还处理成功', 'success');
+            loadBorrowRecords();
+        } catch (err) {
+            showToast(err.message || '归还处理失败', 'error');
+        }
+    }
+
+    /* ===== 通用分页渲染 ===== */
+
+    /**
+     * 通用分页控件渲染
+     * @param {string} containerId - 容器元素 ID
+     * @param {object} pageData - 分页数据 {number, totalPages, totalElements}
+     * @param {function} onPrev - 上一页回调（可选，已废弃）
+     * @param {function} onPageClick - 点击页码回调
+     */
+    function renderPagination(containerId, pageData, onPrev, onPageClick) {
+        const container = document.getElementById(containerId);
+        const current = pageData.number || 0;
+        const total = pageData.totalPages || 0;
+        const totalElements = pageData.totalElements || 0;
+
+        if (total <= 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        // 信息文字
+        const info = '共 ' + totalElements + ' 条，第 ' + (current + 1) + '/' + total + ' 页';
+
+        // 生成页码按钮（最多显示前后各 2 页）
+        let buttons = '';
+        // 上一页
+        buttons += '<button class="page-btn" ' + (current === 0 ? 'disabled' : '') +
+            ' data-page="' + (current - 1) + '">上一页</button>';
+
+        const start = Math.max(0, current - 2);
+        const end = Math.min(total - 1, current + 2);
+        for (let i = start; i <= end; i++) {
+            buttons += '<button class="page-btn ' + (i === current ? 'active' : '') +
+                '" data-page="' + i + '">' + (i + 1) + '</button>';
+        }
+
+        // 下一页
+        buttons += '<button class="page-btn" ' + (current >= total - 1 ? 'disabled' : '') +
+            ' data-page="' + (current + 1) + '">下一页</button>';
+
+        container.innerHTML = '<span class="pagination-info">' + info + '</span>' +
+            '<div class="pagination-buttons">' + buttons + '</div>';
+
+        // 绑定点击事件
+        container.querySelectorAll('.page-btn').forEach(btn => {
+            if (btn.disabled) return;
+            btn.addEventListener('click', () => {
+                const page = parseInt(btn.dataset.page, 10);
+                if (!isNaN(page) && page >= 0 && page < total) {
+                    onPageClick(page);
+                }
+            });
+        });
+    }
+
+    /* ===== 模态框控制 ===== */
+
+    /**
+     * 关闭模态框
+     * @param {string} modalId - 模态框元素 ID
+     */
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    /* ===== 事件绑定 ===== */
+
+    // 页面加载完成后绑定事件
+    document.addEventListener('DOMContentLoaded', () => {
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+        // 侧边栏导航点击
+        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+            item.addEventListener('click', () => {
+                switchView(item.dataset.view);
+            });
+        });
+
+        // 退出登录
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // 图书新增按钮
+        document.getElementById('addBookBtn').addEventListener('click', () => openBookModal(null));
+
+        // 图书保存按钮
+        document.getElementById('saveBookBtn').addEventListener('click', saveBook);
+
+        // 阻止图书表单默认提交（回车不刷新页面，由保存按钮处理）
+        document.getElementById('bookForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveBook();
+        });
+
+        // 图书搜索（回车触发）
+        document.getElementById('bookSearchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                bookPage.number = 0;
+                loadBooks();
+            }
+        });
+
+        // 分类新增按钮
+        document.getElementById('addCategoryBtn').addEventListener('click', openCategoryModal);
+
+        // 分类保存按钮
+        document.getElementById('saveCategoryBtn').addEventListener('click', saveCategory);
+
+        // 阻止分类表单默认提交（回车不刷新页面，由保存按钮处理）
+        document.getElementById('categoryForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveCategory();
+        });
+
+        // 读者搜索
+        document.getElementById('readerSearchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                readerPage.number = 0;
+                loadReaders();
+            }
+        });
+
+        // 借阅记录标签页切换
+        document.querySelectorAll('#borrowTabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#borrowTabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                borrowStatusFilter = tab.dataset.status;
+                borrowPage.number = 0;
+                loadBorrowRecords();
+            });
+        });
+
+        // 修改密码表单
+        document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
+
+        // 模态框关闭按钮
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                closeModal(btn.dataset.closeModal);
+            });
+        });
+
+        // 点击模态框遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // 检查登录状态
+        checkAuthStatus();
+    });
+
+    // 暴露给 onclick 调用的函数
+    window.editBook = editBook;
+    window.deleteBook = deleteBook;
+    window.editCategory = editCategory;
+    window.deleteCategory = deleteCategory;
+    window.handleReturn = handleReturn;
+</script>
+</body>
+</html>

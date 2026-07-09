@@ -1,5 +1,5 @@
 param(
-    [int]$Port = 8083,
+    [int]$Port = 8088,
     [switch]$SkipPortCheck
 )
 $JDK_VERSION = "21"
@@ -42,7 +42,7 @@ function Test-PortInUse {
 }
 
 Write-Log "========================================"
-Write-Log "  java-3 - Start Script"
+Write-Log "  java-9 - Start Script"
 Write-Log "========================================"
 Write-Log "Project: $PROJECT_DIR"
 Write-Log "Port: $Port"
@@ -68,5 +68,13 @@ Write-Log "========================================"
 Write-Log "  Starting at http://localhost:$Port/"
 Write-Log "========================================"
 ""
+
+$javaPath = (Get-Command java -ErrorAction SilentlyContinue).Source
+if ($javaPath) {
+    $jdkDir = Split-Path (Split-Path $javaPath)
+    $env:JAVA_HOME = $jdkDir
+    Write-Log "JAVA_HOME = $jdkDir" "INFO"
+}
+
 Set-Location $PROJECT_DIR
 & "$PROJECT_DIR\mvnw.cmd" spring-boot:run

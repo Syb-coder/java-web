@@ -1,7 +1,17 @@
 @echo off
 setlocal enabledelayedexpansion
+
+REM === Check if java in PATH is already JDK 21+ ===
 where java >nul 2>&1
-if !ERRORLEVEL! EQU 0 goto :RUN
+if !ERRORLEVEL! EQU 0 (
+    for /f "tokens=3" %%v in ('java -version 2^>^&1 ^| findstr /i "version"') do (
+        set "CUR_VER=%%~v"
+        set "CUR_VER=!CUR_VER:~0,2!"
+    )
+    if "!CUR_VER!" GEQ "21" goto :RUN
+)
+
+REM === Search for JDK 21 in common paths ===
 for %%d in (
     "C:\Program Files\Eclipse Adoptium\jdk-21*"
     "C:\Program Files\Java\jdk-21*"
@@ -23,7 +33,7 @@ echo [INFO] JDK 21 found at !JAVA_HOME!
 set "PATH=!JAVA_HOME!\bin;%PATH%"
 set "JAVA_HOME=!JAVA_HOME!"
 :RUN
-echo [INFO] Starting java-3 application...
+echo [INFO] Starting application...
 powershell -ExecutionPolicy Bypass -Command "& '%~dp0start.ps1'"
 pause
 endlocal

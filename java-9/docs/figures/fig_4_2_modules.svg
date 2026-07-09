@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#FAFAFA" rx="8"/>
+  <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#333" font-family="SimHei">金融理财支付平台功能模块</text>
+
+  <!-- 中心节点 -->
+  <rect x="320" y="55" width="160" height="50" fill="#4A90D9" rx="8"/>
+  <text x="400" y="85" text-anchor="middle" font-size="15" font-weight="bold" fill="#FFF" font-family="SimHei">金融理财支付平台</text>
+
+  <!-- 连接线 -->
+  <line x1="400" y1="105" x2="130" y2="150" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="290" y2="150" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="450" y2="150" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="610" y2="150" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="130" y2="290" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="290" y2="290" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="450" y2="290" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="105" x2="610" y2="290" stroke="#999" stroke-width="1.5"/>
+
+  <!-- 一级模块 -->
+  <rect x="50" y="150" width="160" height="55" fill="#5CB85C" rx="6"/>
+  <text x="130" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">用户管理模块</text>
+  <text x="130" y="193" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">注册/登录/实名/改密</text>
+
+  <rect x="210" y="150" width="160" height="55" fill="#5CB85C" rx="6"/>
+  <text x="290" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">理财产品模块</text>
+  <text x="290" y="193" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">产品CRUD/上下架</text>
+
+  <rect x="370" y="150" width="160" height="55" fill="#5CB85C" rx="6"/>
+  <text x="450" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">投资交易模块</text>
+  <text x="450" y="193" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">申购/赎回/收益计算</text>
+
+  <rect x="530" y="150" width="160" height="55" fill="#5CB85C" rx="6"/>
+  <text x="610" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">支付收银模块</text>
+  <text x="610" y="193" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">下单/确认/退款</text>
+
+  <rect x="50" y="290" width="160" height="55" fill="#F0AD4E" rx="6"/>
+  <text x="130" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">风控管理模块</text>
+  <text x="130" y="333" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">大额/高频/异常检测</text>
+
+  <rect x="210" y="290" width="160" height="55" fill="#F0AD4E" rx="6"/>
+  <text x="290" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">商户管理模块</text>
+  <text x="290" y="333" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">入驻/审核/收款</text>
+
+  <rect x="370" y="290" width="160" height="55" fill="#F0AD4E" rx="6"/>
+  <text x="450" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">营销活动模块</text>
+  <text x="450" y="333" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">优惠券/加息/签到</text>
+
+  <rect x="530" y="290" width="160" height="55" fill="#F0AD4E" rx="6"/>
+  <text x="610" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" font-family="SimHei">运营后台模块</text>
+  <text x="610" y="333" text-anchor="middle" font-size="11" fill="#FFF" font-family="SimHei">统计/工单/配置</text>
+
+  <!-- 二级子模块 -->
+  <rect x="50" y="375" width="640" height="100" fill="#EEE" rx="6" stroke="#CCC"/>
+  <text x="370" y="395" text-anchor="middle" font-size="13" font-weight="bold" fill="#555" font-family="SimHei">底层支撑服务</text>
+
+  <rect x="70" y="405" width="130" height="50" fill="#D5E8F0" rx="4"/>
+  <text x="135" y="425" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">TransactionService</text>
+  <text x="135" y="443" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">交易流水记录</text>
+
+  <rect x="210" y="405" width="130" height="50" fill="#D5E8F0" rx="4"/>
+  <text x="275" y="425" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">LoginInterceptor</text>
+  <text x="275" y="443" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">统一鉴权拦截</text>
+
+  <rect x="350" y="405" width="130" height="50" fill="#D5E8F0" rx="4"/>
+  <text x="415" y="425" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">DataInitializer</text>
+  <text x="415" y="443" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">种子数据初始化</text>
+
+  <rect x="490" y="405" width="130" height="50" fill="#D5E8F0" rx="4"/>
+  <text x="555" y="425" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">BCrypt加密</text>
+  <text x="555" y="443" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">密码安全存储</text>
+</svg>
