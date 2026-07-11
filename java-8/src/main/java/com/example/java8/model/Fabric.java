@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 
 // 导入时间类型
 import java.time.LocalDateTime;
+import jakarta.persistence.PreUpdate;
 
 /**
  * 面料实体
@@ -55,6 +56,8 @@ public class Fabric {
     /** 创建时间 */
     private LocalDateTime createTime;
 
+    private LocalDateTime updateTime;
+
     /** 无参构造方法 */
     public Fabric() {
     }
@@ -70,6 +73,7 @@ public class Fabric {
         this.stock = stock;
         this.description = description;
         this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
     }
 
     // ===== Getter / Setter =====
@@ -89,4 +93,11 @@ public class Fabric {
     public void setDescription(String description) { this.description = description; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

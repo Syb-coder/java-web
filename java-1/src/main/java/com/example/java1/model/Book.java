@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue; // 引入 JPA 主键生成策略注�
 import jakarta.persistence.GenerationType; // 引入主键生成策略枚举，IDENTITY 表示数据库自增
 import jakarta.persistence.Id; // 引入 JPA 主键注解，标记字段为表主键
 import jakarta.persistence.Table; // 引入 JPA 表映射注解，指定实体对应的表名
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Version; // 引入 JPA 乐观锁版本字段注解，防止并发脏写
 
 // 导入时间类型
@@ -83,9 +84,18 @@ public class Book { // 定义公共实体类 Book，对应馆藏图书领域模�
     @Column(nullable = false, updatable = false) // 映射列非空且不可更新（updatable=false 保证创建时间不可篡改）
     private LocalDateTime createTime; // 创建时间字段，由服务层在持久化前填充
 
+    /** 最后修改时间，数据更新前由 @PreUpdate 自动填充 */
+    private LocalDateTime updateTime;
+
     /** 乐观锁版本号，由 JPA 自动维护，防止并发修改 */
     @Version // 声明乐观锁版本字段，Hibernate 在更新时自动校验并递增该值
     private Integer version; // 版本号字段，并发更新冲突时抛出 OptimisticLockException
+
+    /** 每次更新前自动填充修改时间 */
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 
     /** 无参构造方法，JPA 规范要求 */
     public Book() { // 无参构造方法，供 JPA/Hibernate 通过反射创建实例
@@ -138,6 +148,8 @@ public class Book { // 定义公共实体类 Book，对应馆藏图书领域模�
     public void setLocation(String location) { this.location = location; } // 存放位置的 setter，供排架调整时赋值
     public LocalDateTime getCreateTime() { return createTime; } // 创建时间的 getter，供审计展示
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; } // 创建时间的 setter，由服务层在持久化前填充
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
     public Integer getVersion() { return version; } // 版本号的 getter，供乐观锁调试展示
     public void setVersion(Integer version) { this.version = version; } // 版本号的 setter，通常由 JPA 自动维护
 }

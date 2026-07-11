@@ -59,7 +59,8 @@ public record JobPostingResponse(
         String contact,             // 联系方式
 
         // ===== 系统字段 =====
-        LocalDateTime createdAt     // 记录创建时间戳
+        LocalDateTime createdAt,    // 记录创建时间戳
+        LocalDateTime updateTime    // 最后修改时间
 ) {
 
     /**
@@ -110,7 +111,8 @@ public record JobPostingResponse(
                 j.getPublisherName(),                   // 发布人姓名
                 j.getContact(),                         // 联系方式
                 // 系统字段
-                j.getCreatedAt()                        // 创建时间
+                j.getCreatedAt(),                       // 创建时间
+                j.getUpdateTime()                       // 最后修改时间
         );
     }
 }

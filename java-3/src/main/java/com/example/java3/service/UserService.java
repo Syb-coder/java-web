@@ -165,6 +165,8 @@ public class UserService {
                 // 状态非 null 时取枚举名，避免 NPE
                 u.getStatus() != null ? u.getStatus().name() : null,
                 // 创建时间非 null 时按指定格式格式化
-                u.getCreatedAt() != null ? u.getCreatedAt().format(FMT) : null);
+                u.getCreatedAt() != null ? u.getCreatedAt().format(FMT) : null,
+                // 最后修改时间非 null 时格式化，避免 NPE
+                u.getUpdateTime() != null ? u.getUpdateTime().format(FMT) : null);
     }
 }

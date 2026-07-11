@@ -27,5 +27,5 @@ public record OrderResponse(Long id, Long userId, String userName,
                             Long fabricId, String fabricName,
                             Long measurementId, String measurementName,
                             Double totalPrice, OrderStatus status,
-                            String remark, LocalDateTime createTime) {
+                            String remark, LocalDateTime createTime, LocalDateTime updateTime) {
 }

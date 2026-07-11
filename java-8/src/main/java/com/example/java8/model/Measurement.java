@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 
 // 导入时间类型
 import java.time.LocalDateTime;
+import jakarta.persistence.PreUpdate;
 
 /**
  * 量体数据实体
@@ -84,6 +85,8 @@ public class Measurement {
     /** 创建时间 */
     private LocalDateTime createTime;
 
+    private LocalDateTime updateTime;
+
     /** 无参构造方法 */
     public Measurement() {
     }
@@ -121,4 +124,11 @@ public class Measurement {
     public void setRemark(String remark) { this.remark = remark; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

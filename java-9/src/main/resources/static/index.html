@@ -2546,6 +2546,7 @@
                                 '<span>👤 ' + escapeHtml(currentUser.realName || '未实名') + '</span>' +
                                 '<span>📱 ' + escapeHtml(currentUser.phone || '-') + '</span>' +
                                 '<span>🕐 注册于 ' + formatTime(currentUser.createdAt) + '</span>' +
+                                '<span>🕐 最后修改 ' + formatTime(currentUser.updateTime) + '</span>' +
                             '</div>' +
                         '</div>' +
                         '<div class="profile-balance">' +
@@ -2641,7 +2642,7 @@
                 return;
             }
             var html = '<div class="table-wrapper"><table class="data-table"><thead><tr>' +
-                '<th>时间</th><th>类型</th><th>金额</th><th>余额</th><th>备注</th>' +
+                '<th>时间</th><th>最后修改</th><th>类型</th><th>金额</th><th>余额</th><th>备注</th>' +
                 '</tr></thead><tbody>';
             for (var i = 0; i < data.length; i++) {
                 var t = data[i];
@@ -2650,6 +2651,7 @@
                 var amountSign = amount >= 0 ? '+' : '';
                 html += '<tr>' +
                     '<td>' + formatTime(t.createdAt) + '</td>' +
+                    '<td>' + formatTime(t.updateTime) + '</td>' +
                     '<td>' + getTransactionTypeName(t.type) + '</td>' +
                     '<td class="' + amountClass + '">' + amountSign + formatMoney(t.amount) + '</td>' +
                     '<td>' + formatMoney(t.balanceAfter) + '</td>' +
@@ -2675,7 +2677,7 @@
                 return;
             }
             var html = '<div class="table-wrapper"><table class="data-table"><thead><tr>' +
-                '<th>订单号</th><th>产品名称</th><th>投资金额</th><th>预期收益</th><th>状态</th><th>创建时间</th><th>操作</th>' +
+                '<th>订单号</th><th>产品名称</th><th>投资金额</th><th>预期收益</th><th>状态</th><th>创建时间</th><th>最后修改</th><th>操作</th>' +
                 '</tr></thead><tbody>';
             for (var i = 0; i < data.length; i++) {
                 var inv = data[i];
@@ -2687,6 +2689,7 @@
                     '<td class="amount-positive">' + formatMoney(inv.expectedReturn) + '</td>' +
                     '<td>' + getInvestmentStatusName(inv.status) + '</td>' +
                     '<td>' + formatTime(inv.createdAt) + '</td>' +
+                    '<td>' + formatTime(inv.updateTime) + '</td>' +
                     '<td>' + (canRedeem ?
                         '<button class="btn btn-secondary btn-sm" onclick="redeemInvestment(' + inv.id + ')">赎回</button>' :
                         '<span style="color:var(--text-lighter);font-size:13px">-</span>') + '</td>' +
@@ -2808,7 +2811,7 @@
                     '<div style="font-size:13px;color:var(--text-light);margin-bottom:8px">' + escapeHtml(t.description) + '</div>' +
                     (t.reply ? '<div style="background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;color:var(--text)">' +
                         '<div style="font-weight:600;margin-bottom:4px">客服回复：</div>' + escapeHtml(t.reply) + '</div>' : '') +
-                    '<div style="font-size:12px;color:var(--text-lighter);margin-top:8px">提交时间：' + formatTime(t.createdAt) + '</div>' +
+                    '<div style="font-size:12px;color:var(--text-lighter);margin-top:8px">提交时间：' + formatTime(t.createdAt) + ' | 最后修改：' + formatTime(t.updateTime) + '</div>' +
                 '</div>';
             }
             html += '</div>';

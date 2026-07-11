@@ -81,4 +81,12 @@ Write-Log "  Starting at http://localhost:$Port/"
 Write-Log "========================================"
 ""
 Set-Location $PROJECT_DIR
+
+$javaPath = (Get-Command java -ErrorAction SilentlyContinue).Source
+if ($javaPath) {
+    $jdkDir = Split-Path (Split-Path $javaPath)
+    $env:JAVA_HOME = $jdkDir
+    Write-Log "JAVA_HOME = $jdkDir" "INFO"
+}
+
 & $MVNW_CMD spring-boot:run

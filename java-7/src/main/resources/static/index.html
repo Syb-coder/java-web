@@ -18,6 +18,9 @@
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ===== 顶部导航 ===== */
@@ -74,6 +77,8 @@
             max-width: 1200px;
             margin: 24px auto;
             padding: 0 40px;
+            width: 100%;
+            flex: 1;
         }
 
         .tab-content {
@@ -404,6 +409,17 @@
             color: #ef4444;
             font-weight: 600;
         }
+        .site-footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: rgba(255,255,255,.8);
+            text-align: center;
+            padding: 20px 16px;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+        .site-footer a { color: rgba(255,255,255,.9); text-decoration: none; margin: 0 8px; }
+        .site-footer a:hover { text-decoration: underline; }
+        .site-footer .sep { color: rgba(255,255,255,.3); margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -472,6 +488,7 @@
                             <th>出版社</th>
                             <th>可借/总数</th>
                             <th>位置</th>
+                            <th>最后修改</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -751,7 +768,7 @@
         function renderBooks() {
             const tbody = document.getElementById('books-tbody');
             if (allBooks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无图书数据</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无图书数据</td></tr>';
                 return;
             }
             tbody.innerHTML = allBooks.map(book => {
@@ -764,6 +781,7 @@
                         <td>${escapeHtml(book.publisher || '-')}</td>
                         <td><span class="${availableClass}">${book.availableCopies}</span> / ${book.totalCopies}</td>
                         <td>${escapeHtml(book.location || '-')}</td>
+                        <td>${formatDate(book.updateTime)}</td>
                         <td>
                             <button class="btn btn-sm btn-success" onclick="openBorrowModal(${book.id})" 
                                 ${book.availableCopies <= 0 ? 'disabled' : ''}>借出</button>
@@ -1099,5 +1117,8 @@
             loadRecords();
         });
     </script>
+    <footer class="site-footer">
+        <div>© 2026 个人图书借阅管理系统 · Java Web 课程设计</div>
+    </footer>
 </body>
 </html>

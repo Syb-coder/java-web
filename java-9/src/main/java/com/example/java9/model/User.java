@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;  // 枚举存储方式注解
 import jakarta.persistence.GeneratedValue;  // 主键生成策略注解
 import jakarta.persistence.GenerationType;  // 主键生成策略枚举
 import jakarta.persistence.Id;  // 主键标识注解
+import jakarta.persistence.PreUpdate;  // 更新前回调注解
 import jakarta.persistence.Table;  // 表名映射注解
 
 // JDK 通用类型导入
@@ -67,6 +68,14 @@ public class User {  // C 端用户实体，承载账户、实名与资产信息
     @Column(nullable = false)  // 非空，注册必有时间
     private LocalDateTime createdAt;  // 注册时间戳
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;  // 最后修改时间戳
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     public User() {  // JPA 无参构造器
     }
 
@@ -78,6 +87,7 @@ public class User {  // C 端用户实体，承载账户、实名与资产信息
         this.verified = false;  // 新用户默认未实名
         this.status = UserStatus.NORMAL;  // 新用户默认正常状态
         this.createdAt = LocalDateTime.now();  // 服务端生成注册时间
+        this.updateTime = LocalDateTime.now();  // 初始化修改时间
     }
 
     public Long getId() {  // 获取主键 ID
@@ -158,5 +168,13 @@ public class User {  // C 端用户实体，承载账户、实名与资产信息
 
     public void setCreatedAt(LocalDateTime createdAt) {  // 设置注册时间
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

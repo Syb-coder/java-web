@@ -79,6 +79,7 @@ public class FabricService {
         fabric.setUnitPrice(req.unitPrice());
         if (req.stock() != null) fabric.setStock(req.stock());
         fabric.setDescription(req.description());
+        fabric.setUpdateTime(java.time.LocalDateTime.now());
         return toResponse(repository.save(fabric));
     }
 
@@ -108,6 +109,6 @@ public class FabricService {
      */
     public FabricResponse toResponse(Fabric f) {
         return new FabricResponse(f.getId(), f.getName(), f.getMaterial(), f.getColor(),
-                f.getUnitPrice(), f.getStock(), f.getDescription(), f.getCreateTime());
+                f.getUnitPrice(), f.getStock(), f.getDescription(), f.getCreateTime(), f.getUpdateTime());
     }
 }

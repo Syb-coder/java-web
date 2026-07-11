@@ -20,6 +20,7 @@ import java.time.LocalDateTime; // 导入日期时间类型，用于表示发布
  * @param viewCount   阅读量
  * @param top         是否置顶
  * @param createdAt   记录创建时间
+ * @param updateTime  更新时间
  */
 public record NewsResponse( // Record 关键字声明不可变 DTO，自动生成构造器与访问方法
         Long id, // 主键 ID，用于前端定位单条新闻详情
@@ -31,7 +32,8 @@ public record NewsResponse( // Record 关键字声明不可变 DTO，自动生�
         LocalDateTime publishTime, // 发布时间，前端展示时间标签
         Integer viewCount, // 阅读量，服务端统计的浏览次数
         Boolean top, // 是否置顶，前端据此调整展示样式
-        LocalDateTime createdAt // 记录创建时间，用于后台审计排序
+        LocalDateTime createdAt, // 记录创建时间，用于后台审计排序
+        LocalDateTime updateTime // 更新时间，用于判断内容是否修改
 ) {
 
     /**
@@ -53,7 +55,8 @@ public record NewsResponse( // Record 关键字声明不可变 DTO，自动生�
                 n.getPublishTime(), // 提取发布时间
                 n.getViewCount(), // 提取阅读量
                 n.getTop(), // 提取置顶标识
-                n.getCreatedAt() // 提取创建时间
+                n.getCreatedAt(), // 提取创建时间
+                n.getUpdateTime() // 提取更新时间
         );
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;  // 导入 Spring Service 注解
 import org.springframework.transaction.annotation.Transactional;  // 导入事务注解
 
 import java.math.BigDecimal;  // 导入高精度十进制类，金额计算必须用 BigDecimal 避免 double 精度丢失
+import java.time.LocalDateTime;  // 导入时间类
 import java.util.List;  // 导入集合 List
 
 /**
@@ -55,6 +56,7 @@ public class MerchantService {
         } else {
             throw new IllegalArgumentException("无效的审核动作：" + action);  // 非法动作快速失败
         }
+        merchant.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return merchantRepository.save(merchant);  // 持久化并返回
     }
 
@@ -106,6 +108,7 @@ public class MerchantService {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new IllegalArgumentException("商户不存在"));  // 查询商户
         merchant.setBalance(merchant.getBalance().add(amount));  // 余额增加，使用 BigDecimal.add 避免浮点精度丢失
+        merchant.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         Merchant saved = merchantRepository.save(merchant);  // 持久化更新后的余额
         transactionService.recordTransaction(merchantId, "MERCHANT", TransactionType.PAY,
                 amount, saved.getBalance(), orderNo, "用户付款");  // 记录商户收款流水，关联订单号便于对账
@@ -134,6 +137,7 @@ public class MerchantService {
             throw new IllegalArgumentException("余额不足");  // 余额不足快速失败
         }
         merchant.setBalance(merchant.getBalance().subtract(amount));  // 余额扣减，使用 BigDecimal.subtract 避免浮点精度丢失
+        merchant.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         Merchant saved = merchantRepository.save(merchant);  // 持久化更新后的余额
         // 提现为出账，流水金额取负
         transactionService.recordTransaction(merchantId, "MERCHANT", TransactionType.WITHDRAW,

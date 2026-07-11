@@ -5,6 +5,7 @@ import jakarta.persistence.Entity; // 导入 JPA @Entity 注解,标记类为数�
 import jakarta.persistence.GeneratedValue; // 导入 JPA @GeneratedValue 注解,指定主键生成策略
 import jakarta.persistence.GenerationType; // 导入主键生成策略枚举,IDENTITY 表示由数据库自增
 import jakarta.persistence.Id; // 导入 JPA @Id 注解,标记字段为主键
+import jakarta.persistence.PreUpdate; // 导入 JPA @PreUpdate 注解,用于实体更新前自动设置更新时间
 import jakarta.persistence.Table; // 导入 JPA @Table 注解,用于显式指定数据库表名
 
 import java.time.LocalDateTime; // 导入 JDK 8+ 日期时间 API,用于记录管理员创建与最近登录时间
@@ -40,10 +41,14 @@ public class AdminUser {
     private LocalDateTime createdAt; // 管理员账号创建时间,用于审计追溯
 
     /** 最近登录时间 */
-    private LocalDateTime lastLoginAt; // 最近一次成功登录时间,用于安全审计与异常登录检测;无 @Column 默认按字段名映射
+    private LocalDateTime lastLoginAt;
+
+    /** 更新时间 */
+    private LocalDateTime updateTime; // 实体更新时间,每次持久化更新时自动刷新;无 @Column 默认按字段名映射
 
     public AdminUser() {
         // JPA 规范要求实体类必须提供无参构造器,Hibernate 通过反射调用此构造器实例化对象
+        this.updateTime = LocalDateTime.now();
     }
 
     public AdminUser(String username, String password, String displayName) {
@@ -52,6 +57,7 @@ public class AdminUser {
         this.password = password; // 赋值加密后的密码(由调用方完成 BCrypt 加密)
         this.displayName = displayName; // 赋值显示名称
         this.createdAt = LocalDateTime.now(); // 自动填充创建时间为当前时刻,避免调用方遗漏
+        this.updateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -112,5 +118,20 @@ public class AdminUser {
     public void setLastLoginAt(LocalDateTime lastLoginAt) {
         // 设置最近登录时间,登录成功后由认证服务调用更新
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        // 获取更新时间
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        // 设置更新时间
+        this.updateTime = updateTime;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 }

@@ -29,11 +29,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         /* ===== body 基础样式 ===== */
+        html, body { height: 100%; }
         body {
-            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;  /* 微软雅黑优先 */
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
             background: var(--color-bg);
             color: var(--color-text);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ===== 顶部栏：红色渐变，含标题与用户操作区 ===== */
@@ -75,6 +78,10 @@
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ===== Tab 导航栏：横向排列的栏目切换按钮 ===== */
@@ -119,6 +126,7 @@
             border-radius: 0 0 4px 4px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             min-height: 600px;
+            flex: 1;
         }
 
         /* ===== Tab 面板：默认隐藏，激活时显示 ===== */
@@ -694,6 +702,7 @@
                             <th>分类</th>
                             <th>来源</th>
                             <th class="col-time">发布时间</th>
+                            <th class="col-time">最后修改</th>
                             <th>阅读</th>
                             <th class="col-actions">操作</th>
                         </tr>
@@ -725,6 +734,7 @@
                             <th>分类</th>
                             <th>编者</th>
                             <th class="col-time">创建时间</th>
+                            <th class="col-time">最后修改</th>
                             <th>阅读</th>
                             <th class="col-actions">操作</th>
                         </tr>
@@ -789,6 +799,7 @@
                             <th>描述</th>
                             <th>举报人</th>
                             <th class="col-time">提交时间</th>
+                            <th class="col-time">最后修改</th>
                             <th>状态</th>
                             <th class="col-actions">操作</th>
                         </tr>
@@ -797,6 +808,7 @@
                 </table>
             </div>
         </div>
+        <footer style="text-align:center;padding:20px 0;color:var(--color-text-light);font-size:12px;border-top:1px solid var(--color-border);margin-top:20px;">© 2026 国家网络安全宣传官网 · Java Web 课程设计 · 后台管理</footer>
     </div>
 
     <!-- 编辑模态框：用于新增/编辑新闻、知识、法规、处置举报 -->
@@ -1129,13 +1141,14 @@
                         <td><span class="tag blue">${NEWS_CATEGORY[n.category] || n.category}</span></td>
                         <td>${escapeHtml(n.source || '-')}</td>
                         <td class="col-time">${formatDateTime(n.publishTime)}</td>
+                        <td class="col-time">${formatDateTime(n.updateTime)}</td>
                         <td>${n.viewCount || 0}</td>
                         <td class="col-actions">
                             <button class="btn btn-default btn-sm" onclick="editNews(${n.id})">编辑</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteNews(${n.id})">删除</button>
                         </td>
                     </tr>
-                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无新闻数据</td></tr>';
+                `).join('') : '<tr><td colspan="8" class="empty-tip">暂无新闻数据</td></tr>';
             } catch (err) { showToast('加载新闻失败', 'error'); }
         }
 
@@ -1228,13 +1241,14 @@
                         <td><span class="tag gold">${KNOWLEDGE_CATEGORY[k.category] || k.category}</span></td>
                         <td>${escapeHtml(k.author || '-')}</td>
                         <td class="col-time">${formatDateTime(k.createdAt)}</td>
+                        <td class="col-time">${formatDateTime(k.updateTime)}</td>
                         <td>${k.viewCount || 0}</td>
                         <td class="col-actions">
                             <button class="btn btn-default btn-sm" onclick="editKnowledge(${k.id})">编辑</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteKnowledge(${k.id})">删除</button>
                         </td>
                     </tr>
-                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无文章数据</td></tr>';
+                `).join('') : '<tr><td colspan="8" class="empty-tip">暂无文章数据</td></tr>';
             } catch (err) { showToast('加载知识失败', 'error'); }
         }
 
@@ -1449,13 +1463,14 @@
                         <td><div class="report-desc">${escapeHtml(r.description)}</div></td>
                         <td>${escapeHtml(r.reporterName || '-')}<br><span style="font-size:12px;color:#999;">${escapeHtml(r.reporterContact || '')}</span></td>
                         <td class="col-time">${formatDateTime(r.createdAt)}</td>
+                        <td class="col-time">${formatDateTime(r.updateTime)}</td>
                         <td><span class="tag ${STATUS_TAG_CLASS[r.status]}">${REPORT_STATUS[r.status] || r.status}</span></td>
                         <td class="col-actions">
                             <button class="btn btn-default btn-sm" onclick="handleReport(${r.id})">处置</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteReport(${r.id})">删除</button>
                         </td>
                     </tr>
-                `).join('') : '<tr><td colspan="7" class="empty-tip">暂无举报记录</td></tr>';
+                `).join('') : '<tr><td colspan="8" class="empty-tip">暂无举报记录</td></tr>';
             } catch (err) { showToast('加载举报失败', 'error'); }
         }
 

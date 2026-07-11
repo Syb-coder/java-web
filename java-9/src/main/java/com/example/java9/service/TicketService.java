@@ -72,6 +72,7 @@ public class TicketService {
         ticket.setRepliedBy(repliedBy);  // 记录回复人（管理员用户名）
         ticket.setRepliedAt(LocalDateTime.now());  // 记录回复时间
         ticket.setStatus(TicketStatus.REPLIED);  // 状态流转为已回复
+        ticket.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return supportTicketRepository.save(ticket);  // 持久化并返回
     }
 
@@ -90,6 +91,7 @@ public class TicketService {
         SupportTicket ticket = supportTicketRepository.findById(ticketId)
                 .orElseThrow(() -> new IllegalArgumentException("工单不存在"));  // 查询工单，不存在则抛异常
         ticket.setStatus(TicketStatus.CLOSED);  // 状态流转为已关闭，终止工单生命周期
+        ticket.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return supportTicketRepository.save(ticket);  // 持久化并返回
     }
 

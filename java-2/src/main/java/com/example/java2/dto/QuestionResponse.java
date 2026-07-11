@@ -22,6 +22,7 @@ import com.example.java2.model.Question;
  * @param score        题目分值
  * @param analysis     题目解析
  * @param createTime   创建时间
+ * @param updateTime   最后修改时间
  */
 // 采用 record 声明：不可变响应 DTO，自动生成 accessor/equals/hashCode/toString；管理端专用，包含正确答案与解析
 public record QuestionResponse(
@@ -36,7 +37,8 @@ public record QuestionResponse(
         int answerIndex,   // 正确答案序号 0~3，对应 A/B/C/D
         int score,         // 题目分值
         String analysis,   // 题目解析，可为 null
-        String createTime  // 创建时间字符串
+        String createTime,  // 创建时间字符串
+        String updateTime   // 最后修改时间字符串
 ) {
     /**
      * 由题目实体构造响应
@@ -59,7 +61,8 @@ public record QuestionResponse(
                 question.getAnswerIndex(),
                 question.getScore(),
                 question.getAnalysis(),
-                question.getCreateTime() != null ? question.getCreateTime().toString() : null
+                question.getCreateTime() != null ? question.getCreateTime().toString() : null,
+                question.getUpdateTime() != null ? question.getUpdateTime().toString() : null
         );
     }
 }

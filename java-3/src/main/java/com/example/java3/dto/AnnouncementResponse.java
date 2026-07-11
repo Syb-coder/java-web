@@ -30,6 +30,8 @@ public class AnnouncementResponse {
     private Long adminId;
     // 发布时间字符串（已格式化）
     private String createdAt;
+    // 最后修改时间字符串（已格式化）
+    private String updateTime;
 
     /**
      * 由 Announcement 实体构造响应
@@ -47,6 +49,8 @@ public class AnnouncementResponse {
         this.adminId = a.getAdminId();                                      // 赋值管理员 ID
         // 发布时间非空时格式化为字符串，否则置 null，避免 NPE
         this.createdAt = a.getCreatedAt() != null ? a.getCreatedAt().format(FMT) : null;
+        // 最后修改时间非空时格式化，否则置 null
+        this.updateTime = a.getUpdateTime() != null ? a.getUpdateTime().format(FMT) : null;
     }
 
     // 获取公告 ID
@@ -107,5 +111,15 @@ public class AnnouncementResponse {
     // 设置发布时间字符串
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    // 获取最后修改时间
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    // 设置最后修改时间
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

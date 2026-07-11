@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
  * @param lastLoginAt 最近登录时间
  */
 public record UserResponse(Long id, String username, String nickname, String phone,
-                           LocalDateTime createTime, LocalDateTime lastLoginAt) {
+                           LocalDateTime createTime, LocalDateTime updateTime, LocalDateTime lastLoginAt) {
 }

@@ -68,5 +68,7 @@ Write-Log "========================================"
 Write-Log "  Starting at http://localhost:$Port/"
 Write-Log "========================================"
 ""
+$env:JAVA_HOME = (Get-Command java).Source -replace '\\bin\\java(\.exe)?$', ''
+Write-Log "JAVA_HOME set to $env:JAVA_HOME" "INFO"
 Set-Location $PROJECT_DIR
 & "$PROJECT_DIR\mvnw.cmd" spring-boot:run

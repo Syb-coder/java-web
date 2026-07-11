@@ -56,6 +56,15 @@ public class Feedback {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    /** 最后修改时间，数据更新前由 @PreUpdate 自动填充 */
+    private LocalDateTime updateTime;
+
+    /** 每次更新前自动填充修改时间 */
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     /** 默认构造方法 */
     // JPA 规范要求实体必须提供无参构造方法，便于通过反射实例化
     public Feedback() {
@@ -151,5 +160,13 @@ public class Feedback {
     // 设置反馈提交时间
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

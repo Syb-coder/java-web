@@ -73,6 +73,7 @@ public class StyleService {
         style.setCategory(req.category());
         style.setCraftFee(req.craftFee());
         style.setDescription(req.description());
+        style.setUpdateTime(java.time.LocalDateTime.now());
         return toResponse(repository.save(style));
     }
 
@@ -102,6 +103,6 @@ public class StyleService {
      */
     public StyleResponse toResponse(Style s) {
         return new StyleResponse(s.getId(), s.getName(), s.getCategory(),
-                s.getCraftFee(), s.getDescription(), s.getCreateTime());
+                s.getCraftFee(), s.getDescription(), s.getCreateTime(), s.getUpdateTime());
     }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;  // 枚举存储方式注解
 import jakarta.persistence.GeneratedValue;  // 主键生成策略注解
 import jakarta.persistence.GenerationType;  // 主键生成策略枚举
 import jakarta.persistence.Id;  // 主键标识注解
+import jakarta.persistence.PreUpdate;  // 更新前回调注解
 import jakarta.persistence.Table;  // 表名映射注解
 
 // JDK 通用类型导入
@@ -72,6 +73,14 @@ public class Merchant {  // B 端商户实体，承载入驻信息与可结算�
     @Column(nullable = false)  // 非空
     private LocalDateTime createdAt;  // 创建时间戳
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;  // 最后修改时间戳
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     public Merchant() {  // JPA 无参构造器
     }
 
@@ -84,6 +93,7 @@ public class Merchant {  // B 端商户实体，承载入驻信息与可结算�
         this.balance = BigDecimal.ZERO;  // 新商户余额为0
         this.status = MerchantStatus.PENDING;  // 新商户默认待审核
         this.createdAt = LocalDateTime.now();  // 服务端生成入驻时间
+        this.updateTime = LocalDateTime.now();  // 初始化修改时间
     }
 
     public Long getId() {  // 获取主键 ID
@@ -172,5 +182,13 @@ public class Merchant {  // B 端商户实体，承载入驻信息与可结算�
 
     public void setCreatedAt(LocalDateTime createdAt) {  // 设置创建时间
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

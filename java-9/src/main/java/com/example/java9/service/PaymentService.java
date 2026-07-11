@@ -135,6 +135,7 @@ public class PaymentService {
 
         // 5. 订单状态改为已支付
         order.setStatus(PaymentStatus.PAID);  // 标记为已支付
+        order.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         PaymentOrder saved = paymentOrderRepository.save(order);  // 持久化订单状态
 
         // 6. 记录用户支付流水（出账取负，备注使用订单描述）
@@ -181,6 +182,7 @@ public class PaymentService {
 
         // 4. 订单状态改为已退款
         order.setStatus(PaymentStatus.REFUNDED);  // 标记为已退款，防止重复退款
+        order.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         PaymentOrder saved = paymentOrderRepository.save(order);  // 持久化订单状态
 
         // 5. 记录用户退款流水（入账取正）

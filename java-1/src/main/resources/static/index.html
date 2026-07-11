@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 禁止浏览器缓存静态资源，确保用户始终加载最新版本的前端代码 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>校园图书借阅管理系统</title>
     <style>
         /* ===== 全局样式 ===== */
@@ -12,6 +16,9 @@
             background: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         /* ===== 顶部导航 ===== */
         header {
@@ -38,7 +45,7 @@
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* ===== 主体容器 ===== */
-        main { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+        main { max-width: 1200px; margin: 24px auto; padding: 0 16px; width: 100%; flex: 1; }
 
         /* ===== 数据看板 ===== */
         .stats-grid {
@@ -176,6 +183,22 @@
         .empty { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
         .book-desc { color: #6b7280; font-size: 12px; max-width: 300px; }
         .hidden { display: none !important; }
+        /* ===== 页脚 ===== */
+        .site-footer {
+            background: #1e3a8a;
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+            padding: 20px 16px;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+        .site-footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        .site-footer a:hover { text-decoration: underline; }
+        .site-footer .sep { color: rgba(255,255,255,0.3); margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -220,6 +243,7 @@
                             <th>出版社</th>
                             <th>可借/总数</th>
                             <th>位置</th>
+                            <th>最后修改</th>
                             <th class="tab-admin hidden">操作</th>
                         </tr>
                     </thead>
@@ -253,6 +277,7 @@
                             <th>状态</th>
                             <th>续借</th>
                             <th>罚款</th>
+                            <th>最后修改</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -279,6 +304,7 @@
                             <th>院系</th>
                             <th>电话</th>
                             <th>借阅中</th>
+                            <th>最后修改</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -443,6 +469,14 @@
 
     <div class="toast" id="toast"></div>
 
+    <footer class="site-footer">
+        <div>
+            <a href="/">首页</a><span class="sep">|</span>
+            <a href="admin.html">管理后台</a>
+        </div>
+        <div>© 2026 校园图书借阅管理系统 · Java Web 课程设计</div>
+    </footer>
+
     <script>
         // ===== 全局状态 =====
         let isAdmin = false;      // 是否管理员登录
@@ -509,17 +543,26 @@
         }
 
         // ===== 图书管理 =====
+        // 修复：原实现无 try-catch，若 fetch 失败或响应非合法 JSON，
+        // 异常会冒泡为未捕获的 Promise rejection，导致渲染中断且无任何提示，
+        // 用户看到的就是"图书不显示"。现增加错误兜底。
         async function loadBooks() {
             const keyword = document.getElementById('bookSearchInput').value.trim();
             const url = keyword ? `/api/books/search?keyword=${encodeURIComponent(keyword)}` : '/api/books';
-            const resp = await fetch(url);
-            const books = await resp.json();
             const tbody = document.getElementById('bookTableBody');
-            if (books.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无图书</td></tr>';
-                return;
-            }
-            tbody.innerHTML = books.map(b => `
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) {
+                    // 后端返回非 200（如 500 内部错误、H2 锁冲突），显式提示而非静默中断
+                    tbody.innerHTML = '<tr><td colspan="9" class="empty">图书加载失败，请刷新重试</td></tr>';
+                    return;
+                }
+                const books = await resp.json();
+                if (books.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" class="empty">暂无图书</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = books.map(b => `
                 <tr>
                     <td>${b.id}</td>
                     <td>${escapeHtml(b.title)}</td>
@@ -528,12 +571,18 @@
                     <td>${escapeHtml(b.publisher || '-')}</td>
                     <td>${b.availableCopies}/${b.totalCopies}</td>
                     <td>${escapeHtml(b.location || '-')}</td>
+                    <td>${formatDate(b.updateTime)}</td>
                     <td class="tab-admin ${isAdmin?'':'hidden'}">
                         <button class="btn btn-sm btn-blue" onclick="editBook(${b.id})">编辑</button>
                         <button class="btn btn-sm btn-red" onclick="deleteBook(${b.id}, '${escapeHtml(b.title)}')">删除</button>
                     </td>
                 </tr>
             `).join('');
+            } catch (e) {
+                // 捕获网络异常或 JSON 解析失败，避免静默中断导致"图书不显示"
+                console.error('loadBooks 异常:', e);
+                tbody.innerHTML = '<tr><td colspan="9" class="empty">图书加载异常，请刷新重试</td></tr>';
+            }
         }
 
         function clearBookSearch() {
@@ -624,7 +673,7 @@
             const readers = await resp.json();
             const tbody = document.getElementById('readerTableBody');
             if (readers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无读者</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="empty">暂无读者</td></tr>';
                 return;
             }
             tbody.innerHTML = readers.map(r => `
@@ -636,6 +685,7 @@
                     <td>${escapeHtml(r.department || '-')}</td>
                     <td>${escapeHtml(r.phone || '-')}</td>
                     <td>${r.currentBorrowCount}</td>
+                    <td>${formatDate(r.updateTime)}</td>
                     <td>
                         <button class="btn btn-sm btn-blue" onclick="editReader(${r.id})">编辑</button>
                         <button class="btn btn-sm btn-red" onclick="deleteReader(${r.id}, '${escapeHtml(r.name)}')">删除</button>
@@ -722,7 +772,7 @@
             const records = await resp.json();
             const tbody = document.getElementById('borrowTableBody');
             if (records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" class="empty">暂无借阅记录</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" class="empty">暂无借阅记录</td></tr>';
                 return;
             }
             tbody.innerHTML = records.map(r => {
@@ -745,6 +795,7 @@
                         <td>${statusTag}</td>
                         <td>${r.renewCount}</td>
                         <td>${r.fine > 0 ? r.fine.toFixed(1) : '-'}</td>
+                        <td>${formatDate(r.updateTime)}</td>
                         <td>
                             ${canReturn ? `<button class="btn btn-sm btn-green" onclick="doReturn(${r.id})">还书</button>` : ''}
                             ${canRenew ? `<button class="btn btn-sm btn-blue" onclick="doRenew(${r.id})">续借</button>` : ''}
@@ -852,6 +903,10 @@
                 showToast('登录成功', 'success');
                 closeModal('adminLoginModal');
                 showAdminPanels();
+                // 登录后 isAdmin 已变为 true，需重新渲染表格以正确显示操作列（编辑/删除按钮）
+                // 同时清空搜索框，避免残留关键字导致登录后显示空结果
+                document.getElementById('bookSearchInput').value = '';
+                loadBooks();
             } else {
                 showToast('用户名或密码错误', 'error');
             }
@@ -879,8 +934,9 @@
         }
 
         function showAdminPanels() {
+            // 仅移除 hidden 类以显示操作列（th 和 td 均已包含 tab-admin 类）
+            // 不调用 loadBooks()，避免搜索框关键字导致图书列表被重置为空结果
             document.querySelectorAll('.tab-admin').forEach(el => el.classList.remove('hidden'));
-            loadBooks(); // 重新渲染以显示操作列
         }
 
         function hideAdminPanels() {
@@ -925,6 +981,8 @@
         }
 
         // ===== 启动时检查登录态并加载数据 =====
+        // showAdminPanels() 仅切换操作列可见性，不再调用 loadBooks()，
+        // 因此两个分支均需显式调用 loadBooks() 加载图书数据。
         async function init() {
             const resp = await fetch('/api/auth/me');
             if (resp.ok) {
@@ -932,9 +990,12 @@
                 isAdmin = true;
                 updateHeader(data.nickname);
                 showAdminPanels();
+                loadStats();
+                loadBooks();
+            } else {
+                loadStats();
+                loadBooks();
             }
-            loadStats();
-            loadBooks();
         }
         init();
     </script>

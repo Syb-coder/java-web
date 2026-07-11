@@ -27,6 +27,7 @@
   body{
     font-family:-apple-system,"Segoe UI","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
     background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;
+    display:flex;flex-direction:column;
   }
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
@@ -99,7 +100,7 @@
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
   /* ===== 主内容 ===== */
-  main{max-width:1200px;margin:0 auto;padding:16px}
+  main{max-width:1200px;margin:0 auto;padding:16px;width:100%;flex:1}
   .page{display:none}
   .page.active{display:block}
 
@@ -268,6 +269,10 @@
   @media (max-width:380px){
     .product-grid{grid-template-columns:1fr}
   }
+  .site-footer{background:var(--primary-dark);color:rgba(255,255,255,.75);text-align:center;padding:20px 16px;font-size:13px;margin-top:40px}
+  .site-footer a{color:rgba(255,255,255,.9);text-decoration:none;margin:0 8px}
+  .site-footer a:hover{text-decoration:underline}
+  .site-footer .sep{color:rgba(255,255,255,.3);margin:0 4px}
 </style>
 </head>
 <body>
@@ -791,7 +796,8 @@ function renderProductDetail(p) {
         '<div class="detail-row"><span class="label">新旧程度</span><span>' + esc(p.conditionLevel || "未标注") + "</span></div>" +
         '<div class="detail-row"><span class="label">分类</span><span>' + esc(p.categoryName || "未分类") + "</span></div>" +
         '<div class="detail-row"><span class="label">卖家</span><span>' + esc(p.sellerName || "匿名") + "</span></div>" +
-        '<div class="detail-row"><span class="label">发布时间</span><span>' + esc(p.createdAt || "-") + "</span></div>" +
+         '<div class="detail-row"><span class="label">发布时间</span><span>' + esc(p.createdAt || "-") + "</span></div>" +
+         '<div class="detail-row"><span class="label">最后修改</span><span>' + esc(p.updateTime || "-") + "</span></div>" +
         '<div class="detail-row"><span class="label">点赞 / 收藏</span><span>❤ ' + (p.likeCount || 0) + " / ⭐ " + (p.favoriteCount || 0) + "</span></div>" +
         (p.description ? '<div class="detail-desc">' + esc(p.description) + "</div>" : "") +
         '<div class="detail-actions">' +
@@ -994,7 +1000,8 @@ async function loadMyProducts() {
             '<div class="product-img" style="width:64px;height:64px;flex-shrink:0;border-radius:8px">' + imgHtml + soldTag + "</div>" +
             '<div><div style="font-weight:600">' + esc(p.title) + "</div>" +
             '<div style="font-size:12px;color:var(--muted)">' + priceFmt(p.price) + " · " + esc(p.conditionLevel || "") + " · " + esc(p.categoryName || "") + "</div>" +
-            '<div style="font-size:12px;color:var(--muted)">' + esc(p.createdAt || "") + "</div></div>" +
+             '<div style="font-size:12px;color:var(--muted)">' + esc(p.createdAt || "") + "</div>" +
+             '<div style="font-size:12px;color:var(--muted)">最后修改：' + esc(p.updateTime || "") + "</div></div>" +
           "</div>" +
           '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
             '<span class="order-status audit-' + audit + '">' + (AUDIT_TEXT[audit] || audit) + "</span>" +
@@ -1066,7 +1073,7 @@ async function loadOrders() {
         '<div style="font-size:12px;color:var(--muted)">卖家：' + esc(o.sellerName || "-") + " · 买家：" + esc(o.buyerName || "-") + "</div>" +
         (o.buyerRemark ? '<div style="font-size:12px;color:var(--muted)">留言：' + esc(o.buyerRemark) + "</div>" : "") + "</div>" +
         '<div style="color:var(--danger);font-weight:700">' + priceFmt(o.price) + "</div></div>" +
-        '<div class="row"><span style="font-size:12px;color:var(--muted)">下单：' + esc(o.createdAt || "-") + (o.completedAt ? " · 完成：" + esc(o.completedAt) : "") + "</span>" +
+         '<div class="row"><span style="font-size:12px;color:var(--muted)">下单：' + esc(o.createdAt || "-") + (o.completedAt ? " · 完成：" + esc(o.completedAt) : "") + ' | 最后修改：' + esc(o.updateTime || "-") + "</span>" +
         '<div style="display:flex;gap:6px">' + actions.join(" ") + "</div></div>" +
       "</div>";
     }).join("");
@@ -1348,7 +1355,7 @@ async function loadAnnouncementsPage() {
       '<div class="notice-card ' + (a.pinned ? "pinned" : "") + '">' +
         '<div class="notice-title">' + (a.pinned ? '<span class="pin-tag">置顶</span>' : "") + esc(a.title) + "</div>" +
         '<div class="notice-content">' + esc(a.content) + "</div>" +
-        '<div class="notice-time">' + esc(a.createdAt || "") + "</div>" +
+         '<div class="notice-time">' + esc(a.createdAt || "") + " | 最后修改：" + esc(a.updateTime || "") + "</div>" +
       "</div>"
     ).join("");
   } catch (e) {
@@ -1389,7 +1396,7 @@ async function loadMyFeedbacks() {
         '<div class="notice-title">' + esc(f.title) + ' <span class="order-status ' + (f.handled ? "st-COMPLETED" : "st-PENDING") + '">' + (f.handled ? "已处理" : "待处理") + "</span></div>" +
         '<div class="notice-content">' + esc(f.content) + "</div>" +
         (f.reply ? '<div style="margin-top:8px;padding:8px;background:#eef6f6;border-radius:6px;font-size:13px"><b>管理员回复：</b>' + esc(f.reply) + "</div>" : "") +
-        '<div class="notice-time">' + esc(f.createdAt || "") + "</div>" +
+         '<div class="notice-time">' + esc(f.createdAt || "") + " | 最后修改：" + esc(f.updateTime || "") + "</div>" +
       "</div>"
     ).join("");
   } catch (e) {
@@ -1600,5 +1607,12 @@ document.addEventListener("keydown", (e) => {
   navigate("home");
 })();
 </script>
+<footer class="site-footer">
+  <div>
+    <a href="/">首页</a><span class="sep">|</span>
+    <a href="admin.html">管理后台</a>
+  </div>
+  <div>© 2026 校园闲置交易平台 · Java Web 课程设计</div>
+</footer>
 </body>
 </html>

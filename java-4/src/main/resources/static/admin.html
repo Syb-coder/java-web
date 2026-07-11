@@ -730,10 +730,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .content-area {
-                padding: 16px;
-            }
+        .content-area {
+            padding: 24px;
+            flex: 1;
         }
+        }
+        .site-footer{background:var(--sidebar-bg);color:rgba(255,255,255,.5);text-align:center;padding:14px 24px;font-size:12px;margin-top:24px;margin-left:220px}
+        @media(max-width:768px){.site-footer{margin-left:0}}
     </style>
 </head>
 <body>
@@ -1004,6 +1007,7 @@
             </section>
 
         </main>
+        <footer class="site-footer">© 2026 校园图书借阅管理系统 · Java Web 课程设计 · 后台管理</footer>
     </div>
 </div>
 
@@ -1058,6 +1062,9 @@
                 <div class="form-group">
                     <label for="bookCoverImage">封面图片URL</label>
                     <input type="text" id="bookCoverImage" placeholder="https://...">
+                    <div id="coverPreview" style="margin-top:8px;max-width:120px;display:none">
+                        <img id="coverPreviewImg" src="" alt="封面预览" style="width:100%;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15)">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="bookDescription">简介</label>
@@ -1569,6 +1576,7 @@
                 document.getElementById('bookLocation').value = book.location || '';
                 document.getElementById('bookCoverImage').value = book.coverImage || '';
                 document.getElementById('bookDescription').value = book.description || '';
+                updateCoverPreview();
             } catch (err) {
                 showToast('加载图书详情失败：' + err.message, 'error');
                 return;
@@ -1655,6 +1663,29 @@
             btn.textContent = '保存';
         }
     }
+
+    /**
+     * 更新封面预览图片
+     */
+    function updateCoverPreview() {
+        const url = document.getElementById('bookCoverImage').value.trim();
+        const preview = document.getElementById('coverPreview');
+        const img = document.getElementById('coverPreviewImg');
+        if (url) {
+            img.src = url;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    // 封面 URL 输入变化时更新预览
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('bookCoverImage');
+        if (input) {
+            input.addEventListener('input', updateCoverPreview);
+        }
+    });
 
     /**
      * 编辑图书（供 onclick 调用）

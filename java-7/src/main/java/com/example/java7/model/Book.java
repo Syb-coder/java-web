@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated; // 引入 JPA 枚举注解，标记枚举
 import jakarta.persistence.GeneratedValue; // 引入 JPA 主键生成策略注解
 import jakarta.persistence.GenerationType; // 引入主键生成策略枚举
 import jakarta.persistence.Id; // 引入 JPA 主键注解
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table; // 引入 JPA 表映射注解
 import jakarta.persistence.Version; // 引入 JPA 乐观锁版本字段注解
 
@@ -80,6 +81,8 @@ public class Book { // 定义公共实体类 Book
     /** 记录创建时间，由服务层填充，不可更新 */
     @Column(nullable = false, updatable = false) // 映射列非空且不可更新（updatable=false）
     private LocalDateTime createTime; // 创建时间字段，由服务层在持久化前填充
+
+    private LocalDateTime updateTime;
 
     /** 乐观锁版本号，由 JPA 自动维护，防止并发修改 */
     @Version // 声明乐观锁版本字段，Hibernate 在更新时自动校验并递增该值
@@ -334,6 +337,19 @@ public class Book { // 定义公共实体类 Book
      */
     public void setCreateTime(LocalDateTime createTime) { // 创建时间的 setter 方法，由服务层填充
         this.createTime = createTime; // 赋值创建时间
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 
     /**

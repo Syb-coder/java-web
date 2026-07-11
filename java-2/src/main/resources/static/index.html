@@ -31,6 +31,9 @@
             background: var(--bg);
             color: var(--text-main);
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         a { color: var(--primary); text-decoration: none; }
         a:hover { text-decoration: underline; }
@@ -122,6 +125,8 @@
             max-width: 1100px;
             margin: 32px auto;
             padding: 0 24px;
+            width: 100%;
+            flex: 1;
         }
 
         /* ===== 首页欢迎区 ===== */
@@ -578,6 +583,22 @@
             font-size: 14px;
         }
         .hidden { display: none !important; }
+        /* ===== 页脚 ===== */
+        .site-footer {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+            padding: 20px 16px;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+        .site-footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        .site-footer a:hover { text-decoration: underline; }
+        .site-footer .sep { color: rgba(255,255,255,0.3); margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -701,6 +722,14 @@
 
     <!-- ===== Toast 容器 ===== -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <footer class="site-footer">
+        <div>
+            <a href="/">首页</a><span class="sep">|</span>
+            <a href="admin.html">管理后台</a>
+        </div>
+        <div>© 2026 网络安全知识学习平台 · Java Web 课程设计</div>
+    </footer>
 
     <script>
         // ===== 全局状态 =====
@@ -953,6 +982,7 @@
                 <div class="meta">
                     <span>分类：${escapeHtml(article.categoryName || '未分类')}</span>
                     <span>发布于 ${formatTime(article.publishTime)}</span>
+                    <span>最后修改 ${formatTime(article.updateTime)}</span>
                     <span>阅读 ${article.viewCount || 0}</span>
                 </div>
                 <div class="content">${renderMarkdown(article.content)}</div>

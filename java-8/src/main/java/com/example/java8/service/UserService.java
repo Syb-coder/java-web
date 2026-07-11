@@ -107,6 +107,6 @@ public class UserService {
      */
     public UserResponse toResponse(User u) {
         return new UserResponse(u.getId(), u.getUsername(), u.getNickname(),
-                u.getPhone(), u.getCreateTime(), u.getLastLoginAt());
+                u.getPhone(), u.getCreateTime(), u.getUpdateTime(), u.getLastLoginAt());
     }
 }

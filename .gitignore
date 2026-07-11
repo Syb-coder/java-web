@@ -20,3 +20,11 @@ Thumbs.db
 
 # Node.js 依赖
 node_modules/
+
+# H2 数据库文件（文件模式产生的持久化数据，不入库）
+*.mv.db
+*.trace.db
+*.lock.db
+
+# TRAE 临时分享包
+.trae-html-share-packages/

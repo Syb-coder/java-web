@@ -39,6 +39,7 @@ public record ArticleResponse(
         boolean published,  // 发布状态：true 已发布，false 草稿
         String publishTime, // 发布时间字符串
         String createTime,  // 创建时间字符串
+        String updateTime,  // 最后修改时间字符串
         boolean favorited,  // 当前登录用户是否已收藏该文章，未登录时为 false
         boolean liked       // 当前登录用户是否已点赞该文章，未登录时为 false
 ) {
@@ -67,6 +68,7 @@ public record ArticleResponse(
                 article.isPublished(),
                 article.getPublishTime() != null ? article.getPublishTime().toString() : null,
                 article.getCreateTime() != null ? article.getCreateTime().toString() : null,
+                article.getUpdateTime() != null ? article.getUpdateTime().toString() : null,
                 favorited,
                 liked
             );

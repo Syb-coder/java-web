@@ -37,6 +37,9 @@
             color: var(--text);
             font-size: 14px;
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         button { cursor: pointer; border: none; background: none; font-family: inherit; font-size: inherit; }
@@ -111,7 +114,7 @@
         .login-card .hint { text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
 
         /* ===== 主布局 ===== */
-        .layout-wrap { display: flex; flex-direction: column; min-height: 100vh; }
+        .layout-wrap { display: flex; flex-direction: column; flex: 1; }
         .topbar {
             height: 56px;
             background: var(--surface);
@@ -255,6 +258,18 @@
         .toast.error { border-left: 3px solid var(--danger); }
         .toast.info { border-left: 3px solid var(--primary); }
         @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* ===== 页脚 ===== */
+        .site-footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+            padding: 16px 24px;
+            font-size: 12px;
+            margin-top: 24px;
+            border-radius: var(--radius);
+        }
+        .site-footer a { color: rgba(255,255,255,0.9); text-decoration: none; }
+        .site-footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -325,6 +340,7 @@
                                     <th>阅读量</th>
                                     <th>点赞</th>
                                     <th>收藏</th>
+                                    <th>最后修改</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -350,6 +366,7 @@
                                     <th>描述</th>
                                     <th>排序</th>
                                     <th>文章数</th>
+                                    <th>最后修改</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -379,6 +396,7 @@
                                     <th>题干</th>
                                     <th>答案</th>
                                     <th>分值</th>
+                                    <th>最后修改</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -401,6 +419,7 @@
                                     <th>状态</th>
                                     <th>注册时间</th>
                                     <th>最近登录</th>
+                                    <th>最后修改</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -441,6 +460,8 @@
 
     <!-- ===== Toast 容器 ===== -->
     <div class="toast-wrap" id="toastWrap"></div>
+
+    <footer class="site-footer">© 2026 网络安全知识学习平台 · Java Web 课程设计 · 后台管理</footer>
 
     <script>
         // ===== 全局状态 =====
@@ -672,7 +693,7 @@
             if (!list) return;
             const tb = document.getElementById('categoryTable');
             if (list.length === 0) {
-                tb.innerHTML = '<tr class="empty-row"><td colspan="6">暂无分类</td></tr>';
+                tb.innerHTML = '<tr class="empty-row"><td colspan="7">暂无分类</td></tr>';
                 return;
             }
             tb.innerHTML = list.map(c => `
@@ -682,6 +703,7 @@
                     <td>${escapeHtml(c.description || '-')}</td>
                     <td>${c.sortOrder}</td>
                     <td>${c.articleCount != null ? c.articleCount : '-'}</td>
+                    <td>${formatTime(c.updateTime)}</td>
                     <td class="table-actions">
                         <button class="btn btn-ghost btn-sm" onclick="openCategoryModal(${c.id})">编辑</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteCategory(${c.id})">删除</button>
@@ -753,7 +775,7 @@
             const tb = document.getElementById('articleTable');
             const list = data.content || [];
             if (list.length === 0) {
-                tb.innerHTML = '<tr class="empty-row"><td colspan="8">暂无文章</td></tr>';
+                tb.innerHTML = '<tr class="empty-row"><td colspan="9">暂无文章</td></tr>';
             } else {
                 tb.innerHTML = list.map(a => `
                     <tr>
@@ -764,6 +786,7 @@
                         <td>${a.viewCount}</td>
                         <td>${a.likeCount}</td>
                         <td>${a.favoriteCount}</td>
+                        <td>${formatTime(a.updateTime)}</td>
                         <td class="table-actions">
                             <button class="btn btn-ghost btn-sm" onclick="openArticleModal(${a.id})">编辑</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteArticle(${a.id})">删除</button>
@@ -873,7 +896,7 @@
             if (!list) return;
             const tb = document.getElementById('questionTable');
             if (list.length === 0) {
-                tb.innerHTML = '<tr class="empty-row"><td colspan="6">暂无题目</td></tr>';
+                tb.innerHTML = '<tr class="empty-row"><td colspan="7">暂无题目</td></tr>';
                 return;
             }
             tb.innerHTML = list.map(q => `
@@ -883,6 +906,7 @@
                     <td class="cell-ellipsis" title="${escapeHtml(q.stem)}">${escapeHtml(truncate(q.stem, 50))}</td>
                     <td>${'ABCD'[q.answerIndex]}</td>
                     <td>${q.score}</td>
+                    <td>${formatTime(q.updateTime)}</td>
                     <td class="table-actions">
                         <button class="btn btn-ghost btn-sm" onclick="openQuestionModal(${q.id})">编辑</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${q.id})">删除</button>
@@ -976,7 +1000,7 @@
             if (!list) return;
             const tb = document.getElementById('userTable');
             if (list.length === 0) {
-                tb.innerHTML = '<tr class="empty-row"><td colspan="7">暂无用户</td></tr>';
+                tb.innerHTML = '<tr class="empty-row"><td colspan="8">暂无用户</td></tr>';
                 return;
             }
             tb.innerHTML = list.map(u => `
@@ -987,6 +1011,7 @@
                     <td>${u.enabled ? '<span class="tag tag-success">启用</span>' : '<span class="tag tag-danger">禁用</span>'}</td>
                     <td>${formatTime(u.createTime)}</td>
                     <td>${formatTime(u.lastLoginAt)}</td>
+                    <td>${formatTime(u.updateTime)}</td>
                     <td class="table-actions">
                         ${u.enabled
                             ? `<button class="btn btn-danger btn-sm" onclick="toggleUser(${u.id}, false)">禁用</button>`

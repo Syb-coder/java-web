@@ -18,6 +18,7 @@ import java.time.LocalDateTime; // 导入日期时间类型，用于表示创建
  * @param author    作者
  * @param viewCount 阅读量
  * @param createdAt 创建时间
+ * @param updateTime 更新时间
  */
 public record KnowledgeResponse( // Record 关键字声明不可变 DTO，自动生成构造器与访问方法
         Long id, // 主键 ID，用于前端定位单条文章详情
@@ -27,7 +28,8 @@ public record KnowledgeResponse( // Record 关键字声明不可变 DTO，自动
         String content, // 文章正文
         String author, // 作者
         Integer viewCount, // 阅读量，服务端统计的浏览次数
-        LocalDateTime createdAt // 创建时间，前端展示时间标签
+        LocalDateTime createdAt, // 创建时间，前端展示时间标签
+        LocalDateTime updateTime // 更新时间，用于判断内容是否修改
 ) {
 
     /**
@@ -47,7 +49,8 @@ public record KnowledgeResponse( // Record 关键字声明不可变 DTO，自动
                 k.getContent(), // 提取正文
                 k.getAuthor(), // 提取作者
                 k.getViewCount(), // 提取阅读量
-                k.getCreatedAt() // 提取创建时间
+                k.getCreatedAt(), // 提取创建时间
+                k.getUpdateTime() // 提取更新时间
         );
     }
 }

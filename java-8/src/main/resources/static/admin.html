@@ -327,7 +327,7 @@
 </div>
 
 <!-- ===== 主界面 ===== -->
-<div id="mainPage" style="display:none;">
+<div id="mainPage" style="display:none;flex-direction:column;">
     <div class="header">
         <h1>衣匠后台 <small>BESPOKE ADMIN</small></h1>
         <div class="user-area">
@@ -337,7 +337,7 @@
         </div>
     </div>
 
-    <div class="layout">
+    <div class="layout" style="flex:1;">
         <div class="sidebar">
             <div class="sidebar-item active" data-tab="dashboard" onclick="switchTab('dashboard')">仪表盘</div>
             <div class="sidebar-item" data-tab="fabric" onclick="switchTab('fabric')">面料管理</div>
@@ -375,11 +375,11 @@
                             <thead>
                             <tr>
                                 <th>订单号</th><th>用户</th><th>款式</th><th>面料</th>
-                                <th>总价</th><th>状态</th><th>下单时间</th>
+                                <th>总价</th><th>状态</th><th>下单时间</th><th>最后修改</th>
                             </tr>
                             </thead>
                             <tbody id="recentOrders">
-                            <tr><td colspan="7" class="empty-tip">加载中...</td></tr>
+                            <tr><td colspan="8" class="empty-tip">加载中...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -439,11 +439,11 @@
                             <thead>
                             <tr>
                                 <th>订单号</th><th>用户</th><th>款式</th><th>面料</th>
-                                <th>量体</th><th>总价</th><th>状态</th><th>下单时间</th><th>操作</th>
+                                <th>量体</th><th>总价</th><th>状态</th><th>下单时间</th><th>最后修改</th><th>操作</th>
                             </tr>
                             </thead>
                             <tbody id="orderTable">
-                            <tr><td colspan="9" class="empty-tip">加载中...</td></tr>
+                            <tr><td colspan="10" class="empty-tip">加载中...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -459,11 +459,11 @@
                             <thead>
                             <tr>
                                 <th>ID</th><th>用户名</th><th>昵称</th><th>手机</th>
-                                <th>注册时间</th><th>最近登录</th>
+                                <th>注册时间</th><th>最后修改</th><th>最近登录</th>
                             </tr>
                             </thead>
                             <tbody id="userTable">
-                            <tr><td colspan="6" class="empty-tip">加载中...</td></tr>
+                            <tr><td colspan="7" class="empty-tip">加载中...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -472,6 +472,7 @@
 
         </div>
     </div>
+    <footer style="text-align:center;padding:16px 24px;color:rgba(245,230,200,.5);font-size:12px;background:#1a1a1a;">© 2026 衣匠 · 服装私人定制 · Java Web 课程设计 · 后台管理</footer>
 </div>
 
 <!-- ===== 面料弹窗 ===== -->
@@ -711,7 +712,7 @@
             const recent = orders.slice(0, 5);
             const tbody = document.getElementById('recentOrders');
             if (!recent.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-tip">暂无订单</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-tip">暂无订单</td></tr>';
             } else {
                 tbody.innerHTML = recent.map(o => `
                     <tr>
@@ -722,6 +723,7 @@
                         <td>¥${o.totalPrice}</td>
                         <td><span class="status-${o.status}">${STATUS_MAP[o.status]}</span></td>
                         <td>${formatTime(o.createTime)}</td>
+                        <td>${formatTime(o.updateTime)}</td>
                     </tr>
                 `).join('');
             }
@@ -884,7 +886,7 @@
         const list = await api('/api/admin/orders');
         const tbody = document.getElementById('orderTable');
         if (!list.length) {
-            tbody.innerHTML = '<tr><td colspan="9" class="empty-tip">暂无订单</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" class="empty-tip">暂无订单</td></tr>';
             return;
         }
         tbody.innerHTML = list.map(o => `
@@ -897,6 +899,7 @@
                 <td>¥${o.totalPrice}</td>
                 <td><span class="status-${o.status}">${STATUS_MAP[o.status]}</span></td>
                 <td>${formatTime(o.createTime)}</td>
+                <td>${formatTime(o.updateTime)}</td>
                 <td>
                     <button class="btn btn-sm" onclick="viewOrder(${o.id})">详情</button>
                     ${o.status !== 'COMPLETED' ?
@@ -923,6 +926,7 @@
                 <tr><th>状态</th><td><span class="status-${o.status}">${STATUS_MAP[o.status]}</span></td></tr>
                 <tr><th>备注</th><td>${o.remark || '-'}</td></tr>
                 <tr><th>下单时间</th><td>${formatTime(o.createTime)}</td></tr>
+                <tr><th>最后修改</th><td>${formatTime(o.updateTime)}</td></tr>
                 <tr><th>进度</th><td>${currentIdx + 1} / ${STATUS_FLOW.length}</td></tr>
             </table>
         `;
@@ -943,7 +947,7 @@
         const list = await api('/api/admin/users');
         const tbody = document.getElementById('userTable');
         if (!list.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-tip">暂无用户</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-tip">暂无用户</td></tr>';
             return;
         }
         tbody.innerHTML = list.map(u => `
@@ -953,6 +957,7 @@
                 <td>${u.nickname || '-'}</td>
                 <td>${u.phone || '-'}</td>
                 <td>${formatTime(u.createTime)}</td>
+                <td>${formatTime(u.updateTime)}</td>
                 <td>${formatTime(u.lastLoginAt)}</td>
             </tr>
         `).join('');

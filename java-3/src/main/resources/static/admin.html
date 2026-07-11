@@ -31,6 +31,7 @@
   body{
     font-family:-apple-system,"Segoe UI","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
     background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;
+    display:flex;flex-direction:column;
   }
   a{color:inherit;text-decoration:none}
   button{font-family:inherit;cursor:pointer;border:none;background:none}
@@ -49,7 +50,7 @@
   .login-sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px}
 
   /* ===== 后台主框架 ===== */
-  .layout{display:flex;min-height:100vh}
+  .layout{display:flex;flex:1}
   .sidebar{
     width:220px;background:var(--sidebar-bg);color:#cbd5e1;flex-shrink:0;
     display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:40;
@@ -235,6 +236,7 @@
   }
   .menu-toggle{display:none;width:36px;height:36px;border-radius:8px;align-items:center;justify-content:center;font-size:18px;background:var(--bg)}
   .menu-toggle:hover{background:var(--border)}
+  .site-footer{background:var(--sidebar-bg);color:rgba(255,255,255,.5);text-align:center;padding:14px 24px;font-size:12px;margin-top:24px}
 </style>
 </head>
 <body>
@@ -324,9 +326,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>ID</th><th>学号</th><th>用户名</th><th>昵称</th><th>电话</th><th>状态</th><th>注册时间</th><th>操作</th>
+                <th>ID</th><th>学号</th><th>用户名</th><th>昵称</th><th>电话</th><th>状态</th><th>注册时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="usersTbody"><tr><td colspan="8" class="empty">加载中...</td></tr></tbody>
+              <tbody id="usersTbody"><tr><td colspan="9" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -347,9 +349,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>ID</th><th>标题</th><th>价格</th><th>分类</th><th>卖家</th><th>审核状态</th><th>发布时间</th><th>操作</th>
+                <th>ID</th><th>标题</th><th>价格</th><th>分类</th><th>卖家</th><th>审核状态</th><th>发布时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="productsTbody"><tr><td colspan="8" class="empty">加载中...</td></tr></tbody>
+              <tbody id="productsTbody"><tr><td colspan="9" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -362,9 +364,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>订单号</th><th>商品</th><th>买家</th><th>卖家</th><th>价格</th><th>状态</th><th>时间</th><th>操作</th>
+                <th>订单号</th><th>商品</th><th>买家</th><th>卖家</th><th>价格</th><th>状态</th><th>时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="ordersTbody"><tr><td colspan="8" class="empty">加载中...</td></tr></tbody>
+              <tbody id="ordersTbody"><tr><td colspan="9" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -380,9 +382,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>ID</th><th>标题</th><th>置顶</th><th>发布时间</th><th>操作</th>
+                <th>ID</th><th>标题</th><th>置顶</th><th>发布时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="announcementsTbody"><tr><td colspan="5" class="empty">加载中...</td></tr></tbody>
+              <tbody id="announcementsTbody"><tr><td colspan="6" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -398,9 +400,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>ID</th><th>名称</th><th>图标</th><th>排序</th><th>操作</th>
+                <th>ID</th><th>名称</th><th>图标</th><th>排序</th><th>创建时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="categoriesTbody"><tr><td colspan="5" class="empty">加载中...</td></tr></tbody>
+              <tbody id="categoriesTbody"><tr><td colspan="7" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -413,9 +415,9 @@
           <div class="table-wrap">
             <table>
               <thead><tr>
-                <th>ID</th><th>标题</th><th>内容</th><th>提交者</th><th>状态</th><th>提交时间</th><th>操作</th>
+                <th>ID</th><th>标题</th><th>内容</th><th>提交者</th><th>状态</th><th>提交时间</th><th>最后修改</th><th>操作</th>
               </tr></thead>
-              <tbody id="feedbacksTbody"><tr><td colspan="7" class="empty">加载中...</td></tr></tbody>
+              <tbody id="feedbacksTbody"><tr><td colspan="8" class="empty">加载中...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -764,12 +766,12 @@ async function loadMonthlyOrders() {
 /** 加载用户列表（GET /api/admin/users?keyword=） */
 async function loadUsers(keyword) {
   const tbody = document.getElementById("usersTbody");
-  tbody.innerHTML = '<tr><td colspan="8" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" class="empty">加载中...</td></tr>';
   try {
     const url = keyword ? "/api/admin/users?keyword=" + encodeURIComponent(keyword) : "/api/admin/users";
     const list = await api(url);
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty"><div class="empty-icon">👤</div>暂无用户</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty"><div class="empty-icon">👤</div>暂无用户</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(u => {
@@ -788,11 +790,12 @@ async function loadUsers(keyword) {
         "<td>" + esc(u.phone || "-") + "</td>" +
         "<td>" + statusTag + "</td>" +
         "<td>" + timeFmt(u.createdAt) + "</td>" +
+        "<td>" + timeFmt(u.updateTime) + "</td>" +
         '<td class="actions">' + actionBtn + "</td>" +
       "</tr>";
     }).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -834,7 +837,7 @@ function syncProductFilterTabs(status) {
  */
 async function loadProducts(status) {
   const tbody = document.getElementById("productsTbody");
-  tbody.innerHTML = '<tr><td colspan="8" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" class="empty">加载中...</td></tr>';
   try {
     let list;
     // PENDING 走服务端筛选，其余取全量后客户端过滤
@@ -848,7 +851,7 @@ async function loadProducts(status) {
       }
     }
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty"><div class="empty-icon">📦</div>暂无商品</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty"><div class="empty-icon">📦</div>暂无商品</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(p => {
@@ -872,11 +875,12 @@ async function loadProducts(status) {
         "<td>" + esc(p.sellerName || "-") + "</td>" +
         "<td>" + auditTag + "</td>" +
         "<td>" + timeFmt(p.createdAt) + "</td>" +
+        "<td>" + timeFmt(p.updateTime) + "</td>" +
         '<td class="actions">' + actions + "</td>" +
       "</tr>";
     }).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -913,11 +917,11 @@ async function takeDownProduct(id) {
 /** 加载订单列表（GET /api/admin/orders） */
 async function loadOrders() {
   const tbody = document.getElementById("ordersTbody");
-  tbody.innerHTML = '<tr><td colspan="8" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" class="empty">加载中...</td></tr>';
   try {
     const list = await api("/api/admin/orders");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty"><div class="empty-icon">🧾</div>暂无订单</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty"><div class="empty-icon">🧾</div>暂无订单</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(o => {
@@ -931,11 +935,12 @@ async function loadOrders() {
         "<td>" + priceFmt(o.price) + "</td>" +
         "<td>" + statusTag + "</td>" +
         "<td>" + timeFmt(o.createdAt) + "</td>" +
+        "<td>" + timeFmt(o.updateTime) + "</td>" +
         '<td class="actions"><button class="btn btn-sm btn-outline" data-action="dispute-order" data-id="' + o.id + '">纠纷处理</button></td>' +
       "</tr>";
     }).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -968,11 +973,11 @@ async function doDispute(orderId) {
 /** 加载公告列表（GET /api/announcements） */
 async function loadAnnouncements() {
   const tbody = document.getElementById("announcementsTbody");
-  tbody.innerHTML = '<tr><td colspan="5" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" class="empty">加载中...</td></tr>';
   try {
     const list = await api("/api/announcements");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty"><div class="empty-icon">📢</div>暂无公告</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="empty"><div class="empty-icon">📢</div>暂无公告</td></tr>';
       return;
     }
     // 置顶在前
@@ -983,6 +988,7 @@ async function loadAnnouncements() {
         "<td>" + esc(a.title) + "</td>" +
         "<td>" + (a.pinned ? '<span class="tag tag-pinned">置顶</span>' : '<span class="tag tag-CANCELLED">否</span>') + "</td>" +
         "<td>" + timeFmt(a.createdAt) + "</td>" +
+        "<td>" + timeFmt(a.updateTime) + "</td>" +
         '<td class="actions">' +
           '<button class="btn btn-sm btn-outline" data-action="open-announcement-modal" data-id="' + a.id + '">编辑</button>' +
           '<button class="btn btn-sm btn-danger" data-action="delete-announcement" data-id="' + a.id + '">删除</button>' +
@@ -990,7 +996,7 @@ async function loadAnnouncements() {
       "</tr>"
     ).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -1058,11 +1064,11 @@ async function deleteAnnouncement(id) {
 /** 加载分类列表（GET /api/products/categories） */
 async function loadCategories() {
   const tbody = document.getElementById("categoriesTbody");
-  tbody.innerHTML = '<tr><td colspan="5" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" class="empty">加载中...</td></tr>';
   try {
     const list = await api("/api/products/categories");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty"><div class="empty-icon">🏷️</div>暂无分类</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-icon">🏷️</div>暂无分类</td></tr>';
       return;
     }
     // 按 sortOrder 升序展示
@@ -1073,6 +1079,8 @@ async function loadCategories() {
         "<td>" + esc(c.name) + "</td>" +
         "<td>" + esc(c.icon || "-") + "</td>" +
         "<td>" + esc(c.sortOrder !== null && c.sortOrder !== undefined ? c.sortOrder : "-") + "</td>" +
+        "<td>" + timeFmt(c.createdAt) + "</td>" +
+        "<td>" + timeFmt(c.updateTime) + "</td>" +
         '<td class="actions">' +
           '<button class="btn btn-sm btn-outline" data-action="open-category-modal" data-id="' + c.id + '">编辑</button>' +
           '<button class="btn btn-sm btn-danger" data-action="delete-category" data-id="' + c.id + '">删除</button>' +
@@ -1080,7 +1088,7 @@ async function loadCategories() {
       "</tr>"
     ).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -1148,11 +1156,11 @@ async function deleteCategory(id) {
 /** 加载反馈列表（GET /api/admin/feedbacks） */
 async function loadFeedbacks() {
   const tbody = document.getElementById("feedbacksTbody");
-  tbody.innerHTML = '<tr><td colspan="7" class="empty">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8" class="empty">加载中...</td></tr>';
   try {
     const list = await api("/api/admin/feedbacks");
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-icon">💬</div>暂无反馈</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="empty"><div class="empty-icon">💬</div>暂无反馈</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(f => {
@@ -1170,11 +1178,12 @@ async function loadFeedbacks() {
         "<td>" + esc(f.username || "-") + "</td>" +
         "<td>" + statusTag + "</td>" +
         "<td>" + timeFmt(f.createdAt) + "</td>" +
+        "<td>" + timeFmt(f.updateTime) + "</td>" +
         '<td class="actions">' + replyBtn + "</td>" +
       "</tr>";
     }).join("");
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">' + esc(e.message) + "</td></tr>";
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + esc(e.message) + "</td></tr>";
   }
 }
 
@@ -1376,5 +1385,6 @@ document.addEventListener("keydown", (e) => {
   checkLogin();
 })();
 </script>
+<footer class="site-footer">© 2026 校园闲置交易平台 · Java Web 课程设计 · 后台管理</footer>
 </body>
 </html>

@@ -11,5 +11,5 @@ public record MeasurementResponse(Long id, String name, Double height, Double we
                                   Double hipCircumference, Double clothesLength,
                                   Double sleeveLength, Double pantsLength,
                                   Double thighCircumference, String remark,
-                                  LocalDateTime createTime) {
+                                  LocalDateTime createTime, LocalDateTime updateTime) {
 }

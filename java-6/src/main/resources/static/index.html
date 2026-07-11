@@ -32,10 +32,14 @@
 
         /* ===== body 基础样式：设置全站字体、背景、行高 ===== */
         body {
-            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;  /* 优先使用微软雅黑，兜底系统字体 */
+            font-family: "Microsoft YaHei", "微软雅黑", -apple-system, sans-serif;
             background: var(--color-bg);
             color: var(--color-text);
-            line-height: 1.6;           /* 行高 1.6，提升阅读舒适度 */
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+
         }
 
         /* ===== 顶部红色 Header：网站品牌区，含徽标和标题 ===== */
@@ -212,6 +216,7 @@
         /* ===== 主体内容外层 ===== */
         .main-content {
             padding: 30px 0 50px;
+            flex: 1;
         }
 
         /* ===== Section 区块：默认隐藏，通过 active 类控制显示 ===== */

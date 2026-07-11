@@ -19,6 +19,8 @@ import com.example.java2.model.Article;
  * @param likeCount     点赞数
  * @param favoriteCount 收藏数
  * @param publishTime   发布时间
+ * @param createTime    创建时间
+ * @param updateTime    最后修改时间
  */
 // 采用 record 声明：不可变响应 DTO，自动生成 accessor/equals/hashCode/toString；刻意省略 content 字段，列表场景避免传输大段正文
 public record ArticleListItem(
@@ -30,7 +32,9 @@ public record ArticleListItem(
         int viewCount,      // 阅读量
         int likeCount,      // 点赞数
         int favoriteCount,  // 收藏数
-        String publishTime  // 发布时间字符串
+        String publishTime,  // 发布时间字符串
+        String createTime,  // 创建时间字符串
+        String updateTime   // 最后修改时间字符串
 ) {
     /**
      * 由文章实体构造列表项（分类名由 Service 层查询后传入）
@@ -50,7 +54,9 @@ public record ArticleListItem(
                 article.getViewCount(),
                 article.getLikeCount(),
                 article.getFavoriteCount(),
-                article.getPublishTime() != null ? article.getPublishTime().toString() : null
+                article.getPublishTime() != null ? article.getPublishTime().toString() : null,
+                article.getCreateTime() != null ? article.getCreateTime().toString() : null,
+                article.getUpdateTime() != null ? article.getUpdateTime().toString() : null
         );
     }
 }

@@ -159,6 +159,7 @@ public class InvestmentService {
 
         // 5. 订单状态改为已赎回
         order.setStatus(InvestmentStatus.REDEEMED);  // 标记为已赎回，防止重复赎回
+        order.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         InvestmentOrder saved = investmentOrderRepository.save(order);  // 持久化订单状态
 
         // 6. 记录赎回流水（入账取正）

@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 
 // 导入时间类型
 import java.time.LocalDateTime;
+import jakarta.persistence.PreUpdate;
 
 /**
  * 定制订单实体
@@ -72,6 +73,8 @@ public class Order {
     /** 下单时间 */
     private LocalDateTime createTime;
 
+    private LocalDateTime updateTime;
+
     /** 无参构造方法 */
     public Order() {
     }
@@ -95,4 +98,11 @@ public class Order {
     public void setRemark(String remark) { this.remark = remark; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

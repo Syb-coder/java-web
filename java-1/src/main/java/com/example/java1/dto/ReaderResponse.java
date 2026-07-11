@@ -6,6 +6,9 @@ import com.example.java1.model.Reader;
 // 导入读者类型枚举（STUDENT / TEACHER），响应中透传给前端展示类型标签
 import com.example.java1.model.ReaderType;
 
+// 导入时间类型
+import java.time.LocalDateTime;
+
 /**
  * 读者响应 DTO
  */
@@ -17,7 +20,8 @@ public record ReaderResponse(
         ReaderType type, // 读者类型，前端映射为类型标签（学生/教师）
         String department, // 院系，读者详情展示
         String phone, // 电话，读者详情展示
-        Integer currentBorrowCount // 当前借阅数，前端用于展示借阅进度（已借/限额）
+        Integer currentBorrowCount, // 当前借阅数，前端用于展示借阅进度（已借/限额）
+        LocalDateTime updateTime // 最后修改时间
 ) {
     /**
      * 从实体构造响应
@@ -30,7 +34,8 @@ public record ReaderResponse(
                 reader.getType(), // 透传读者类型
                 reader.getDepartment(), // 透传院系
                 reader.getPhone(), // 透传电话
-                reader.getCurrentBorrowCount() // 透传当前借阅数
+                reader.getCurrentBorrowCount(), // 透传当前借阅数
+                reader.getUpdateTime() // 透传最后修改时间
         );
     }
 }

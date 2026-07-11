@@ -1,6 +1,9 @@
 // 声明当前类所属的包路径，dto 子包用于存放数据传输对象
 package com.example.java3.dto;
 
+// 导入 DateTimeFormatter，用于将 LocalDateTime 格式化为前端可读字符串
+import java.time.format.DateTimeFormatter;
+
 /**
  * 学生用户信息响应 DTO
  * <p>
@@ -8,6 +11,9 @@ package com.example.java3.dto;
  * </p>
  */
 public class UserResponse {
+
+    // 时间格式化器，统一格式为 yyyy-MM-dd HH:mm:ss
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     // 用户主键 ID
     /** 用户 ID */
@@ -41,6 +47,10 @@ public class UserResponse {
     /** 注册时间 */
     private String createdAt;
 
+    // 最后修改时间字符串（已格式化）
+    /** 最后修改时间 */
+    private String updateTime;
+
     /**
      * 由 User 实体构造响应
      * <p>
@@ -57,7 +67,7 @@ public class UserResponse {
      * @param createdAt 注册时间
      */
     public UserResponse(Long id, String studentId, String username, String nickname,
-                        String phone, String avatar, String status, String createdAt) {
+                        String phone, String avatar, String status, String createdAt, String updateTime) {
         this.id = id;                       // 赋值用户 ID
         this.studentId = studentId;         // 赋值学号
         this.username = username;           // 赋值用户名
@@ -66,6 +76,7 @@ public class UserResponse {
         this.avatar = avatar;               // 赋值头像 URL
         this.status = status;               // 赋值账号状态
         this.createdAt = createdAt;         // 赋值注册时间
+        this.updateTime = updateTime;       // 赋值最后修改时间
     }
 
     // 获取用户 ID
@@ -146,5 +157,15 @@ public class UserResponse {
     // 设置注册时间
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    // 获取最后修改时间
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    // 设置最后修改时间
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -63,6 +63,9 @@ public class BookResponse { // 图书响应 DTO 类定义
     /** 创建时间 */
     private LocalDateTime createTime; // 创建时间字段，记录图书录入时间
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;
+
     /**
      * 从实体构造响应对象
      * <p>
@@ -87,6 +90,7 @@ public class BookResponse { // 图书响应 DTO 类定义
         this.availableCopies = book.getAvailableCopies(); // 映射可借数量
         this.location = book.getLocation(); // 映射存放位置
         this.createTime = book.getCreateTime(); // 映射创建时间
+        this.updateTime = book.getUpdateTime();
     }
 
     // ===== Getter / Setter =====
@@ -193,5 +197,13 @@ public class BookResponse { // 图书响应 DTO 类定义
 
     public void setCreateTime(LocalDateTime createTime) { // Setter 方法：设置创建时间
         this.createTime = createTime; // 将入参赋值给实例字段 createTime
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

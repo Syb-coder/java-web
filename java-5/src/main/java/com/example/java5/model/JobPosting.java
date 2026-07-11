@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType; // 主键生成策略枚举
 import jakarta.persistence.Id; // 主键标记注解
 import jakarta.persistence.Table; // 指定数据库表名注解
 import jakarta.persistence.PrePersist; // 持久化前回调钩子注解
+import jakarta.persistence.PreUpdate; // 更新前回调钩子注解
 
 // ===== 时间类型导入 =====
 import java.time.LocalDate; // 日期类型（不含时间），用于发布日期
@@ -104,6 +105,8 @@ public class JobPosting {
     /** 记录创建时间戳，由 PrePersist 钩子自动填充 */
     private LocalDateTime createdAt; // 系统字段，用于排序和审计
 
+    private LocalDateTime updateTime;
+
     /**
      * 无参构造函数
      * <p>
@@ -130,6 +133,11 @@ public class JobPosting {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now(); // 取当前系统时间
         }
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 
     // ===== 以下为字段对应的 getter/setter，供 MyBatis/Jackson/前端 等反射访问 =====
@@ -222,4 +230,6 @@ public class JobPosting {
     public LocalDateTime getCreatedAt() { return createdAt; }
     /** 设置记录创建时间戳（一般由 PrePersist 自动填充） */
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
 }

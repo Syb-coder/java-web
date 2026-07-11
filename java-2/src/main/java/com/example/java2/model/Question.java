@@ -7,9 +7,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-// 导入时间类型
 import java.time.LocalDateTime;
 
 /**
@@ -81,6 +81,9 @@ public class Question {
     /** 创建时间 */
     private LocalDateTime createTime;
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;
+
     /** 无参构造方法：JPA 规范要求 */
     // JPA 通过反射调用无参构造实例化实体，缺失会导致 LazyInitializationException 等运行时异常
     public Question() {
@@ -144,4 +147,11 @@ public class Question {
     public void setAnalysis(String analysis) { this.analysis = analysis; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

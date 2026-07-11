@@ -9,6 +9,9 @@ import com.example.java1.model.BorrowStatus;
 // 导入日期类（不含时分秒），用于借出/应还/归还日期
 import java.time.LocalDate;
 
+// 导入时间类型
+import java.time.LocalDateTime;
+
 /**
  * 借阅记录响应 DTO
  * <p>
@@ -30,6 +33,7 @@ public record BorrowRecordResponse(
         Integer renewCount, // 续借次数，限制最多续借 1 次
         Double fine, // 罚款金额，超期按 0.5 元/天计算
         String remark, // 备注信息
+        LocalDateTime updateTime, // 最后修改时间
         // 是否逾期（动态计算，应还日期早于今天且未归还时为 true）
         boolean overdue // 动态字段：实体中无此列，响应时实时计算以反映当前逾期状态
 ) {
@@ -60,6 +64,7 @@ public record BorrowRecordResponse(
                 record.getRenewCount(), // 透传续借次数
                 record.getFine(), // 透传罚款金额
                 record.getRemark(), // 透传统备注
+                record.getUpdateTime(), // 透传最后修改时间
                 isOverdue // 设置动态计算的逾期标志
         );
     }

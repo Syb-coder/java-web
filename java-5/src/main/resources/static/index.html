@@ -16,13 +16,12 @@
         /* 全局重置：box-sizing:border-box 让 width 包含 padding 与 border，避免盒模型计算偏差；清零默认外边距与内边距以统一起跑线 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            /* 系统字体栈：优先使用各平台原生字体（macOS 用苹方、Windows 用微软雅黑），避免网络字体加载耗时，同时保证视觉一致 */
             background: #f5f7fa;
-            /* 浅灰底色：与卡片白色形成层次感，降低长时间浏览的视觉疲劳 */
             color: #2c3e50;
-            /* 主文字色：深蓝灰比纯黑更柔和，符合现代设计趋势 */
             line-height: 1.6;
-            /* 行高 1.6：中文阅读的舒适区间，过密累眼、过疏松散 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -38,7 +37,7 @@
         /* 主标题字号 24px，下边距 4px 与副标题保持紧凑关联 */
         header p { opacity: 0.9; font-size: 14px; }
         /* 副标题透明度 0.9 弱化层级，字号 14px 与主标题形成主次 */
-        .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+        .container { max-width: 1200px; margin: 24px auto; padding: 0 24px; width: 100%; flex: 1; }
         /* 内容容器：最大宽度 1200px 居中，避免超宽屏拉伸过散；左右 padding 防止小屏贴边 */
 
         .stats {
@@ -269,7 +268,10 @@
         /* 联系区块字段标签：深蓝加粗 */
 
         footer { text-align: center; padding: 24px; color: #909399; font-size: 12px; }
-        /* 页脚：居中灰色小字，弱化为辅助信息 */
+        .site-footer { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: rgba(255,255,255,.8); text-align: center; padding: 20px 16px; font-size: 13px; margin-top: 40px; }
+        .site-footer a { color: rgba(255,255,255,.9); text-decoration: none; margin: 0 8px; }
+        .site-footer a:hover { text-decoration: underline; }
+        .site-footer .sep { color: rgba(255,255,255,.3); margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -597,6 +599,7 @@
                         <span>${escapeHtml(j.experienceLabel || '经验不限')}</span>
                         <span>${escapeHtml(j.educationLabel || '学历不限')}</span>
                         <span>发布于 ${j.publishedDate || ''}</span>
+                        <span>最后修改 ${j.updateTime || ''}</span>
                     </div>
                     <div class="job-tags">
                         <span class="tag category">${escapeHtml(j.categoryLabel || '未分类')}</span>
@@ -843,5 +846,9 @@
         loadStats();
         search();
     </script>
+    <footer class="site-footer">
+        <div><a href="/">首页</a></div>
+        <div>© 2026 求职信息管理平台 · Java Web 课程设计</div>
+    </footer>
 </body>
 </html>

@@ -11,5 +11,5 @@ package com.example.java8.dto;
  * @param createTime  创建时间
  */
 public record StyleResponse(Long id, String name, String category, Double craftFee,
-                            String description, java.time.LocalDateTime createTime) {
+                            String description, java.time.LocalDateTime createTime, java.time.LocalDateTime updateTime) {
 }

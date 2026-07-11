@@ -14,5 +14,5 @@ package com.example.java8.dto;
  */
 public record FabricResponse(Long id, String name, String material, String color,
                              Double unitPrice, Double stock, String description,
-                             java.time.LocalDateTime createTime) {
+                             java.time.LocalDateTime createTime, java.time.LocalDateTime updateTime) {
 }

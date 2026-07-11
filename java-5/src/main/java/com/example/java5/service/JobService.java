@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service; // 声明为 Spring Bean，业务
 
 // ===== JDK 工具导入 =====
 import java.time.LocalDate;          // 日期类型，用于默认发布日期
+import java.time.LocalDateTime;      // 日期时间类型，用于更新时间戳
 import java.util.HashMap;            // 哈希表，用于统计结果
 import java.util.List;               // 列表容器
 import java.util.Map;                // 键值对容器
@@ -141,6 +142,7 @@ public class JobService {
     public JobPostingResponse update(Long id, JobRequest req) {
         return repository.findById(id).map(j -> { // 查找实体，存在才更新
             applyRequest(j, req);                 // 覆盖业务字段
+            j.setUpdateTime(LocalDateTime.now());
             return JobPostingResponse.from(repository.save(j)); // 保存并转 DTO
         }).orElse(null);                          // 不存在返回 null
     }

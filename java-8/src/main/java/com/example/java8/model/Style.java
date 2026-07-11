@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 
 // 导入时间类型
 import java.time.LocalDateTime;
+import jakarta.persistence.PreUpdate;
 
 /**
  * 款式实体
@@ -48,6 +49,8 @@ public class Style {
     /** 创建时间 */
     private LocalDateTime createTime;
 
+    private LocalDateTime updateTime;
+
     /** 无参构造方法 */
     public Style() {
     }
@@ -61,6 +64,7 @@ public class Style {
         this.craftFee = craftFee;
         this.description = description;
         this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
     }
 
     // ===== Getter / Setter =====
@@ -76,4 +80,11 @@ public class Style {
     public void setDescription(String description) { this.description = description; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

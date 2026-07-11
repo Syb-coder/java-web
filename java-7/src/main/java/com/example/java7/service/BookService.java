@@ -94,6 +94,7 @@ public class BookService {
         }
         book.setTotalCopies(request.getTotalCopies()); // 安全校验通过后更新总数量
         book.setAvailableCopies(request.getTotalCopies() - borrowedCount); // 重新计算可借数量：新总数减去已借出数
+        book.setUpdateTime(LocalDateTime.now());
         Book saved = bookRepository.save(book); // 持久化更新后的实体
         return new BookResponse(saved); // 转换为响应 DTO 返回
     }

@@ -112,6 +112,7 @@ public class ActivityService {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("活动不存在"));  // 查询活动，不存在则抛异常
         activity.setActive(false);  // 置为非活跃，C 端不再可见但仍保留数据
+        activity.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return activityRepository.save(activity);  // 持久化并返回
     }
 

@@ -71,6 +71,7 @@ public class OrderService {
         order.setStatus(OrderStatus.PENDING);
         order.setRemark(req.remark());
         order.setCreateTime(LocalDateTime.now());
+        order.setUpdateTime(LocalDateTime.now());
         return toResponse(repository.save(order));
     }
 
@@ -113,6 +114,7 @@ public class OrderService {
         int nextIdx = order.getStatus().ordinal() + 1;
         if (nextIdx >= flow.length) return null;
         order.setStatus(flow[nextIdx]);
+        order.setUpdateTime(LocalDateTime.now());
         return toResponse(repository.save(order));
     }
 
@@ -138,6 +140,6 @@ public class OrderService {
                 o.getFabric().getId(), o.getFabric().getName(),
                 o.getMeasurement() != null ? o.getMeasurement().getId() : null,
                 o.getMeasurement() != null ? o.getMeasurement().getName() : null,
-                o.getTotalPrice(), o.getStatus(), o.getRemark(), o.getCreateTime());
+                o.getTotalPrice(), o.getStatus(), o.getRemark(), o.getCreateTime(), o.getUpdateTime());
     }
 }

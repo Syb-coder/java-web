@@ -7,9 +7,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-// 导入时间类型
 import java.time.LocalDateTime;
 
 /**
@@ -51,6 +51,9 @@ public class Category {
     /** 创建时间 */
     private LocalDateTime createTime;
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;
+
     /** 无参构造方法：JPA 规范要求 */
     public Category() {
     }
@@ -87,4 +90,11 @@ public class Category {
     public void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

@@ -4,6 +4,9 @@ package com.example.java1.dto;
 // 导入图书实体类，用于 from 转换方法
 import com.example.java1.model.Book;
 
+// 导入时间类型
+import java.time.LocalDateTime;
+
 /**
  * 图书响应 DTO
  * <p>
@@ -22,7 +25,8 @@ public record BookResponse(
         String description, // 简介，详情页展示
         Integer totalCopies, // 总副本数，详情页展示馆藏总量
         Integer availableCopies, // 可借副本数，列表页展示是否可借（0 则禁用借书按钮）
-        String location // 存放位置，便于线下找书
+        String location, // 存放位置，便于线下找书
+        LocalDateTime updateTime // 最后修改时间
 ) {
     /**
      * 从实体构造响应
@@ -43,7 +47,8 @@ public record BookResponse(
                 book.getDescription(), // 透传简介
                 book.getTotalCopies(), // 透传总副本数
                 book.getAvailableCopies(), // 透传可借副本数
-                book.getLocation() // 透传存放位置
+                book.getLocation(), // 透传存放位置
+                book.getUpdateTime() // 透传最后修改时间
         );
     }
 }

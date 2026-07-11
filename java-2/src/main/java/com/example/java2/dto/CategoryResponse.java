@@ -16,6 +16,7 @@ import com.example.java2.model.Category;
  * @param sortOrder     排序序号
  * @param articleCount  该分类下已发布文章数（前台展示用，后台列表可为 null）
  * @param createTime    创建时间
+ * @param updateTime    最后修改时间
  */
 // 采用 record 声明：不可变响应 DTO，自动生成 accessor/equals/hashCode/toString，前台导览与后台列表共用
 public record CategoryResponse(
@@ -24,7 +25,8 @@ public record CategoryResponse(
         String description, // 分类描述，可为 null
         int sortOrder,      // 排序序号，前台按该字段升序展示分类
         Long articleCount,  // 该分类下已发布文章数：前台导览需展示，后台列表场景可为 null
-        String createTime   // 创建时间字符串
+        String createTime,   // 创建时间字符串
+        String updateTime    // 最后修改时间字符串
 ) {
     /**
      * 由分类实体构造响应（不含文章数）
@@ -41,7 +43,8 @@ public record CategoryResponse(
                 category.getSortOrder(),
                 // 后台列表场景无需文章数，传 null
                 null,
-                category.getCreateTime() != null ? category.getCreateTime().toString() : null
+                category.getCreateTime() != null ? category.getCreateTime().toString() : null,
+                category.getUpdateTime() != null ? category.getUpdateTime().toString() : null
         );
     }
 
@@ -60,7 +63,8 @@ public record CategoryResponse(
                 category.getDescription(),
                 category.getSortOrder(),
                 articleCount,
-                category.getCreateTime() != null ? category.getCreateTime().toString() : null
+                category.getCreateTime() != null ? category.getCreateTime().toString() : null,
+                category.getUpdateTime() != null ? category.getUpdateTime().toString() : null
         );
     }
 }

@@ -53,6 +53,8 @@ public class ProductResponse {
     private Long favoriteCount;
     // 创建时间字符串（已格式化）
     private String createdAt;
+    // 最后修改时间字符串（已格式化）
+    private String updateTime;
 
     /**
      * 由实体构造基础响应（不含分类名/卖家名/点赞数，由 Service 层补充）
@@ -80,6 +82,8 @@ public class ProductResponse {
         this.favoriteCount = 0L;                                        // 收藏数初始为 0，由 Service 层查询后填充
         // 创建时间非空时格式化为字符串，否则置 null，避免 NPE
         this.createdAt = p.getCreatedAt() != null ? p.getCreatedAt().format(FMT) : null;
+        // 最后修改时间非空时格式化，否则置 null，避免 NPE
+        this.updateTime = p.getUpdateTime() != null ? p.getUpdateTime().format(FMT) : null;
     }
 
     // 获取商品 ID
@@ -250,5 +254,15 @@ public class ProductResponse {
     // 设置创建时间字符串
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    // 获取最后修改时间
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    // 设置最后修改时间
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

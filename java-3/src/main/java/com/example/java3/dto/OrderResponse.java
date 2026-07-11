@@ -46,6 +46,8 @@ public class OrderResponse {
     private String createdAt;
     // 完成时间字符串（已格式化）
     private String completedAt;
+    // 最后修改时间字符串（已格式化）
+    private String updateTime;
 
     /**
      * 由 Order 实体构造响应
@@ -76,6 +78,8 @@ public class OrderResponse {
         this.createdAt = o.getCreatedAt() != null ? o.getCreatedAt().format(FMT) : null;
         // 完成时间非空时格式化，否则置 null，避免 NPE（订单未完成时为 null）
         this.completedAt = o.getCompletedAt() != null ? o.getCompletedAt().format(FMT) : null;
+        // 最后修改时间非空时格式化，否则置 null
+        this.updateTime = o.getUpdateTime() != null ? o.getUpdateTime().format(FMT) : null;
     }
 
     // 获取订单 ID
@@ -216,5 +220,15 @@ public class OrderResponse {
     // 设置完成时间字符串
     public void setCompletedAt(String completedAt) {
         this.completedAt = completedAt;
+    }
+
+    // 获取最后修改时间
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    // 设置最后修改时间
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

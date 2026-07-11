@@ -20,6 +20,7 @@ import java.time.LocalDateTime; // 导入日期时间类型，用于表示举报
  * @param status          处理状态
  * @param handleNote      处置备注
  * @param createdAt       举报提交时间
+ * @param updateTime      更新时间
  * @param handledAt       处置时间
  */
 public record ReportResponse( // Record 关键字声明不可变 DTO，自动生成构造器与访问方法
@@ -32,6 +33,7 @@ public record ReportResponse( // Record 关键字声明不可变 DTO，自动生
         ReportStatus status, // 处理状态，枚举类型（如待处理、处理中、已处理）
         String handleNote, // 处置备注，管理员填写的处置说明
         LocalDateTime createdAt, // 举报提交时间，公众提交举报的时间戳
+        LocalDateTime updateTime, // 更新时间，用于判断记录是否修改
         LocalDateTime handledAt // 处置时间，管理员处置举报的时间戳，未处置时为 null
 ) {
 
@@ -54,6 +56,7 @@ public record ReportResponse( // Record 关键字声明不可变 DTO，自动生
                 r.getStatus(), // 提取处理状态
                 r.getHandleNote(), // 提取处置备注
                 r.getCreatedAt(), // 提取举报提交时间
+                r.getUpdateTime(), // 提取更新时间
                 r.getHandledAt() // 提取处置时间
         );
     }

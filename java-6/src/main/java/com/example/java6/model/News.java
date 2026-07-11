@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated; // 导入 JPA @Enumerated 注解,指定�
 import jakarta.persistence.GeneratedValue; // 导入 JPA @GeneratedValue 注解,声明主键生成策略
 import jakarta.persistence.GenerationType; // 导入主键生成策略枚举,IDENTITY 表示数据库自增
 import jakarta.persistence.Id; // 导入 JPA @Id 注解,标记实体主键字段
+import jakarta.persistence.PreUpdate; // 导入 JPA @PreUpdate 注解,用于实体更新前自动设置更新时间
 import jakarta.persistence.Table; // 导入 JPA @Table 注解,显式指定数据库表名
 
 import java.time.LocalDateTime; // 导入日期时间类,用于记录新闻发布时间与记录创建时间
@@ -62,6 +63,9 @@ public class News {
     /** 记录创建时间 */
     @Column(nullable = false, updatable = false) // 列约束:非空且不可更新,创建后永久不变
     private LocalDateTime createdAt = LocalDateTime.now(); // 记录创建时间,字段初始化即赋值,用于数据审计
+
+    /** 更新时间 */
+    private LocalDateTime updateTime; // 实体更新时间,每次持久化更新时自动刷新
 
     public News() {
         // JPA 规范要求的无参构造器,Hibernate 通过反射实例化实体时调用
@@ -176,5 +180,20 @@ public class News {
     public void setCreatedAt(LocalDateTime createdAt) {
         // 设置记录创建时间,主要用于数据迁移或测试场景
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        // 获取更新时间
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        // 设置更新时间
+        this.updateTime = updateTime;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 }

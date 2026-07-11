@@ -4,6 +4,9 @@ package com.example.java3.dto;
 // 导入 ProductCategory 实体类，用于构造响应 DTO
 import com.example.java3.model.ProductCategory;
 
+// 导入 DateTimeFormatter，用于将 LocalDateTime 格式化为前端可读字符串
+import java.time.format.DateTimeFormatter;
+
 /**
  * 分类响应 DTO
  * <p>
@@ -11,6 +14,9 @@ import com.example.java3.model.ProductCategory;
  * </p>
  */
 public class CategoryResponse {
+
+    // 时间格式化器，统一格式为 yyyy-MM-dd HH:mm:ss
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     // 分类主键 ID
     private Long id;
@@ -20,6 +26,10 @@ public class CategoryResponse {
     private String icon;
     // 排序序号
     private Integer sortOrder;
+    // 创建时间字符串（已格式化）
+    private String createdAt;
+    // 最后修改时间字符串（已格式化）
+    private String updateTime;
 
     /**
      * 由 ProductCategory 实体构造响应
@@ -34,6 +44,10 @@ public class CategoryResponse {
         this.name = c.getName();            // 赋值分类名称
         this.icon = c.getIcon();            // 赋值图标
         this.sortOrder = c.getSortOrder();  // 赋值排序序号
+        // 创建时间非空时格式化为字符串，否则置 null，避免 NPE
+        this.createdAt = c.getCreatedAt() != null ? c.getCreatedAt().format(FMT) : null;
+        // 最后修改时间非空时格式化，否则置 null
+        this.updateTime = c.getUpdateTime() != null ? c.getUpdateTime().format(FMT) : null;
     }
 
     // 获取分类 ID
@@ -74,5 +88,25 @@ public class CategoryResponse {
     // 设置排序序号
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    // 获取创建时间
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    // 设置创建时间
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // 获取最后修改时间
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    // 设置最后修改时间
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

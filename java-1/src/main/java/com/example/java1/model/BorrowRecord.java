@@ -11,11 +11,13 @@ import jakarta.persistence.GenerationType; // 引入主键生成策略枚举，I
 import jakarta.persistence.Id; // 引入 JPA 主键注解，标记字段为表主键
 import jakarta.persistence.JoinColumn; // 引入 JPA 外键列注解，指定关联关系对应的外键列名
 import jakarta.persistence.ManyToOne; // 引入 JPA 多对一关系注解，表示多条借阅记录关联同一本图书/读者
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table; // 引入 JPA 表映射注解，指定实体对应的表名
 import jakarta.persistence.Version; // 引入 JPA 乐观锁版本字段注解，防止并发脏写
 
 // 导入日期类型（仅日期，不含时间）
 import java.time.LocalDate; // 引入 Java 8 纯日期类，借阅业务只需精确到日，无需时分秒
+import java.time.LocalDateTime;
 
 /**
  * 借阅记录实体
@@ -86,6 +88,15 @@ public class BorrowRecord { // 定义公共实体类 BorrowRecord，对应借阅
     @Version // 声明乐观锁版本字段，Hibernate 在更新时自动校验并递增
     private Integer version; // 版本号字段，防止并发归还/续借导致状态错乱
 
+    /** 最后修改时间，数据更新前由 @PreUpdate 自动填充 */
+    private LocalDateTime updateTime;
+
+    /** 每次更新前自动填充修改时间 */
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     /** 无参构造方法，JPA 规范要求 */
     public BorrowRecord() { // 无参构造方法，供 JPA/Hibernate 通过反射创建实例
     }
@@ -112,6 +123,8 @@ public class BorrowRecord { // 定义公共实体类 BorrowRecord，对应借阅
     public void setFine(Double fine) { this.fine = fine; } // 罚款金额的 setter，归还时由业务层计算填入
     public String getRemark() { return remark; } // 备注的 getter，供管理员查看说明
     public void setRemark(String remark) { this.remark = remark; } // 备注的 setter，供管理员人工补充
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
     public Integer getVersion() { return version; } // 版本号的 getter，供乐观锁调试展示
     public void setVersion(Integer version) { this.version = version; } // 版本号的 setter，通常由 JPA 自动维护
 }

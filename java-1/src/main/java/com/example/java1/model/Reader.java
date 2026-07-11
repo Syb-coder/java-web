@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated; // 引入 JPA 枚举注解，标记枚举
 import jakarta.persistence.GeneratedValue; // 引入 JPA 主键生成策略注解
 import jakarta.persistence.GenerationType; // 引入主键生成策略枚举，IDENTITY 表示数据库自增
 import jakarta.persistence.Id; // 引入 JPA 主键注解，标记字段为表主键
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table; // 引入 JPA 表映射注解，指定实体对应的表名
 
 // 导入时间类型
@@ -73,6 +74,9 @@ public class Reader { // 定义公共实体类 Reader，对应读者领域模型
     /** 注册时间 */
     private LocalDateTime createTime; // 注册时间，一次性写入用于追溯账号建立
 
+    /** 最后修改时间，数据更新前由 @PreUpdate 自动填充 */
+    private LocalDateTime updateTime;
+
     /** 无参构造方法：JPA 规范要求 */
     public Reader() { // 无参构造方法，供 JPA/Hibernate 通过反射创建实例
     }
@@ -124,6 +128,14 @@ public class Reader { // 定义公共实体类 Reader，对应读者领域模型
     public void setCurrentBorrowCount(Integer currentBorrowCount) { this.currentBorrowCount = currentBorrowCount; } // 当前借阅数的 setter，借出归还时由业务层维护
     public LocalDateTime getLastLoginAt() { return lastLoginAt; } // 最近登录时间的 getter，供安全审计展示
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; } // 最近登录时间的 setter，登录成功时由 AuthService 调用
+    /** 每次更新前自动填充修改时间 */
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     public LocalDateTime getCreateTime() { return createTime; } // 注册时间的 getter，供审计与排序
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; } // 注册时间的 setter，仅供持久化层或初始化使用
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
 }

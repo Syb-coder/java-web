@@ -7,6 +7,7 @@ import jakarta.persistence.Entity; // 引入 JPA 实体注解，标记类为可�
 import jakarta.persistence.GeneratedValue; // 引入 JPA 主键生成策略注解，声明主键生成方式
 import jakarta.persistence.GenerationType; // 引入主键生成策略枚举，IDENTITY 表示由数据库自增
 import jakarta.persistence.Id; // 引入 JPA 主键注解，标记字段为表主键
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table; // 引入 JPA 表映射注解，指定实体对应的表名
 
 // 导入时间类型
@@ -57,6 +58,9 @@ public class AdminUser { // 定义公共实体类 AdminUser，对应管理员账
     /** 创建时间，注册时设置 */
     private LocalDateTime createTime; // 账号创建时间，注册时一次性写入，后续不再修改
 
+    /** 最后修改时间，数据更新前由 @PreUpdate 自动填充 */
+    private LocalDateTime updateTime;
+
     /** 无参构造方法：JPA 规范要求，Hibernate 实例化实体时调用 */
     public AdminUser() { // 无参构造方法，供 JPA/Hibernate 通过反射创建实例
     }
@@ -91,6 +95,14 @@ public class AdminUser { // 定义公共实体类 AdminUser，对应管理员账
     public void setNickname(String nickname) { this.nickname = nickname; } // 昵称的 setter，供修改个人信息时赋值
     public LocalDateTime getLastLoginAt() { return lastLoginAt; } // 最近登录时间的 getter，供安全审计展示
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; } // 最近登录时间的 setter，登录成功时由 AuthService 调用
+    /** 每次更新前自动填充修改时间 */
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     public LocalDateTime getCreateTime() { return createTime; } // 创建时间的 getter，供审计与排序使用
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; } // 创建时间的 setter，仅供持久化层或初始化使用
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;  // 导入 Spring Service 注解
 import org.springframework.transaction.annotation.Transactional;  // 导入事务注解
 
 import java.math.BigDecimal;  // 导入高精度十进制类，金额计算必须用 BigDecimal 避免 double 精度丢失
+import java.time.LocalDateTime;  // 导入时间类
 import java.util.List;  // 导入集合 List
 
 /**
@@ -83,6 +84,7 @@ public class ProductService {
         product.setTotalAmount(totalAmount);  // 更新募集总额
         product.setDescription(description);  // 更新产品描述
         // 注意：不更新 status 与 investedAmount，避免运营篡改募集进度
+        product.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return financialProductRepository.save(product);  // 持久化并返回
     }
 
@@ -98,6 +100,7 @@ public class ProductService {
         FinancialProduct product = financialProductRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("理财产品不存在"));  // 查询产品
         product.setStatus(ProductStatus.OFF_SHELF);  // 置为下架状态，下架后用户无法新申购
+        product.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return financialProductRepository.save(product);  // 持久化并返回
     }
 
@@ -152,6 +155,7 @@ public class ProductService {
         if (product.getInvestedAmount().compareTo(product.getTotalAmount()) >= 0) {
             product.setStatus(ProductStatus.SOLD_OUT);  // 满额自动售罄，防止超额募集
         }
+        product.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return financialProductRepository.save(product);  // 持久化并返回
     }
 }

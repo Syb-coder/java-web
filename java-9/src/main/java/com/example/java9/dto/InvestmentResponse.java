@@ -38,6 +38,9 @@ public class InvestmentResponse {  // 投资订单响应 DTO 类定义
     /** 订单创建时间 */
     private LocalDateTime createdAt;  // 订单创建时间戳
 
+    /** 订单最后修改时间 */
+    private LocalDateTime updateTime;  // 订单最后修改时间戳
+
     // —— id 字段的 getter/setter ——
     public Long getId() {  // 获取订单 ID
         return id;  // 返回订单 ID
@@ -117,5 +120,14 @@ public class InvestmentResponse {  // 投资订单响应 DTO 类定义
 
     public void setCreatedAt(LocalDateTime createdAt) {  // 设置创建时间
         this.createdAt = createdAt;  // 赋值创建时间
+    }
+
+    // —— updateTime 字段的 getter/setter ——
+    public LocalDateTime getUpdateTime() {  // 获取最后修改时间
+        return updateTime;  // 返回最后修改时间
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {  // 设置最后修改时间
+        this.updateTime = updateTime;  // 赋值最后修改时间
     }
 }

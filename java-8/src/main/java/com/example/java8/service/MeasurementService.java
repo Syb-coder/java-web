@@ -75,6 +75,7 @@ public class MeasurementService {
         // 权限校验：仅本人可编辑自己的量体数据
         if (!m.getUser().getId().equals(currentUserId)) return null;
         applyToEntity(m, req);
+        m.setUpdateTime(LocalDateTime.now());
         return toResponse(repository.save(m));
     }
 
@@ -126,6 +127,6 @@ public class MeasurementService {
                 m.getNeckCircumference(), m.getShoulderWidth(), m.getChestCircumference(),
                 m.getWaistCircumference(), m.getHipCircumference(), m.getClothesLength(),
                 m.getSleeveLength(), m.getPantsLength(), m.getThighCircumference(),
-                m.getRemark(), m.getCreateTime());
+                m.getRemark(), m.getCreateTime(), m.getUpdateTime());
     }
 }

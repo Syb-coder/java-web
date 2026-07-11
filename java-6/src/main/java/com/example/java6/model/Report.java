@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated; // 导入 JPA @Enumerated 注解,指定�
 import jakarta.persistence.GeneratedValue; // 导入 JPA @GeneratedValue 注解,声明主键生成策略
 import jakarta.persistence.GenerationType; // 导入主键生成策略枚举,IDENTITY 表示数据库自增
 import jakarta.persistence.Id; // 导入 JPA @Id 注解,标记实体主键字段
+import jakarta.persistence.PreUpdate; // 导入 JPA @PreUpdate 注解,用于实体更新前自动设置更新时间
 import jakarta.persistence.Table; // 导入 JPA @Table 注解,显式指定数据库表名
 
 import java.time.LocalDateTime; // 导入日期时间类,用于记录举报提交时间与处置时间
@@ -59,6 +60,9 @@ public class Report {
     /** 举报提交时间 */
     @Column(nullable = false, updatable = false) // 列约束:非空且不可更新,提交后永久不变
     private LocalDateTime createdAt = LocalDateTime.now(); // 举报提交时间,字段初始化即赋值,用于时效统计
+
+    /** 更新时间 */
+    private LocalDateTime updateTime; // 实体更新时间,每次持久化更新时自动刷新
 
     /** 处置时间 */
     private LocalDateTime handledAt; // 处置完成时间,举报中心处置完毕时填写;无 @Column 默认按字段名映射
@@ -175,5 +179,20 @@ public class Report {
     public void setHandledAt(LocalDateTime handledAt) {
         // 设置处置时间,举报中心处置完毕时记录
         this.handledAt = handledAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        // 获取更新时间
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        // 设置更新时间
+        this.updateTime = updateTime;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 }

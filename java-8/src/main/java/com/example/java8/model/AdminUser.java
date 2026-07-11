@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 
 // 导入时间类型
 import java.time.LocalDateTime;
+import jakarta.persistence.PreUpdate;
 
 /**
  * 管理员用户实体
@@ -57,6 +58,8 @@ public class AdminUser {
     /** 创建时间，注册时设置 */
     private LocalDateTime createTime;
 
+    private LocalDateTime updateTime;
+
     /** 无参构造方法：JPA 规范要求，Hibernate 实例化实体时调用 */
     public AdminUser() {
     }
@@ -73,6 +76,7 @@ public class AdminUser {
         this.password = password;
         this.nickname = nickname;
         this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
     }
 
     // ===== 以下是各字段的 Getter / Setter =====
@@ -89,4 +93,11 @@ public class AdminUser {
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public LocalDateTime getUpdateTime() { return updateTime; }
+    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;  // 指定枚举在数据库中的存储�
 import jakarta.persistence.GeneratedValue;  // 主键生成策略注解
 import jakarta.persistence.GenerationType;  // 主键生成策略枚举
 import jakarta.persistence.Id;  // 主键标识注解
+import jakarta.persistence.PreUpdate;  // 更新前回调注解
 import jakarta.persistence.Table;  // 指定实体对应的数据库表名
 
 // JDK 时间类型导入
@@ -50,6 +51,14 @@ public class AdminUser {  // 后台管理员实体，承载登录凭证与角色
     @Column(nullable = false)  // 非空，确保每次创建都有时间记录用于审计
     private LocalDateTime createdAt;  // 创建时间戳，由构造器自动赋值
 
+    /** 最后修改时间 */
+    private LocalDateTime updateTime;  // 最后修改时间戳
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
+
     public AdminUser() {  // JPA 要求的无参构造器，供 Hibernate 反射实例化使用
     }
 
@@ -59,6 +68,7 @@ public class AdminUser {  // 后台管理员实体，承载登录凭证与角色
         this.realName = realName;  // 赋值真实姓名
         this.role = role;  // 赋值角色
         this.createdAt = LocalDateTime.now();  // 创建时间由服务端生成，避免依赖数据库默认值
+        this.updateTime = LocalDateTime.now();  // 初始化修改时间
     }
 
     public Long getId() {  // 获取主键 ID
@@ -107,5 +117,13 @@ public class AdminUser {  // 后台管理员实体，承载登录凭证与角色
 
     public void setCreatedAt(LocalDateTime createdAt) {  // 设置创建时间
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

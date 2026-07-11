@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;  // 导入 Spring Service 注解
 import org.springframework.transaction.annotation.Transactional;  // 导入事务注解
 
 import java.math.BigDecimal;  // 导入高精度十进制类，金额计算必须用 BigDecimal 避免 double 精度丢失
+import java.time.LocalDateTime;  // 导入时间类
 import java.util.List;  // 导入集合 List
 
 /**
@@ -55,6 +56,7 @@ public class UserService {
         user.setRealName(realName);  // 写入真实姓名
         user.setIdCard(idCard);  // 写入身份证号
         user.setVerified(true);  // 标记为已实名，后续投资/提现等操作依赖此标志
+        user.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return userRepository.save(user);  // 持久化并返回
     }
 
@@ -75,6 +77,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));  // 查询用户
         user.setBalance(user.getBalance().add(amount));  // 余额增加，使用 BigDecimal.add 避免 double 浮点精度丢失
+        user.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         User saved = userRepository.save(user);  // 持久化更新后的余额
         // 交易后余额需传入流水，保证审计链路完整
         transactionService.recordTransaction(userId, "USER", TransactionType.RECHARGE,
@@ -105,6 +108,7 @@ public class UserService {
             throw new IllegalArgumentException("余额不足");  // 余额不足快速失败
         }
         user.setBalance(user.getBalance().subtract(amount));  // 余额扣减，使用 BigDecimal.subtract 避免浮点精度丢失
+        user.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         User saved = userRepository.save(user);  // 持久化更新后的余额
         // 提现为出账，流水金额取负
         transactionService.recordTransaction(userId, "USER", TransactionType.WITHDRAW,
@@ -168,6 +172,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));  // 查询用户
         user.setStatus(status);  // 更新用户状态
+        user.setUpdateTime(LocalDateTime.now());  // 更新修改时间
         return userRepository.save(user);  // 持久化并返回
     }
 }

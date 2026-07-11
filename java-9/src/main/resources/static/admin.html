@@ -796,7 +796,7 @@
 </div>
 
 <!-- ===== 主页面 ===== -->
-<div id="mainPage">
+<div id="mainPage" style="display:flex;flex-direction:column;min-height:100vh;">
     <!-- 左侧菜单 -->
     <aside id="sidebar">
         <div class="sidebar-header">
@@ -809,7 +809,7 @@
     </aside>
 
     <!-- 主内容区 -->
-    <div id="mainContent">
+    <div id="mainContent" style="flex:1;">
         <header id="topbar">
             <div style="display:flex;align-items:center;gap:12px">
                 <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
@@ -825,6 +825,7 @@
             </div>
         </header>
         <main id="contentArea"></main>
+        <footer style="text-align:center;padding:16px 24px;color:var(--text-lighter);font-size:12px;border-top:1px solid var(--border);margin-top:24px;">© 2026 鑫融宝金融科技 · Java Web 课程设计 · 后台管理</footer>
     </div>
 </div>
 
@@ -1325,6 +1326,7 @@
                     ? statusTag('已冻结', 'danger')
                     : statusTag('正常', 'success') },
                 { title: '注册时间', render: row => formatDate(row.createTime ?? row.createdAt ?? row.registerTime) },
+                { title: '最后修改', render: row => formatDate(row.updateTime) },
                 { title: '操作', render: row => {
                     const frozen = row.status === 'FROZEN' || row.frozen;
                     return frozen
@@ -1382,6 +1384,7 @@
                 { title: '联系电话', key: 'phone' },
                 { title: '状态', render: row => renderMerchantStatus(row.status) },
                 { title: '申请时间', render: row => formatDate(row.createTime ?? row.applyTime ?? row.createdAt) },
+                { title: '最后修改', render: row => formatDate(row.updateTime) },
                 { title: '操作', render: row => renderMerchantAction(row) }
             ];
             container.innerHTML = '<div class="page-header"><span class="page-title">商户管理</span></div>' +
@@ -1694,6 +1697,7 @@
                 { title: '回复', render: row => escapeHtml((row.reply || '-').slice(0, 30)) + ((row.reply || '').length > 30 ? '...' : '') },
                 { title: '状态', render: row => renderTicketStatus(row.status) },
                 { title: '创建时间', render: row => formatDate(row.createTime ?? row.createdAt) },
+                { title: '最后修改', render: row => formatDate(row.updateTime) },
                 { title: '操作', render: row => renderTicketAction(row) }
             ];
             container.innerHTML = '<div class="page-header"><span class="page-title">工单管理</span></div>' +
@@ -1844,7 +1848,8 @@
                     { title: 'ID', key: 'id' },
                     { title: '类型', key: 'riskType' },
                     { title: '描述', render: row => escapeHtml((row.description || '').slice(0, 40)) },
-                    { title: '触发时间', render: row => formatDate(row.createTime ?? row.triggerTime ?? row.createdAt) }
+                    { title: '触发时间', render: row => formatDate(row.createTime ?? row.triggerTime ?? row.createdAt) },
+                    { title: '最后修改', render: row => formatDate(row.updateTime) }
                 ]) + '</div>';
             container.innerHTML = html;
         } catch (e) {
@@ -1872,6 +1877,7 @@
                 { title: '描述', render: row => escapeHtml(row.description || '-') },
                 { title: '状态', render: row => renderRiskStatus(row.status) },
                 { title: '触发时间', render: row => formatDate(row.createTime ?? row.triggerTime ?? row.createdAt) },
+                { title: '最后修改', render: row => formatDate(row.updateTime) },
                 { title: '处理意见', render: row => escapeHtml(row.handleRemark || '-') },
                 { title: '操作', render: row => renderRiskAction(row) }
             ];
@@ -1967,7 +1973,8 @@
                 { label: '冻结金额', value: formatMoney(info.frozenAmount ?? 0) + ' 元' },
                 { label: '累计收款', value: formatMoney(info.totalIncome ?? info.totalAmount ?? 0) + ' 元' },
                 { label: '状态', value: info.status },
-                { label: '注册时间', value: formatDate(info.createTime ?? info.createdAt ?? info.registerTime) }
+                { label: '注册时间', value: formatDate(info.createTime ?? info.createdAt ?? info.registerTime) },
+                { label: '最后修改', value: formatDate(info.updateTime) }
             ];
             container.innerHTML = '<div class="page-header"><span class="page-title">商户信息</span></div>' +
                 '<div class="card"><div class="card-body">' +
