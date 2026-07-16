@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { Plus, Pencil, Trash2, ClipboardCheck, Clock, CheckCircle2, XCircle } from 'lucide-vue-next'
-import { api } from '@/api'
+import request from '@/api/request'
 import type { Approval, Student } from '@/types'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseSelect from '@/components/ui/BaseSelect.vue'
@@ -133,12 +133,12 @@ function resetForm() {
 async function loadAll() {
   loading.value = true
   try {
-    const [approvals, students] = await Promise.all([
-      api.approval.list(),
-      api.student.list(),
+    const [approvalRes, studentRes] = await Promise.all([
+      request.get('/approvals'),
+      request.get('/students'),
     ])
-    approvalList.value = approvals
-    studentList.value = students
+    approvalList.value = approvalRes.data
+    studentList.value = studentRes.data
   } catch (err) {
     console.error('加载审批相关数据失败:', err)
   } finally {
@@ -191,7 +191,7 @@ async function handleSave() {
         opinion: '',
         createdAt: new Date().toLocaleString('zh-CN', { hour12: false }),
       }
-      await api.approval.create(payload)
+      await request.post('/approvals', payload)
       alert('提交成功')
     } else {
       const id = editingId.value
@@ -202,14 +202,16 @@ async function handleSave() {
         type: form.type,
         reason: form.reason,
       }
-      await api.approval.update(id, payload)
+      await request.put(`/approvals/${id}`, payload)
       alert('更新成功')
     }
     modalVisible.value = false
     await loadAll()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '保存失败，请重试'
     console.error('保存审批失败:', err)
-    alert('保存失败，请重试')
+    alert(msg)
   } finally {
     saving.value = false
   }
@@ -230,13 +232,15 @@ async function handleDelete() {
   if (id === null) return
   deleting.value = true
   try {
-    await api.approval.remove(id)
+    await request.delete(`/approvals/${id}`)
     alert('删除成功')
     deleteVisible.value = false
     await loadAll()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '删除失败，请重试'
     console.error('删除审批失败:', err)
-    alert('删除失败，请重试')
+    alert(msg)
   } finally {
     deleting.value = false
   }
@@ -278,16 +282,18 @@ async function handleReview(pass: boolean) {
   if (id === null) return
   reviewing.value = true
   try {
-    await api.approval.update(id, {
+    await request.put(`/approvals/${id}`, {
       status: pass ? '已通过' : '已驳回',
       opinion: reviewForm.opinion.trim(),
     })
     alert(pass ? '审批通过' : '已驳回')
     reviewVisible.value = false
     await loadAll()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '审批失败，请重试'
     console.error('审批失败:', err)
-    alert('审批失败，请重试')
+    alert(msg)
   } finally {
     reviewing.value = false
   }

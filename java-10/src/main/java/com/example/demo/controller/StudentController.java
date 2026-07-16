@@ -1,0 +1,94 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.Student;
+import com.example.demo.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 学生管理控制器：提供学生 CRUD 接口
+ * <p>
+ * RESTful 设计：
+ * - GET    /api/students      查询所有学生
+ * - POST   /api/students      创建学生
+ * - PUT    /api/students/{id} 更新学生
+ * - DELETE /api/students/{id} 删除学生
+ * </p>
+ */
+@RestController
+@RequestMapping("/api/students")
+public class StudentController {
+
+    private final StudentService studentService;
+
+    @Autowired
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
+
+    /**
+     * 查询所有学生
+     *
+     * @return 学生列表
+     */
+    @GetMapping
+    public List<Student> findAll() {
+        return studentService.findAll();
+    }
+
+    /**
+     * 创建学生
+     *
+     * @param student 学生信息
+     * @return 200 + 创建后的学生信息
+     */
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody Student student) {
+        return ResponseEntity.ok(studentService.create(student));
+    }
+
+    /**
+     * 更新学生信息
+     * <p>
+     * 支持部分更新：仅更新请求体中提供的字段。
+     * 学生不存在时返回 400。
+     * </p>
+     *
+     * @param id 学生 ID
+     * @param student 更新数据
+     * @return 200 + 更新后的学生信息，或 400 + 错误信息
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Student student) {
+        Student updated = studentService.update(id, student);
+        if (updated == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "学生不存在"));
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * 删除学生
+     *
+     * @param id 学生 ID
+     * @return 200 + { "success": true }，或 400 + 错误信息
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (!studentService.delete(id)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "学生不存在"));
+        }
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+}

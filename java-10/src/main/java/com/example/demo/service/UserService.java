@@ -59,6 +59,28 @@ public class UserService {
     }
 
     /**
+     * 修改密码
+     * <p>
+     * 验证原密码后用 BCrypt 加密新密码并更新。
+     * 为什么不区分"用户不存在"和"原密码错误"：与登录逻辑一致，防止用户枚举攻击。
+     * </p>
+     *
+     * @param username 用户名
+     * @param oldPassword 原密码（明文）
+     * @param newPassword 新密码（明文）
+     * @return true 修改成功，false 原密码错误或用户不存在
+     */
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
+            return false;
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+    }
+
+    /**
      * 查询所有用户
      *
      * @return 用户列表（不含密码）

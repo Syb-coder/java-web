@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.service.UserService;
@@ -48,5 +49,29 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("error", "用户名或密码错误"));
         }
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 修改密码
+     * <p>
+     * 验证原密码后更新为新密码。
+     * 为什么原密码错误返回 400 而非 401：此处用户已通过身份认证，
+     * 错误原因为"输入的原密码不正确"，属于请求参数错误，400 语义更准确。
+     * </p>
+     *
+     * @param request 修改密码请求（含用户名、原密码、新密码，经 @Valid 校验非空）
+     * @return 200 + { "success": true } 成功，400 + 错误信息 原密码错误
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        boolean success = userService.changePassword(
+                request.getUsername(),
+                request.getOldPassword(),
+                request.getNewPassword()
+        );
+        if (!success) {
+            return ResponseEntity.badRequest().body(Map.of("error", "原密码错误"));
+        }
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }

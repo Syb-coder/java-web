@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import type { Role } from '@/stores/user'
-import { api } from '@/api'
+import request from '@/api/request'
 import type { OperationLog } from '@/types'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -79,15 +79,25 @@ function validatePassword(): boolean {
 async function handleChangePassword() {
   if (!validatePassword()) return
   passwordSaving.value = true
-  // 模拟接口请求延迟
-  await new Promise((r) => setTimeout(r, 500))
-  passwordSaving.value = false
-  passwordSuccess.value = true
-  // PRD 3.13：修改成功后提示重新登录，1.5 秒后退出并跳转登录页
-  setTimeout(() => {
-    userStore.logout()
-    router.push({ name: 'login' })
-  }, 1500)
+  try {
+    // 调用后端修改密码接口：username 取自当前登录用户
+    await request.post('/auth/change-password', {
+      username: userStore.userInfo?.username,
+      oldPassword: passwordForm.oldPassword,
+      newPassword: passwordForm.newPassword,
+    })
+    passwordSaving.value = false
+    passwordSuccess.value = true
+    // PRD 3.13：修改成功后提示重新登录，1.5 秒后退出并跳转登录页
+    setTimeout(() => {
+      userStore.logout()
+      router.push({ name: 'login' })
+    }, 1500)
+  } catch (err: any) {
+    passwordSaving.value = false
+    // 400 错误（如原密码错误）后端返回 { error: "..." }，展示在原密码输入框下
+    passwordErrors.oldPassword = err.response?.data?.error ?? '密码修改失败，请稍后重试'
+  }
 }
 
 /* ---------------- 操作记录卡片 ---------------- */
@@ -103,11 +113,16 @@ const logColumns: { key: string; title: string; width?: string; align?: 'left' |
   { key: 'time', title: '时间' },
 ]
 
-onMounted(() => {
-  api.log.list()
-    .then((data) => { logs.value = data })
-    .catch(() => { logs.value = [] })
-    .finally(() => { logLoading.value = false })
+onMounted(async () => {
+  try {
+    // 拉取操作记录：后端 GET /api/logs 返回数组
+    const res = await request.get('/logs')
+    logs.value = res.data
+  } catch {
+    logs.value = []
+  } finally {
+    logLoading.value = false
+  }
 })
 </script>
 

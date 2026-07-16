@@ -18,6 +18,7 @@ import {
   FileCheck2,
   ShieldCheck,
   CalendarDays,
+  Megaphone,
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/user'
 import { cn } from '@/lib/utils'
@@ -39,6 +40,7 @@ const menuItems = [
   { name: 'score', label: '成绩管理', icon: ClipboardList },
   { name: 'attendance', label: '考勤管理', icon: CalendarCheck },
   { name: 'approval', label: '审批管理', icon: FileCheck2 },
+  { name: 'notice', label: '公告管理', icon: Megaphone },
   { name: 'schedule', label: '课表展示', icon: CalendarDays },
   { name: 'admin-user', label: '管理员管理', icon: ShieldCheck },
   { name: 'profile', label: '个人中心', icon: UserCircle },

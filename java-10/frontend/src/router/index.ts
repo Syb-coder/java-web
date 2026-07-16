@@ -75,6 +75,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '审批管理' },
       },
       {
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/pages/NoticeManage.vue'),
+        meta: { title: '公告管理' },
+      },
+      {
         path: 'admin-user',
         name: 'admin-user',
         component: () => import('@/pages/AdminManage.vue'),

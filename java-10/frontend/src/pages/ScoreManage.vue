@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { Plus, Pencil, Trash2, Users, TrendingUp, TrendingDown, Award } from 'lucide-vue-next'
-import { api } from '@/api'
+import request from '@/api/request'
 import type { Score, Course, Student } from '@/types'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
@@ -134,14 +134,14 @@ function resetForm() {
 async function loadAll() {
   loading.value = true
   try {
-    const [scores, courses, students] = await Promise.all([
-      api.score.list(),
-      api.course.list(),
-      api.student.list(),
+    const [scoreRes, courseRes, studentRes] = await Promise.all([
+      request.get('/scores'),
+      request.get('/courses'),
+      request.get('/students'),
     ])
-    scoreList.value = scores
-    courseList.value = courses
-    studentList.value = students
+    scoreList.value = scoreRes.data
+    courseList.value = courseRes.data
+    studentList.value = studentRes.data
   } catch (err) {
     console.error('加载成绩相关数据失败:', err)
   } finally {
@@ -191,19 +191,21 @@ async function handleSave() {
   try {
     const payload = { ...form }
     if (modalMode.value === 'add') {
-      await api.score.create(payload)
+      await request.post('/scores', payload)
       alert('录入成功')
     } else {
       const id = editingId.value
       if (id === null) return
-      await api.score.update(id, payload)
+      await request.put(`/scores/${id}`, payload)
       alert('更新成功')
     }
     modalVisible.value = false
     await loadAll()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '保存失败，请重试'
     console.error('保存成绩失败:', err)
-    alert('保存失败，请重试')
+    alert(msg)
   } finally {
     saving.value = false
   }
@@ -224,13 +226,15 @@ async function handleDelete() {
   if (id === null) return
   deleting.value = true
   try {
-    await api.score.remove(id)
+    await request.delete(`/scores/${id}`)
     alert('删除成功')
     deleteVisible.value = false
     await loadAll()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '删除失败，请重试'
     console.error('删除成绩失败:', err)
-    alert('删除失败，请重试')
+    alert(msg)
   } finally {
     deleting.value = false
   }

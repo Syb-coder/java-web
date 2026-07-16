@@ -5,8 +5,8 @@ import {
   Users, GraduationCap, BookOpen, ClipboardList,
   School, CalendarCheck, FileCheck, KeyRound,
 } from 'lucide-vue-next'
-import { api } from '@/api'
-import type { DashboardStats, Notice } from '@/types'
+import request from '@/api/request'
+import type { DashboardStats, Notice, Approval } from '@/types'
 
 // 首页数据：统计指标与系统公告，通过 onMounted 并行加载
 
@@ -46,13 +46,28 @@ function handleEntry(name: string) {
 
 onMounted(() => {
   // 并行加载统计数据与公告，互不阻塞
-  api.dashboard.stats()
-    .then((data) => { stats.value = data })
+  // 统计数据由前端聚合：分别拉取学生、教师、课程、审批列表后计算计数
+  Promise.all([
+    request.get('/students'),
+    request.get('/teachers'),
+    request.get('/courses'),
+    request.get('/approvals'),
+  ])
+    .then(([studentRes, teacherRes, courseRes, approvalRes]) => {
+      stats.value = {
+        studentCount: studentRes.data.length,
+        teacherCount: teacherRes.data.length,
+        courseCount: courseRes.data.length,
+        pendingApprovalCount: approvalRes.data.filter(
+          (a: Approval) => a.status === '待审批',
+        ).length,
+      }
+    })
     .catch(() => { stats.value = null })
     .finally(() => { statsLoading.value = false })
 
-  api.notice.list()
-    .then((data) => { notices.value = data })
+  request.get('/notices')
+    .then((res) => { notices.value = res.data })
     .catch(() => { notices.value = [] })
     .finally(() => { noticeLoading.value = false })
 })

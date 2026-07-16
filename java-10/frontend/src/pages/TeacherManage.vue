@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next'
-import { api } from '@/api'
+import request from '@/api/request'
 import type { Teacher } from '@/types'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
@@ -104,7 +104,8 @@ function resetForm() {
 async function loadList() {
   loading.value = true
   try {
-    list.value = await api.teacher.list()
+    const res = await request.get('/teachers')
+    list.value = res.data
   } catch (err) {
     console.error('加载教师列表失败:', err)
   } finally {
@@ -148,19 +149,21 @@ async function handleSave() {
   try {
     const payload = { ...form }
     if (modalMode.value === 'add') {
-      await api.teacher.create(payload)
+      await request.post('/teachers', payload)
       alert('添加成功')
     } else {
       const id = editingId.value
       if (id === null) return
-      await api.teacher.update(id, payload)
+      await request.put(`/teachers/${id}`, payload)
       alert('更新成功')
     }
     modalVisible.value = false
     await loadList()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '保存失败，请重试'
     console.error('保存教师失败:', err)
-    alert('保存失败，请重试')
+    alert(msg)
   } finally {
     saving.value = false
   }
@@ -181,13 +184,15 @@ async function handleDelete() {
   if (id === null) return
   deleting.value = true
   try {
-    await api.teacher.remove(id)
+    await request.delete(`/teachers/${id}`)
     alert('删除成功')
     deleteVisible.value = false
     await loadList()
-  } catch (err) {
+  } catch (err: any) {
+    // 后端错误返回 { error: "..." }，提取展示；其他错误降级为通用提示
+    const msg = err.response?.data?.error || '删除失败，请重试'
     console.error('删除教师失败:', err)
-    alert('删除失败，请重试')
+    alert(msg)
   } finally {
     deleting.value = false
   }
