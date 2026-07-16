@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img" aria-label="用户登录流程图">
+  <title>用户登录流程图</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#card-shadow); }
+      .primary { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #4b5563; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .line-soft { fill: none; stroke: #94a3b8; stroke-width: 2; marker-end: url(#arrow); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .section-title { font: 700 20px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #334155; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+    </style>
+  </defs>
+  <rect class="bg" width="1400" height="700"/>
+  
+  
+  <text x="60" y="56" class="title">图 5-1 用户登录流程图</text>
+  <text x="60" y="84" class="subtitle">判断节点留出足够间距，箭头指向下一步边缘而不是节点中心</text>
+  
+  <rect x="70" y="145" width="210" height="82" rx="18" class="primary"/>
+  <text x="175" y="179" text-anchor="middle" class="label white">开始</text>
+  <text x="175" y="201" text-anchor="middle" class="white">打开登录页</text>
+  
+  <rect x="380" y="145" width="260" height="82" rx="18" class="node"/>
+  <text x="510" y="179" text-anchor="middle" class="label">提交登录信息</text>
+  <text x="510" y="201" text-anchor="middle" class="small">用户名 / 邮箱 / 密码</text>
+  
+  <polygon points="790,126 905,186 790,246 675,186" class="node"/>
+  <text x="790" y="178" text-anchor="middle" class="label">参数合法？</text>
+  
+  <rect x="1080" y="145" width="250" height="82" rx="18" class="orange"/>
+  <text x="1205" y="179" text-anchor="middle" class="label white">返回校验错误</text>
+  <text x="1205" y="201" text-anchor="middle" class="white">提示用户修正</text>
+  
+  <rect x="665" y="340" width="250" height="82" rx="18" class="node"/>
+  <text x="790" y="374" text-anchor="middle" class="label">查询用户</text>
+  <text x="790" y="396" text-anchor="middle" class="small">按账号定位 User</text>
+  
+  <polygon points="790,495 915,560 790,625 665,560" class="node"/>
+  <text x="790" y="552" text-anchor="middle" class="label">密码与状态</text>
+<text x="790" y="576" text-anchor="middle" class="small">是否通过？</text>
+  
+  <rect x="1080" y="520" width="250" height="82" rx="18" class="orange"/>
+  <text x="1205" y="554" text-anchor="middle" class="label white">登录失败</text>
+  <text x="1205" y="576" text-anchor="middle" class="white">账号不存在 / 密码错误</text>
+  
+  <rect x="375" y="520" width="270" height="82" rx="18" class="green"/>
+  <text x="510" y="554" text-anchor="middle" class="label white">创建登录态</text>
+  <text x="510" y="576" text-anchor="middle" class="white">Session / 当前用户信息</text>
+  
+  <rect x="70" y="520" width="210" height="82" rx="18" class="primary"/>
+  <text x="175" y="554" text-anchor="middle" class="label white">登录成功</text>
+  <text x="175" y="576" text-anchor="middle" class="white">返回用户信息</text>
+  <path d="M 280 186 L 380 186" class="line-blue"/>
+  <path d="M 640 186 L 675 186" class="line-blue"/>
+  <path d="M 905 186 L 1080 186" class="line"/>
+  <path d="M 790 246 L 790 340" class="line-blue"/>
+  <path d="M 790 422 L 790 495" class="line-blue"/>
+  <path d="M 915 560 L 1080 560" class="line"/>
+  <path d="M 665 560 L 645 560" class="line-blue"/>
+  <path d="M 375 560 L 280 560" class="line-blue"/>
+  <text x="992" y="170" text-anchor="middle" class="tiny">否</text>
+  <text x="810" y="306" text-anchor="middle" class="tiny">是</text>
+  <text x="998" y="544" text-anchor="middle" class="tiny">否</text>
+  <text x="650" y="544" text-anchor="middle" class="tiny">是</text>
+  
+</svg>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="700" viewBox="0 0 1260 700" role="img" aria-label="功能模块设计图">
+  <title>功能模块设计图</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#card-shadow); }
+      .primary { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #4b5563; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .line-soft { fill: none; stroke: #94a3b8; stroke-width: 2; marker-end: url(#arrow); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .section-title { font: 700 20px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #334155; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+    </style>
+  </defs>
+  <rect class="bg" width="1260" height="700"/>
+  
+  
+  <text x="60" y="56" class="title">图 4-2 功能模块设计图</text>
+  <text x="60" y="84" class="subtitle">中心模块固定，周边模块分两列分布，连线只连接模块边缘</text>
+  
+  <rect x="480" y="300" width="300" height="116" rx="18" class="dark"/>
+  <text x="630" y="334" text-anchor="middle" class="label white">二次元讨论网站</text>
+  <text x="630" y="356" text-anchor="middle" class="white">内容社区核心能力</text>
+<text x="630" y="380" text-anchor="middle" class="white">认证、内容、互动、治理</text>
+  
+  <rect x="80" y="140" width="260" height="100" rx="18" class="primary"/>
+  <text x="210" y="174" text-anchor="middle" class="label white">用户认证模块</text>
+  <text x="210" y="196" text-anchor="middle" class="white">注册 / 登录 / 资料维护</text>
+  
+  <rect x="80" y="300" width="260" height="100" rx="18" class="purple"/>
+  <text x="210" y="334" text-anchor="middle" class="label white">帖子管理模块</text>
+  <text x="210" y="356" text-anchor="middle" class="white">发布 / 查询 / 审核状态</text>
+  
+  <rect x="80" y="460" width="260" height="100" rx="18" class="pink"/>
+  <text x="210" y="494" text-anchor="middle" class="label white">评论互动模块</text>
+  <text x="210" y="516" text-anchor="middle" class="white">评论 / 点赞 / 收藏 / 关注</text>
+  
+  <rect x="920" y="140" width="260" height="100" rx="18" class="green"/>
+  <text x="1050" y="174" text-anchor="middle" class="label white">资讯作品模块</text>
+  <text x="1050" y="196" text-anchor="middle" class="white">资讯展示 / 作品推荐</text>
+  
+  <rect x="920" y="300" width="260" height="100" rx="18" class="orange"/>
+  <text x="1050" y="334" text-anchor="middle" class="label white">举报通知模块</text>
+  <text x="1050" y="356" text-anchor="middle" class="white">举报处理 / 系统通知</text>
+  
+  <rect x="920" y="460" width="260" height="100" rx="18" class="dark"/>
+  <text x="1050" y="494" text-anchor="middle" class="label white">后台统计模块</text>
+  <text x="1050" y="516" text-anchor="middle" class="white">管理员 / 日志 / 统计</text>
+  <path d="M 340 190 L 430 190 L 430 328 L 480 328" class="line"/>
+  <path d="M 340 350 L 480 350" class="line"/>
+  <path d="M 340 510 L 430 510 L 430 388 L 480 388" class="line"/>
+  <path d="M 920 190 L 830 190 L 830 328 L 780 328" class="line"/>
+  <path d="M 920 350 L 780 350" class="line"/>
+  <path d="M 920 510 L 830 510 L 830 388 L 780 388" class="line"/>
+  <text x="630" y="620" text-anchor="middle" class="subtitle">模块之间通过 Service 与 Repository 协同，避免直接跨层访问。</text>
+  
+</svg>

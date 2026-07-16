@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>次元社 · 管理后台</title>
+    <style>
+        /* ========== 设计变量 ========== */
+        :root {
+            --primary: #7c5cfc;
+            --primary-light: #f0edff;
+            --primary-dark: #5a3fd6;
+            --accent: #ff6b9d;
+            --bg: #ffffff;
+            --bg2: #f6f5fc;
+            --text: #1a1a2e;
+            --muted: #6a6a85;
+            --border: #e0e0ea;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 12px rgba(124, 92, 252, 0.08);
+            --shadow-hover: 0 6px 24px rgba(124, 92, 252, 0.15);
+            --gradient: linear-gradient(135deg, #7c5cfc 0%, #ff6b9d 100%);
+            --sidebar-w: 240px;
+        }
+
+        /* ========== 基础重置 ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg2);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        a { color: var(--primary); text-decoration: none; }
+
+        /* ========== 登录页 ========== */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-card h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 8px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--bg);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        .login-hint {
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+
+        .login-hint code {
+            background: var(--bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ========== 按钮 ========== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124, 92, 252, 0.3); }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { background: #e85a8a; }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-success:hover { background: #16a34a; }
+        .btn-warning { background: var(--warning); color: #fff; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-ghost { background: transparent; color: var(--muted); padding: 6px 10px; }
+        .btn-ghost:hover { color: var(--primary); background: var(--primary-light); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+        .btn-block { width: 100%; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ========== 管理后台布局 ========== */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--text);
+            color: #a0a0b5;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #6a6a85;
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 12px 0;
+        }
+
+        .nav-group-title {
+            padding: 12px 20px 6px;
+            font-size: 11px;
+            color: #6a6a85;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #a0a0b5;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: rgba(124, 92, 252, 0.15);
+            color: #fff;
+            border-left-color: var(--primary);
+        }
+
+        .nav-item .icon {
+            width: 18px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #6a6a85;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-area {
+            flex: 1;
+            margin-left: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 24px;
+        }
+
+        /* ========== 统计卡片 ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* ========== 卡片 ========== */
+        .card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .card-body { padding: 20px; }
+
+        /* ========== 表格 ========== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table th,
+        table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        table th {
+            background: var(--bg2);
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+        }
+
+        table tbody tr:hover { background: var(--bg2); }
+
+        table td .cell-content {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ========== 徽章 ========== */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #dcfce7; color: #16a34a; }
+        .badge-warning { background: #fef3c7; color: #d97706; }
+        .badge-danger { background: #fee2e2; color: #dc2626; }
+        .badge-info { background: var(--primary-light); color: var(--primary); }
+        .badge-muted { background: #f1f1f5; color: var(--muted); }
+        .badge-accent { background: #fff0f5; color: var(--accent); }
+
+        /* ========== 搜索栏 ========== */
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            min-width: 220px;
+            font-family: inherit;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* ========== 操作按钮组 ========== */
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 空状态 ========== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        /* ========== 分页 ========== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination button {
+            min-width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .pagination .page-info {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0 8px;
+        }
+
+        /* ========== 轻提示 ========== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show { opacity: 1; top: 90px; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); }
+
+        /* ========== 模态框 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            background: var(--text);
+            color: #a0a0b5;
+            padding: 24px 20px;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-brand {
+            font-size: 16px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-bottom {
+            font-size: 12px;
+            color: #6a6a85;
+        }
+
+        /* ========== 简易图表 ========== */
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 200px;
+            padding: 16px 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: var(--primary);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 4px;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover { opacity: 0.8; }
+
+        .chart-bar .bar-label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .chart-bar .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* ========== 加载状态 ========== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .loading::before {
+            content: '⏳';
+            display: block;
+            font-size: 32px;
+            margin-bottom: 8px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== 响应式 ========== */
+        .mobile-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.show { transform: translateX(0); }
+            .main-area { margin-left: 0; }
+            .mobile-toggle { display: block; }
+            .content-area { padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div id="loginPage" class="login-page" style="display:none;">
+    <div class="login-card">
+        <h1>🌸 次元社管理后台</h1>
+        <p class="subtitle">管理员登录</p>
+        <form id="loginForm" onsubmit="return false;">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="loginUsername" placeholder="请输入管理员用户名" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn" onclick="handleLogin()">登录</button>
+        </form>
+        <div class="login-hint">
+            🔑 默认账号：<br>
+            管理员：<code>admin</code> / <code>admin123</code><br>
+            版主：<code>moderator</code> / <code>mod123</code>
+        </div>
+    </div>
+</div>
+
+<!-- 管理后台主体 -->
+<div id="adminLayout" class="admin-layout" style="display:none;">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🌸 次元社</h2>
+            <p>管理后台 Control Panel</p>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-group-title">概览</div>
+            <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                <span class="icon">📊</span><span>仪表盘</span>
+            </div>
+            <div class="nav-group-title">用户与内容</div>
+            <div class="nav-item" data-tab="users" onclick="switchTab('users')">
+                <span class="icon">👥</span><span>用户管理</span>
+            </div>
+            <div class="nav-item" data-tab="posts-pending" onclick="switchTab('posts-pending')">
+                <span class="icon">📝</span><span>帖子审核</span>
+            </div>
+            <div class="nav-item" data-tab="comments" onclick="switchTab('comments')">
+                <span class="icon">💬</span><span>评论管理</span>
+            </div>
+            <div class="nav-item" data-tab="reports" onclick="switchTab('reports')">
+                <span class="icon">🚩</span><span>举报处理</span>
+            </div>
+            <div class="nav-group-title">社区治理</div>
+            <div class="nav-item" data-tab="sections" onclick="switchTab('sections')">
+                <span class="icon">📁</span><span>板块管理</span>
+            </div>
+            <div class="nav-item" data-tab="sensitive-words" onclick="switchTab('sensitive-words')">
+                <span class="icon">🚫</span><span>敏感词</span>
+            </div>
+            <div class="nav-group-title">数据与系统</div>
+            <div class="nav-item" data-tab="stats" onclick="switchTab('stats')">
+                <span class="icon">📈</span><span>数据统计</span>
+            </div>
+            <div class="nav-item" data-tab="logs" onclick="switchTab('logs')">
+                <span class="icon">📋</span><span>操作日志</span>
+            </div>
+            <div class="nav-item" data-tab="configs" onclick="switchTab('configs')">
+                <span class="icon">⚙️</span><span>系统配置</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            v1.0 · © 2026 次元社
+        </div>
+    </aside>
+
+    <!-- 主区域 -->
+    <div class="main-area">
+        <header class="topbar">
+            <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('show')">☰</button>
+            <h1 id="pageTitle">仪表盘</h1>
+            <div class="topbar-right">
+                <div class="admin-info">
+                    <div class="admin-avatar" id="adminAvatar">A</div>
+                    <span id="adminName">管理员</span>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="handleLogout()">退出登录</button>
+            </div>
+        </header>
+
+        <main class="content-area" id="contentArea">
+            <!-- 动态内容 -->
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">🌸 次元社 · 管理后台</div>
+                <div class="footer-bottom">© 2026 次元社 ACG Community · 仅供学习交流使用 · Powered by Spring Boot</div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- 轻提示 -->
+<div class="toast" id="toast"></div>
+
+<!-- 模态框 -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+    // ========== API 封装 ==========
+    const API_BASE = 'http://localhost:8089';
+
+    /**
+     * API 请求封装对象
+     * 统一处理 fetch 请求，携带 Session 凭证，处理 401 跳转登录
+     */
+    const API = {
+        /**
+         * 发起 API 请求
+         * @param {string} url - API 路径（以 /api 开头）
+         * @param {object} options - fetch 配置项
+         * @returns {Promise<object>} 解析后的响应 JSON
+         */
+        async request(url, options = {}) {
+            try {
+                const fetchOptions = {
+                    credentials: 'include',
+                    headers: {},
+                    ...options
+                };
+                // 仅当 body 为普通对象时按 JSON 发送
+                if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+                    fetchOptions.headers['Content-Type'] = 'application/json';
+                    fetchOptions.body = JSON.stringify(options.body);
+                }
+                const response = await fetch(API_BASE + url, fetchOptions);
+                if (response.status === 401) {
+                    state.admin = null;
+                    showLogin();
+                    showMsg('登录已过期，请重新登录', 'warning');
+                    return { success: false, message: '未登录', data: null };
+                }
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    return { success: false, message: '服务器返回格式异常', data: null };
+                }
+                return data;
+            } catch (err) {
+                console.error('API请求失败:', err);
+                return { success: false, message: '网络请求失败，请检查后端服务是否启动', data: null };
+            }
+        },
+
+        async get(url) { return this.request(url, { method: 'GET' }); },
+        async post(url, data) { return this.request(url, { method: 'POST', body: data }); },
+        async put(url, data) { return this.request(url, { method: 'PUT', body: data }); },
+        async del(url) { return this.request(url, { method: 'DELETE' }); }
+    };
+
+    /**
+     * 构建 URL 查询参数
+     * 用于后端 @RequestParam 接口
+     * @param {object} params - 参数对象
+     * @returns {string} 查询字符串，如 ?key1=val1&key2=val2
+     */
+    function buildQuery(params) {
+        const parts = [];
+        for (const k in params) {
+            if (params[k] !== undefined && params[k] !== null && params[k] !== '') {
+                parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
+            }
+        }
+        return parts.length ? '?' + parts.join('&') : '';
+    }
+
+    // ========== 状态管理 ==========
+    const state = {
+        admin: null,
+        currentTab: 'dashboard',
+        // 分页状态
+        page: {
+            users: 1, comments: 1, logs: 1, 'sensitive-words': 1, configs: 1
+        },
+        // 搜索状态（翻页时保持关键词）
+        search: {
+            users: ''
+        },
+        pageSize: 10,
+        // 缓存数据
+        cache: {}
+    };
+
+    // ========== 辅助函数 ==========
+
+    /**
+     * 格式化日期时间
+     * @param {string|Date} date - 日期字符串或对象
+     * @returns {string} 格式化后的时间字符串
+     */
+    function formatDate(date) {
+        if (!date) return '—';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '—';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const h = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${y}-${m}-${day} ${h}:${min}`;
+    }
+
+    /**
+     * HTML 转义，防止 XSS 攻击
+     * @param {string} str - 原始字符串
+     * @returns {string} 转义后的安全字符串
+     */
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * 显示轻提示
+     * @param {string} msg - 提示消息
+     * @param {string} type - 提示类型：success/error/warning
+     * @param {number} duration - 显示时长（毫秒）
+     */
+    function showMsg(msg, type = '', duration = 2500) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast show ' + type;
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+            toast.className = 'toast';
+        }, duration);
+    }
+
+    /**
+     * 确认对话框（基于模态框）
+     * @param {string} msg - 确认消息
+     * @param {function} onConfirm - 确认回调
+     * @param {string} title - 标题
+     */
+    function confirmAction(msg, onConfirm, title = '操作确认') {
+        document.getElementById('modalContent').innerHTML = `
+            <h3>${escapeHtml(title)}</h3>
+            <p style="margin:12px 0;font-size:14px;line-height:1.8;">${escapeHtml(msg)}</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-danger" id="confirmBtn">确认</button>
+            </div>
+        `;
+        document.getElementById('confirmBtn').onclick = () => {
+            closeModal();
+            onConfirm();
+        };
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 关闭模态框
+     */
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    /**
+     * 渲染分页控件
+     * @param {number} total - 总条数
+     * @param {number} current - 当前页
+     * @param {function} onPage - 切换页回调
+     * @returns {string} HTML 字符串
+     */
+    function renderPagination(total, current, onPage) {
+        const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+        if (totalPages <= 1) return '';
+        let html = '<div class="pagination">';
+        html += `<button onclick="${onPage}(${current - 1})" ${current <= 1 ? 'disabled' : ''}>上一页</button>`;
+        // 显示页码（最多 5 个）
+        let start = Math.max(1, current - 2);
+        let end = Math.min(totalPages, start + 4);
+        start = Math.max(1, end - 4);
+        for (let i = start; i <= end; i++) {
+            html += `<button class="${i === current ? 'active' : ''}" onclick="${onPage}(${i})">${i}</button>`;
+        }
+        html += `<button onclick="${onPage}(${current + 1})" ${current >= totalPages ? 'disabled' : ''}>下一页</button>`;
+        html += `<span class="page-info">共 ${total} 条 / ${totalPages} 页</span>`;
+        html += '</div>';
+        return html;
+    }
+
+    /**
+     * 渲染空状态
+     * @param {string} text - 提示文字
+     * @returns {string} HTML 字符串
+     */
+    function renderEmpty(text = '暂无数据') {
+        return `<div class="empty-state"><div class="icon">📭</div><p>${escapeHtml(text)}</p></div>`;
+    }
+
+    /**
+     * 渲染加载状态
+     * @returns {string} HTML 字符串
+     */
+    function renderLoading() {
+        return '<div class="loading">数据加载中...</div>';
+    }
+
+    // ========== 认证相关 ==========
+
+    /**
+     * 处理管理员登录
+     */
+    async function handleLogin() {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!username || !password) {
+            showMsg('请输入用户名和密码', 'warning');
+            return;
+        }
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = '登录中...';
+        try {
+            const res = await API.post('/api/auth/admin/login', { username, password });
+            if (res.success) {
+                state.admin = res.data;
+                showMsg('登录成功', 'success');
+                showAdmin();
+            } else {
+                showMsg(res.message || '登录失败', 'error');
+            }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '登录';
+        }
+    }
+
+    /**
+     * 处理登出
+     */
+    async function handleLogout() {
+        confirmAction('确定要退出登录吗？', async () => {
+            await API.post('/api/auth/logout');
+            state.admin = null;
+            showLogin();
+            showMsg('已退出登录', 'success');
+        });
+    }
+
+    /**
+     * 显示登录页
+     */
+    function showLogin() {
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('adminLayout').style.display = 'none';
+    }
+
+    /**
+     * 显示管理后台
+     */
+    function showAdmin() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('adminLayout').style.display = 'flex';
+        // 渲染管理员信息
+        const admin = state.admin;
+        if (admin) {
+            document.getElementById('adminName').textContent = admin.nickname || admin.username || '管理员';
+            document.getElementById('adminAvatar').textContent = (admin.username || 'A').charAt(0).toUpperCase();
+        }
+        switchTab(state.currentTab || 'dashboard');
+    }
+
+    /**
+     * 检查管理员登录状态
+     * 说明：调用 /api/auth/admin/me 接口检测管理员登录态，
+     * 已登录则保存管理员信息并跳转到仪表盘，未登录则显示登录表单。
+     * @returns {Promise<void>}
+     */
+    async function checkSession() {
+        try {
+            const res = await API.get('/api/auth/admin/me');
+            if (res.success && res.data) {
+                // 已登录，保存管理员信息并跳转仪表盘
+                state.admin = res.data;
+                showAdmin();
+            } else {
+                // 未登录，显示登录表单
+                showLogin();
+            }
+        } catch (e) {
+            // 接口异常时降级为显示登录页
+            console.error('检测管理员登录态失败:', e);
+            showLogin();
+        }
+    }
+
+    // ========== Tab 切换 ==========
+
+    /**
+     * 页面标题映射
+     */
+    const TAB_TITLES = {
+        'dashboard': '仪表盘',
+        'users': '用户管理',
+        'posts-pending': '帖子审核',
+        'comments': '评论管理',
+        'reports': '举报处理',
+        'sections': '板块管理',
+        'sensitive-words': '敏感词管理',
+        'stats': '数据统计',
+        'logs': '操作日志',
+        'configs': '系统配置'
+    };
+
+    /**
+     * 切换 Tab
+     * @param {string} tab - Tab 标识
+     */
+    function switchTab(tab) {
+        state.currentTab = tab;
+        // 更新导航高亮
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.tab === tab);
+        });
+        // 更新标题
+        document.getElementById('pageTitle').textContent = TAB_TITLES[tab] || tab;
+        // 关闭移动端侧边栏
+        document.getElementById('sidebar').classList.remove('show');
+        // 渲染对应内容
+        const renderers = {
+            'dashboard': renderDashboard,
+            'users': renderUsers,
+            'posts-pending': renderPendingPosts,
+            'comments': renderComments,
+            'reports': renderReports,
+            'sections': renderSections,
+            'sensitive-words': renderSensitiveWords,
+            'stats': renderStats,
+            'logs': renderLogs,
+            'configs': renderConfigs
+        };
+        const renderer = renderers[tab];
+        if (renderer) renderer();
+    }
+
+    // ========== 仪表盘 ==========
+
+    /**
+     * 渲染仪表盘
+     */
+    async function renderDashboard() {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/stats');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const s = res.data || {};
+        state.cache.stats = s;
+        const statCards = [
+            { icon: '👥', bg: '#f0edff', color: 'var(--primary)', value: s.totalUsers || 0, label: '总用户数' },
+            { icon: '📝', bg: '#fff0f5', color: 'var(--accent)', value: s.totalPosts || 0, label: '总帖子数' },
+            { icon: '⏳', bg: '#fef3c7', color: 'var(--warning)', value: s.pendingPosts || 0, label: '待审核帖子' },
+            { icon: '🚩', bg: '#fee2e2', color: 'var(--danger)', value: s.pendingReports || 0, label: '待处理举报' },
+            { icon: '💬', bg: '#dcfce7', color: 'var(--success)', value: s.totalComments || 0, label: '总评论数' },
+            { icon: '✨', bg: '#f0edff', color: 'var(--primary)', value: s.todayNewUsers || 0, label: '今日新增用户' },
+            { icon: '🚀', bg: '#fff0f5', color: 'var(--accent)', value: s.todayNewPosts || 0, label: '今日新增帖子' }
+        ];
+        let html = '<div class="stats-grid">';
+        statCards.forEach(c => {
+            html += `<div class="stat-card">
+                <div class="stat-icon" style="background:${c.bg};color:${c.color}">${c.icon}</div>
+                <div class="stat-value">${c.value}</div>
+                <div class="stat-label">${c.label}</div>
+            </div>`;
+        });
+        html += '</div>';
+
+        // 热门帖子
+        const hotPosts = s.hotPosts || [];
+        html += `<div class="card">
+            <div class="card-header"><h3>🔥 热门帖子</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>标题</th><th>作者</th><th>浏览</th><th>点赞</th><th>评论</th><th>更新时间</th></tr></thead>
+                    <tbody>`;
+        if (hotPosts.length === 0) {
+            html += `<tr><td colspan="6">${renderEmpty('暂无热门帖子')}</td></tr>`;
+        } else {
+            hotPosts.forEach(p => {
+                html += `<tr>
+                    <td><div class="cell-content">${escapeHtml(p.title)}</div></td>
+                    <td>${escapeHtml(p.username || '—')}</td>
+                    <td>${p.viewCount || 0}</td>
+                    <td>${p.likeCount || 0}</td>
+                    <td>${p.commentCount || 0}</td>
+                    <td>${formatDate(p.updateTime)}</td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div></div>`;
+
+        // 热门标签
+        const hotTags = s.hotTags || [];
+        if (hotTags.length > 0) {
+            html += `<div class="card"><div class="card-header"><h3>🏷️ 热门标签</h3></div><div class="card-body">`;
+            hotTags.forEach(t => {
+                html += `<span class="badge badge-info" style="margin:4px;font-size:13px;padding:6px 12px;">${escapeHtml(t.name || t)} (${t.usageCount || 0})</span>`;
+            });
+            html += `</div></div>`;
+        }
+
+        area.innerHTML = html;
+    }
+
+    // ========== 用户管理 ==========
+
+    /**
+     * 渲染用户管理
+     * @param {number} page - 页码
+     * @param {string} keyword - 搜索关键词（传入时更新 state.search.users）
+     */
+    async function renderUsers(page, keyword) {
+        if (page) state.page.users = page;
+        // keyword 为字符串时更新搜索状态，为 undefined 时保持现有搜索词
+        if (keyword !== undefined) {
+            state.search.users = keyword;
+        }
+        const p = state.page.users;
+        const kw = state.search.users;
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        let res;
+        if (kw) {
+            res = await API.get('/api/admin/users/search?keyword=' + encodeURIComponent(kw));
+        } else {
+            res = await API.get('/api/admin/users');
+        }
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        const total = list.length;
+        const startIdx = (p - 1) * state.pageSize;
+        const pageList = list.slice(startIdx, startIdx + state.pageSize);
+
+        let html = `<div class="card">
+            <div class="card-header">
+                <h3>用户列表</h3>
+                <div class="search-bar">
+                    <input type="text" id="userSearchInput" placeholder="搜索用户名..." value="${escapeHtml(state.search.users)}" onkeydown="if(event.key==='Enter')searchUsers()">
+                    <button class="btn btn-primary btn-sm" onclick="searchUsers()">搜索</button>
+                    <button class="btn btn-outline btn-sm" onclick="renderUsers(1, '')">全部</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>用户名</th><th>昵称</th><th>邮箱</th>
+                        <th>发帖数</th><th>粉丝数</th><th>状态</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (pageList.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无用户')}</td></tr>`;
+        } else {
+            pageList.forEach(u => {
+                const isBanned = u.status === 'BANNED';
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${escapeHtml(u.username)}</td>
+                    <td>${escapeHtml(u.nickname || '—')}</td>
+                    <td>${escapeHtml(u.email || '—')}</td>
+                    <td>${u.postCount || 0}</td>
+                    <td>${u.followerCount || 0}</td>
+                    <td><span class="badge ${isBanned ? 'badge-danger' : 'badge-success'}">${isBanned ? '已封禁' : '正常'}</span></td>
+                    <td>${formatDate(u.updateTime)}</td>
+                    <td><div class="action-group">`;
+                if (isBanned) {
+                    html += `<button class="btn btn-success btn-sm" onclick="toggleUserBan(${u.id}, false)">解封</button>`;
+                } else {
+                    html += `<button class="btn btn-danger btn-sm" onclick="toggleUserBan(${u.id}, true)">封禁</button>`;
+                }
+                html += `</div></td></tr>`;
+            });
+        }
+        html += `</tbody></table></div>`;
+        html += renderPagination(total, p, 'renderUsers');
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 搜索用户
+     */
+    function searchUsers() {
+        const kw = document.getElementById('userSearchInput').value.trim();
+        renderUsers(1, kw);
+    }
+
+    /**
+     * 封禁/解封用户
+     * @param {number} id - 用户 ID
+     * @param {boolean} ban - true 封禁，false 解封
+     */
+    async function toggleUserBan(id, ban) {
+        const action = ban ? '封禁' : '解封';
+        confirmAction(`确定要${action}该用户吗？`, async () => {
+            const url = ban ? `/api/admin/users/${id}/ban` : `/api/admin/users/${id}/unban`;
+            const res = await API.put(url);
+            if (res.success) {
+                showMsg(`${action}成功`, 'success');
+                renderUsers(state.page.users);
+            } else {
+                showMsg(res.message || `${action}失败`, 'error');
+            }
+        });
+    }
+
+    // ========== 帖子审核 ==========
+
+    /**
+     * 渲染待审核帖子
+     */
+    async function renderPendingPosts() {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/posts/pending');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        state.cache.pendingPosts = list; // 缓存待审核帖子，供详情查看使用
+        let html = `<div class="card">
+            <div class="card-header"><h3>📝 待审核帖子（${list.length}）</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>标题</th><th>作者</th><th>板块</th>
+                        <th>浏览</th><th>状态</th><th>创建时间</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无待审核帖子')}</td></tr>`;
+        } else {
+            list.forEach(p => {
+                html += `<tr>
+                    <td>${p.id}</td>
+                    <td><div class="cell-content"><a href="${API_BASE}/#/post/${p.id}" target="_blank">${escapeHtml(p.title)}</a></div></td>
+                    <td>${escapeHtml(p.username || '—')}</td>
+                    <td>${escapeHtml(p.sectionName || '—')}</td>
+                    <td>${p.viewCount || 0}</td>
+                    <td><span class="badge badge-warning">${escapeHtml(p.status || 'PENDING')}</span></td>
+                    <td>${formatDate(p.createdAt)}</td>
+                    <td>${formatDate(p.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-success btn-sm" onclick="reviewPost(${p.id}, 'approve')">通过</button>
+                        <button class="btn btn-danger btn-sm" onclick="reviewPost(${p.id}, 'reject')">拒绝</button>
+                        <button class="btn btn-outline btn-sm" onclick="viewPostDetail(${p.id})">详情</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div></div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 审核帖子
+     * @param {number} id - 帖子 ID
+     * @param {string} action - approve 或 reject
+     */
+    async function reviewPost(id, action) {
+        const text = action === 'approve' ? '通过' : '拒绝';
+        confirmAction(`确定要${text}该帖子吗？`, async () => {
+            const res = await API.put(`/api/admin/posts/${id}/${action}`);
+            if (res.success) {
+                showMsg(`已${text}`, 'success');
+                renderPendingPosts();
+            } else {
+                showMsg(res.message || `操作失败`, 'error');
+            }
+        });
+    }
+
+    /**
+     * 查看帖子详情
+     * @param {number} id - 帖子 ID
+     */
+    function viewPostDetail(id) {
+        // 优先从待审核帖子缓存中查找
+        const p = (state.cache.pendingPosts || []).find(x => x.id === id);
+        if (!p) {
+            showMsg('详情数据不可用，请刷新列表后重试', 'warning');
+            return;
+        }
+        document.getElementById('modalContent').innerHTML = `
+            <h3>帖子详情</h3>
+            <div style="font-size:14px;line-height:1.8;">
+                <p><strong>ID：</strong>${p.id}</p>
+                <p><strong>标题：</strong>${escapeHtml(p.title)}</p>
+                <p><strong>作者：</strong>${escapeHtml(p.username || '—')}</p>
+                <p><strong>板块：</strong>${escapeHtml(p.sectionName || '—')}</p>
+                <p><strong>浏览：</strong>${p.viewCount || 0} · <strong>点赞：</strong>${p.likeCount || 0} · <strong>评论：</strong>${p.commentCount || 0}</p>
+                <p><strong>内容：</strong></p>
+                <div style="background:var(--bg2);padding:12px;border-radius:8px;margin-top:8px;white-space:pre-wrap;max-height:300px;overflow-y:auto;">${escapeHtml(p.content || '无内容')}</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    // ========== 评论管理 ==========
+
+    /**
+     * 渲染评论管理
+     * @param {number} page - 页码
+     */
+    async function renderComments(page) {
+        if (page) state.page.comments = page;
+        const p = state.page.comments;
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/comments');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        const total = list.length;
+        const startIdx = (p - 1) * state.pageSize;
+        const pageList = list.slice(startIdx, startIdx + state.pageSize);
+
+        let html = `<div class="card">
+            <div class="card-header"><h3>评论列表（共 ${total} 条）</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>内容</th><th>用户ID</th><th>帖子ID</th>
+                        <th>楼层</th><th>点赞</th><th>状态</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (pageList.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无评论')}</td></tr>`;
+        } else {
+            pageList.forEach(c => {
+                const statusBadge = c.status === 'NORMAL' ? 'badge-success' : 'badge-danger';
+                html += `<tr>
+                    <td>${c.id}</td>
+                    <td><div class="cell-content">${escapeHtml(c.content)}</div></td>
+                    <td>${c.userId}</td>
+                    <td>${c.postId}</td>
+                    <td>${c.floor || '—'}</td>
+                    <td>${c.likeCount || 0}</td>
+                    <td><span class="badge ${statusBadge}">${escapeHtml(c.status || '—')}</span></td>
+                    <td>${formatDate(c.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-danger btn-sm" onclick="deleteComment(${c.id})">删除</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div>`;
+        html += renderPagination(total, p, 'renderComments');
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 删除评论
+     * @param {number} id - 评论 ID
+     */
+    async function deleteComment(id) {
+        confirmAction('确定要删除该评论吗？此操作不可恢复。', async () => {
+            const res = await API.del(`/api/admin/comments/${id}`);
+            if (res.success) {
+                showMsg('评论已删除', 'success');
+                renderComments(state.page.comments);
+            } else {
+                showMsg(res.message || '删除失败', 'error');
+            }
+        });
+    }
+
+    // ========== 举报处理 ==========
+
+    /**
+     * 渲染举报处理
+     */
+    async function renderReports() {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/reports');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        let html = `<div class="card">
+            <div class="card-header"><h3>🚩 待处理举报（${list.length}）</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>举报人</th><th>目标类型</th><th>目标ID</th>
+                        <th>理由</th><th>补充说明</th><th>状态</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无待处理举报')}</td></tr>`;
+        } else {
+            list.forEach(r => {
+                html += `<tr>
+                    <td>${r.id}</td>
+                    <td>${escapeHtml(r.reporterName || ('用户' + r.reporterId))}</td>
+                    <td><span class="badge badge-info">${escapeHtml(r.targetType || '—')}</span></td>
+                    <td>${r.targetId}</td>
+                    <td>${escapeHtml(r.reason || '—')}</td>
+                    <td><div class="cell-content">${escapeHtml(r.description || '—')}</div></td>
+                    <td><span class="badge badge-warning">${escapeHtml(r.status || 'PENDING')}</span></td>
+                    <td>${formatDate(r.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-success btn-sm" onclick="handleReport(${r.id}, 'resolve')">处理</button>
+                        <button class="btn btn-outline btn-sm" onclick="handleReport(${r.id}, 'reject')">驳回</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div></div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 处理/驳回举报
+     * @param {number} id - 举报 ID
+     * @param {string} action - resolve 或 reject
+     */
+    function handleReport(id, action) {
+        const text = action === 'resolve' ? '处理' : '驳回';
+        document.getElementById('modalContent').innerHTML = `
+            <h3>${text}举报 #${id}</h3>
+            <div class="form-group">
+                <label>处理备注</label>
+                <textarea id="reportRemark" placeholder="请输入处理说明..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn ${action === 'resolve' ? 'btn-success' : 'btn-warning'}" onclick="submitReport(${id}, '${action}')">确认${text}</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 提交举报处理
+     * @param {number} id - 举报 ID
+     * @param {string} action - resolve 或 reject
+     */
+    async function submitReport(id, action) {
+        const remark = document.getElementById('reportRemark').value.trim();
+        // 后端使用 @RequestParam，通过 query string 传递
+        const url = `/api/admin/reports/${id}/${action}` + buildQuery({ handleRemark: remark });
+        const res = await API.put(url);
+        if (res.success) {
+            showMsg('操作成功', 'success');
+            closeModal();
+            renderReports();
+        } else {
+            showMsg(res.message || '操作失败', 'error');
+        }
+    }
+
+    // ========== 板块管理 ==========
+
+    /**
+     * 渲染板块管理
+     */
+    async function renderSections() {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        // 复用公开的板块接口
+        const res = await API.get('/api/sections');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        let html = `<div class="card">
+            <div class="card-header">
+                <h3>板块列表</h3>
+                <button class="btn btn-primary btn-sm" onclick="showSectionForm()">+ 创建板块</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>名称</th><th>描述</th><th>图标</th>
+                        <th>帖子数</th><th>排序</th><th>版主ID</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无板块')}</td></tr>`;
+        } else {
+            list.forEach(s => {
+                html += `<tr>
+                    <td>${s.id}</td>
+                    <td>${escapeHtml(s.name)}</td>
+                    <td><div class="cell-content">${escapeHtml(s.description || '—')}</div></td>
+                    <td>${escapeHtml(s.icon || '—')}</td>
+                    <td>${s.postCount || 0}</td>
+                    <td>${s.sortOrder || 0}</td>
+                    <td>${s.moderatorId || '—'}</td>
+                    <td>${formatDate(s.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-outline btn-sm" onclick="showSectionForm(${s.id})">编辑</button>
+                        <button class="btn btn-ghost btn-sm" onclick="showModeratorForm(${s.id})">设版主</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteSection(${s.id})">删除</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div></div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 显示板块表单（创建/编辑）
+     * @param {number} id - 板块 ID（编辑时传入，0 或 undefined 表示新建）
+     */
+    function showSectionForm(id) {
+        document.getElementById('modalContent').innerHTML = `
+            <h3>${id ? '编辑板块' : '创建板块'}</h3>
+            <div class="form-group">
+                <label>板块名称 *</label>
+                <input type="text" id="sectionName" placeholder="请输入板块名称">
+            </div>
+            <div class="form-group">
+                <label>板块描述</label>
+                <textarea id="sectionDesc" placeholder="请输入板块描述"></textarea>
+            </div>
+            <div class="form-group">
+                <label>板块图标</label>
+                <input type="text" id="sectionIcon" placeholder="如：🎮 / 📚 / 🎬">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveSection(${id || 0})">保存</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 保存板块
+     * @param {number} id - 板块 ID（0 表示新建）
+     */
+    async function saveSection(id) {
+        const name = document.getElementById('sectionName').value.trim();
+        const description = document.getElementById('sectionDesc').value.trim();
+        const icon = document.getElementById('sectionIcon').value.trim();
+        if (!name) {
+            showMsg('请输入板块名称', 'warning');
+            return;
+        }
+        // 后端使用 @RequestParam，通过 query string 传递
+        const query = buildQuery({ name, description, icon });
+        let res;
+        if (id) {
+            res = await API.put(`/api/admin/sections/${id}` + query);
+        } else {
+            res = await API.post('/api/admin/sections' + query);
+        }
+        if (res.success) {
+            showMsg(id ? '板块已更新' : '板块已创建', 'success');
+            closeModal();
+            renderSections();
+        } else {
+            showMsg(res.message || '保存失败', 'error');
+        }
+    }
+
+    /**
+     * 显示设置版主表单
+     * @param {number} id - 板块 ID
+     */
+    function showModeratorForm(id) {
+        document.getElementById('modalContent').innerHTML = `
+            <h3>设置版主 · 板块 #${id}</h3>
+            <div class="form-group">
+                <label>版主（管理员）ID *</label>
+                <input type="number" id="moderatorId" placeholder="请输入管理员用户 ID">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="setModerator(${id})">确认设置</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 设置版主
+     * @param {number} id - 板块 ID
+     */
+    async function setModerator(id) {
+        const moderatorId = document.getElementById('moderatorId').value.trim();
+        if (!moderatorId) {
+            showMsg('请输入版主 ID', 'warning');
+            return;
+        }
+        const res = await API.put(`/api/admin/sections/${id}/moderator` + buildQuery({ moderatorId }));
+        if (res.success) {
+            showMsg('版主已设置', 'success');
+            closeModal();
+            renderSections();
+        } else {
+            showMsg(res.message || '设置失败', 'error');
+        }
+    }
+
+    /**
+     * 删除板块
+     * @param {number} id - 板块 ID
+     */
+    async function deleteSection(id) {
+        confirmAction('确定要删除该板块吗？板块下帖子可能受影响。', async () => {
+            const res = await API.del(`/api/admin/sections/${id}`);
+            if (res.success) {
+                showMsg('板块已删除', 'success');
+                renderSections();
+            } else {
+                showMsg(res.message || '删除失败', 'error');
+            }
+        });
+    }
+
+    // ========== 数据统计 ==========
+
+    /**
+     * 渲染数据统计
+     */
+    async function renderStats() {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/stats');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const s = res.data || {};
+        state.cache.stats = s;
+
+        // 统计卡片
+        const statCards = [
+            { icon: '👥', bg: '#f0edff', color: 'var(--primary)', value: s.totalUsers || 0, label: '总用户数' },
+            { icon: '📝', bg: '#fff0f5', color: 'var(--accent)', value: s.totalPosts || 0, label: '总帖子数' },
+            { icon: '💬', bg: '#dcfce7', color: 'var(--success)', value: s.totalComments || 0, label: '总评论数' },
+            { icon: '✨', bg: '#fef3c7', color: 'var(--warning)', value: s.todayNewUsers || 0, label: '今日新增用户' },
+            { icon: '🚀', bg: '#fff0f5', color: 'var(--accent)', value: s.todayNewPosts || 0, label: '今日新增帖子' }
+        ];
+        let html = '<div class="stats-grid">';
+        statCards.forEach(c => {
+            html += `<div class="stat-card">
+                <div class="stat-icon" style="background:${c.bg};color:${c.color}">${c.icon}</div>
+                <div class="stat-value">${c.value}</div>
+                <div class="stat-label">${c.label}</div>
+            </div>`;
+        });
+        html += '</div>';
+
+        // 今日新增 vs 总量对比图（简易柱状图）
+        html += `<div class="card">
+            <div class="card-header"><h3>📊 今日新增 vs 总量</h3></div>
+            <div class="card-body">
+                <div class="chart-bars">`;
+        const items = [
+            { label: '用户总量', value: s.totalUsers || 0, color: 'var(--primary)' },
+            { label: '今日新增用户', value: s.todayNewUsers || 0, color: 'var(--accent)' },
+            { label: '帖子总量', value: s.totalPosts || 0, color: '#8b5cf6' },
+            { label: '今日新增帖子', value: s.todayNewPosts || 0, color: 'var(--warning)' },
+            { label: '评论总量', value: s.totalComments || 0, color: 'var(--success)' }
+        ];
+        const maxVal = Math.max(...items.map(i => i.value), 1);
+        items.forEach(i => {
+            const h = (i.value / maxVal) * 100;
+            html += `<div class="chart-bar" style="height:${h}%;background:${i.color}">
+                <span class="bar-value">${i.value}</span>
+                <span class="bar-label">${i.label}</span>
+            </div>`;
+        });
+        html += `</div></div></div>`;
+
+        // 热门帖子排行
+        const hotPosts = s.hotPosts || [];
+        html += `<div class="card">
+            <div class="card-header"><h3>🔥 热门帖子排行</h3></div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>排名</th><th>标题</th><th>作者</th><th>浏览</th><th>点赞</th><th>评论</th><th>更新时间</th></tr></thead>
+                <tbody>`;
+        if (hotPosts.length === 0) {
+            html += `<tr><td colspan="7">${renderEmpty('暂无数据')}</td></tr>`;
+        } else {
+            hotPosts.forEach((p, idx) => {
+                const rank = idx + 1;
+                const rankBadge = rank <= 3 ? 'badge-accent' : 'badge-muted';
+                html += `<tr>
+                    <td><span class="badge ${rankBadge}">No.${rank}</span></td>
+                    <td><div class="cell-content">${escapeHtml(p.title)}</div></td>
+                    <td>${escapeHtml(p.username || '—')}</td>
+                    <td>${p.viewCount || 0}</td>
+                    <td>${p.likeCount || 0}</td>
+                    <td>${p.commentCount || 0}</td>
+                    <td>${formatDate(p.updateTime)}</td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div></div>`;
+
+        area.innerHTML = html;
+    }
+
+    // ========== 操作日志 ==========
+
+    /**
+     * 渲染操作日志
+     * @param {number} page - 页码
+     */
+    async function renderLogs(page) {
+        if (page) state.page.logs = page;
+        const p = state.page.logs;
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/logs');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        const total = list.length;
+        const startIdx = (p - 1) * state.pageSize;
+        const pageList = list.slice(startIdx, startIdx + state.pageSize);
+
+        let html = `<div class="card">
+            <div class="card-header"><h3>操作日志（共 ${total} 条）</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>操作人ID</th><th>操作人类型</th><th>动作</th>
+                        <th>目标类型</th><th>目标ID</th><th>详情</th><th>IP</th><th>更新时间</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (pageList.length === 0) {
+            html += `<tr><td colspan="9">${renderEmpty('暂无日志')}</td></tr>`;
+        } else {
+            pageList.forEach(l => {
+                const typeBadge = l.operatorType === 'ADMIN' ? 'badge-info' : 'badge-muted';
+                html += `<tr>
+                    <td>${l.id}</td>
+                    <td>${l.operatorId || '—'}</td>
+                    <td><span class="badge ${typeBadge}">${escapeHtml(l.operatorType || '—')}</span></td>
+                    <td><strong>${escapeHtml(l.action || '—')}</strong></td>
+                    <td>${escapeHtml(l.targetType || '—')}</td>
+                    <td>${l.targetId || '—'}</td>
+                    <td><div class="cell-content">${escapeHtml(l.detail || '—')}</div></td>
+                    <td>${escapeHtml(l.ip || '—')}</td>
+                    <td>${formatDate(l.updateTime)}</td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div>`;
+        html += renderPagination(total, p, 'renderLogs');
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    // ========== 系统配置 ==========
+
+    /**
+     * 渲染系统配置
+     * @param {number} page - 页码
+     */
+    async function renderConfigs(page) {
+        if (page) state.page.configs = page;
+        const p = state.page.configs;
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/configs');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        state.cache.configs = list; // 缓存配置列表，供编辑表单按索引取值
+        const total = list.length;
+        const startIdx = (p - 1) * state.pageSize;
+        const pageList = list.slice(startIdx, startIdx + state.pageSize);
+
+        let html = `<div class="card">
+            <div class="card-header"><h3>系统配置（共 ${total} 项）</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>配置键</th><th>配置值</th><th>说明</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (pageList.length === 0) {
+            html += `<tr><td colspan="6">${renderEmpty('暂无配置项')}</td></tr>`;
+        } else {
+            pageList.forEach(c => {
+                const idx = list.indexOf(c); // 使用全局索引避免分页导致引用错位
+                html += `<tr>
+                    <td>${c.id}</td>
+                    <td><strong>${escapeHtml(c.configKey)}</strong></td>
+                    <td><div class="cell-content">${escapeHtml(c.configValue)}</div></td>
+                    <td><div class="cell-content">${escapeHtml(c.description || '—')}</div></td>
+                    <td>${formatDate(c.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-outline btn-sm" onclick="showConfigForm(${idx})">编辑</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div>`;
+        html += renderPagination(total, p, 'renderConfigs');
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 显示配置编辑表单
+     * @param {number} idx - 配置在 state.cache.configs 中的索引
+     */
+    function showConfigForm(idx) {
+        const c = state.cache.configs && state.cache.configs[idx];
+        if (!c) {
+            showMsg('配置数据不存在，请刷新列表', 'warning');
+            return;
+        }
+        document.getElementById('modalContent').innerHTML = `
+            <h3>编辑配置项</h3>
+            <div class="form-group">
+                <label>配置键</label>
+                <input type="text" value="${escapeHtml(c.configKey)}" disabled>
+            </div>
+            <div class="form-group">
+                <label>配置值 *</label>
+                <textarea id="configValue">${escapeHtml(c.configValue)}</textarea>
+            </div>
+            <div class="form-group">
+                <label>说明</label>
+                <input type="text" id="configDesc" value="${escapeHtml(c.description || '')}">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveConfig(${idx})">保存</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 保存配置
+     * @param {number} idx - 配置在 state.cache.configs 中的索引
+     */
+    async function saveConfig(idx) {
+        const c = state.cache.configs && state.cache.configs[idx];
+        if (!c) {
+            showMsg('配置数据不存在', 'warning');
+            return;
+        }
+        const value = document.getElementById('configValue').value.trim();
+        const description = document.getElementById('configDesc').value.trim();
+        if (!value) {
+            showMsg('请输入配置值', 'warning');
+            return;
+        }
+        // 后端使用 @RequestParam，通过 query string 传递
+        const url = `/api/admin/configs/${encodeURIComponent(c.configKey)}` + buildQuery({ value, description });
+        const res = await API.put(url);
+        if (res.success) {
+            showMsg('配置已更新', 'success');
+            closeModal();
+            renderConfigs(state.page.configs);
+        } else {
+            showMsg(res.message || '保存失败', 'error');
+        }
+    }
+
+    // ========== 敏感词管理 ==========
+
+    /**
+     * 渲染敏感词管理
+     * @param {number} page - 页码
+     */
+    async function renderSensitiveWords(page) {
+        if (page) state.page['sensitive-words'] = page;
+        const p = state.page['sensitive-words'];
+        const area = document.getElementById('contentArea');
+        area.innerHTML = renderLoading();
+        const res = await API.get('/api/admin/sensitive-words');
+        if (!res.success) {
+            area.innerHTML = `<div class="card"><div class="card-body">${escapeHtml(res.message || '加载失败')}</div></div>`;
+            return;
+        }
+        const list = res.data || [];
+        const total = list.length;
+        const startIdx = (p - 1) * state.pageSize;
+        const pageList = list.slice(startIdx, startIdx + state.pageSize);
+
+        let html = `<div class="card">
+            <div class="card-header">
+                <h3>敏感词列表（共 ${total} 个）</h3>
+                <button class="btn btn-primary btn-sm" onclick="showSensitiveWordForm()">+ 添加敏感词</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>ID</th><th>敏感词</th><th>分类</th><th>更新时间</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>`;
+        if (pageList.length === 0) {
+            html += `<tr><td colspan="5">${renderEmpty('暂无敏感词')}</td></tr>`;
+        } else {
+            pageList.forEach(w => {
+                html += `<tr>
+                    <td>${w.id}</td>
+                    <td><strong>${escapeHtml(w.word)}</strong></td>
+                    <td>${w.category ? `<span class="badge badge-info">${escapeHtml(w.category)}</span>` : '—'}</td>
+                    <td>${formatDate(w.updateTime)}</td>
+                    <td><div class="action-group">
+                        <button class="btn btn-danger btn-sm" onclick="deleteSensitiveWord(${w.id})">删除</button>
+                    </div></td>
+                </tr>`;
+            });
+        }
+        html += `</tbody></table></div>`;
+        html += renderPagination(total, p, 'renderSensitiveWords');
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    /**
+     * 显示添加敏感词表单
+     */
+    function showSensitiveWordForm() {
+        document.getElementById('modalContent').innerHTML = `
+            <h3>添加敏感词</h3>
+            <div class="form-group">
+                <label>敏感词 *</label>
+                <input type="text" id="wordInput" placeholder="请输入敏感词">
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <input type="text" id="categoryInput" placeholder="如：政治、色情、广告">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="addSensitiveWord()">添加</button>
+            </div>
+        `;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    /**
+     * 添加敏感词
+     */
+    async function addSensitiveWord() {
+        const word = document.getElementById('wordInput').value.trim();
+        const category = document.getElementById('categoryInput').value.trim();
+        if (!word) {
+            showMsg('请输入敏感词', 'warning');
+            return;
+        }
+        // 后端使用 @RequestParam，通过 query string 传递
+        const url = '/api/admin/sensitive-words' + buildQuery({ word, category });
+        const res = await API.post(url);
+        if (res.success) {
+            showMsg('敏感词已添加', 'success');
+            closeModal();
+            renderSensitiveWords(state.page['sensitive-words']);
+        } else {
+            showMsg(res.message || '添加失败', 'error');
+        }
+    }
+
+    /**
+     * 删除敏感词
+     * @param {number} id - 敏感词 ID
+     */
+    async function deleteSensitiveWord(id) {
+        confirmAction('确定要删除该敏感词吗？', async () => {
+            const res = await API.del(`/api/admin/sensitive-words/${id}`);
+            if (res.success) {
+                showMsg('敏感词已删除', 'success');
+                renderSensitiveWords(state.page['sensitive-words']);
+            } else {
+                showMsg(res.message || '删除失败', 'error');
+            }
+        });
+    }
+
+    // ========== 初始化 ==========
+    /**
+     * 页面入口：检查登录态后渲染
+     */
+    (function init() {
+        // 绑定回车键登录
+        document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('loginUsername').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+        });
+        checkSession();
+    })();
+</script>
+</body>
+</html>

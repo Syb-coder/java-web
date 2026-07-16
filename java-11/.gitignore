@@ -1,0 +1,37 @@
+# Maven 构建产物
+target/
+!.mvn/wrapper/maven-wrapper.properties
+
+# IDE 配置文件
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+
+# H2 数据库文件（文件模式持久化数据）
+data/
+*.h2.db
+*.trace.db
+*.lock.db
+
+# 日志文件
+*.log
+logs/
+
+# 操作系统生成文件
+.DS_Store
+Thumbs.db
+
+# Node.js 相关（如果后续添加前端构建工具）
+node_modules/
+dist/
+npm-debug.log*
+
+# 临时文件
+*.tmp
+*.bak
+*.swp

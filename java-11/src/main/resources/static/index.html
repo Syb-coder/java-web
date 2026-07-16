@@ -1,0 +1,3012 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>次元社 - 二次元讨论社区</title>
+    <style>
+        /* ========== 设计变量 ========== */
+        :root {
+            --primary: #7c5cfc;
+            --primary-light: #f0edff;
+            --primary-dark: #5a3fd6;
+            --accent: #ff6b9d;
+            --accent-light: #fff0f5;
+            --bg: #ffffff;
+            --bg2: #f6f5fc;
+            --text: #1a1a2e;
+            --muted: #6a6a85;
+            --border: #e0e0ea;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 12px rgba(124, 92, 252, 0.08);
+            --shadow-hover: 0 6px 24px rgba(124, 92, 252, 0.15);
+            --gradient: linear-gradient(135deg, #7c5cfc 0%, #ff6b9d 100%);
+            --max-width: 1200px;
+        }
+
+        /* ========== 基础重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg2);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ========== 导航栏 ========== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-search {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .nav-search input {
+            width: 100%;
+            height: 38px;
+            padding: 0 16px 0 40px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            background: var(--bg2);
+            transition: all 0.2s;
+        }
+
+        .nav-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--bg);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .nav-search .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 92, 252, 0.3);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-accent:hover {
+            background: #e85a8a;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            padding: 8px 12px;
+        }
+
+        .btn-ghost:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            cursor: pointer;
+        }
+
+        .avatar-lg {
+            width: 80px;
+            height: 80px;
+        }
+
+        .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .avatar-placeholder-lg {
+            width: 80px;
+            height: 80px;
+            font-size: 28px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-username {
+            font-size: 14px;
+            font-weight: 600;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-hover);
+            min-width: 160px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg2);
+            color: var(--primary);
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 20px;
+            width: 100%;
+        }
+
+        /* ========== 通用卡片 ========== */
+        .card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .emoji {
+            font-size: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        /* ========== 轮播区 ========== */
+        .carousel {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 280px;
+            position: relative;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            padding: 32px;
+        }
+
+        .carousel-slide.bg2 { background: linear-gradient(135deg, #ff6b9d 0%, #7c5cfc 100%); }
+        .carousel-slide.bg3 { background: linear-gradient(135deg, #7c5cfc 0%, #4facfe 100%); }
+        .carousel-slide.bg4 { background: linear-gradient(135deg, #ff6b9d 0%, #ffc371 100%); }
+        .carousel-slide.bg5 { background: linear-gradient(135deg, #43e97b 0%, #7c5cfc 100%); }
+
+        .carousel-content {
+            color: #fff;
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        .carousel-content .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .carousel-content h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-content p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .carousel-content .btn {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary);
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .carousel-dot.active {
+            background: #fff;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ========== 板块网格 ========== */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .section-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+            border: 1px solid transparent;
+        }
+
+        .section-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section-card .icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 12px;
+        }
+
+        .section-card .name {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .section-card .desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .section-card .count {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* ========== 作品列表 ========== */
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .work-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .work-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .work-cover {
+            width: 100%;
+            height: 180px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .work-info {
+            padding: 12px;
+        }
+
+        .work-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .work-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .work-rating {
+            color: var(--warning);
+            font-weight: 700;
+        }
+
+        /* ========== 帖子列表 ========== */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+            border-left: 3px solid transparent;
+        }
+
+        .post-card:hover {
+            border-left-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .post-card .post-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .post-card .post-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .post-card:hover .post-title {
+            color: var(--primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-top {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .badge-essence {
+            background: var(--warning);
+            color: #fff;
+        }
+
+        .badge-section {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--muted);
+            flex-wrap: wrap;
+        }
+
+        .post-meta .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .post-tag {
+            padding: 2px 8px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* ========== 表单 ========== */
+        .form-container {
+            max-width: 420px;
+            margin: 40px auto;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg);
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .form-tab {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .form-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ========== 帖子详情 ========== */
+        .post-detail {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .post-detail h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .post-detail .author-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .post-detail .author-info {
+            flex: 1;
+        }
+
+        .post-detail .author-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .post-detail .post-time {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .post-content {
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 24px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .action-btn.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .action-btn.active.liked {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ========== 评论区 ========== */
+        .comments-section {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .comment-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .comment-floor {
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--bg2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* 楼层引用块样式 */
+        .comment-quote {
+            margin-left: 46px;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: var(--primary-light);
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .comment-quote .quote-floor {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 6px;
+        }
+        .comment-quote .quote-author {
+            color: var(--text);
+            font-weight: 500;
+            margin-right: 6px;
+        }
+        .comment-quote .quote-content {
+            color: var(--muted);
+        }
+
+        /* @提及高亮样式 */
+        .mention {
+            color: var(--primary);
+            font-weight: 500;
+            background: var(--primary-light);
+            padding: 0 4px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .mention:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .comment-content {
+            font-size: 14px;
+            line-height: 1.6;
+            padding-left: 46px;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .comment-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 46px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .comment-reply-btn {
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .comment-reply-form {
+            margin: 12px 0 12px 46px;
+            display: none;
+        }
+
+        .comment-reply-form.show {
+            display: block;
+        }
+
+        /* ========== 个人中心 ========== */
+        .profile-header {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-signature {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ========== 通知 ========== */
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .notification-item:hover {
+            background: var(--bg2);
+        }
+
+        .notification-item.unread {
+            background: var(--primary-light);
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* ========== 空状态 ========== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state .emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state .text {
+            font-size: 15px;
+        }
+
+        /* ========== 加载状态 ========== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .loading .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== 轻提示 ========== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            top: 90px;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); }
+
+        /* ========== 模态框 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            background: var(--text);
+            color: #a0a0b5;
+            padding: 32px 20px 20px;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 32px;
+        }
+
+        .footer-brand h3 {
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #a0a0b5;
+            font-size: 13px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 24px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 12px;
+            color: #6a6a85;
+        }
+
+        /* ========== 面包屑 ========== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .breadcrumb a {
+            color: var(--muted);
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ========== 新闻详情 ========== */
+        .news-detail {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .news-detail h1 {
+            font-size: 26px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--muted);
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .news-body {
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* ========== 作品详情 ========== */
+        .work-detail {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .work-detail-cover {
+            width: 200px;
+            height: 280px;
+            border-radius: var(--radius-sm);
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            color: rgba(255, 255, 255, 0.6);
+            flex-shrink: 0;
+        }
+
+        .work-detail-info {
+            flex: 1;
+        }
+
+        .work-detail-info h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .work-detail-rating {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--warning);
+            margin-bottom: 12px;
+        }
+
+        .work-detail-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .work-detail-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .navbar-inner {
+                height: 56px;
+                gap: 8px;
+                padding: 0 12px;
+            }
+
+            .nav-search {
+                max-width: none;
+            }
+
+            .nav-username {
+                display: none;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 16px 12px;
+            }
+
+            .section-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .work-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .carousel-slide {
+                height: 200px;
+                padding: 20px;
+            }
+
+            .carousel-content h2 {
+                font-size: 18px;
+            }
+
+            .post-detail {
+                padding: 20px 16px;
+            }
+
+            .post-detail h1 {
+                font-size: 20px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .work-detail {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .work-detail-cover {
+                width: 100%;
+                height: 200px;
+                margin: 0 auto;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .nav-search input {
+                height: 34px;
+                font-size: 13px;
+            }
+
+            .btn {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+
+            .comment-content {
+                padding-left: 0;
+            }
+
+            .comment-meta {
+                padding-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .post-meta {
+                gap: 10px;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== 工具类 ========== */
+        .text-center { text-align: center; }
+        .text-muted { color: var(--muted); }
+        .text-sm { font-size: 12px; }
+        .mt-2 { margin-top: 8px; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .flex { display: flex; }
+        .gap-2 { gap: 8px; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <div class="logo" onclick="location.hash = '#/'">🌸 次元社</div>
+        <div class="nav-search">
+            <span class="icon">🔍</span>
+            <input type="text" id="navSearchInput" placeholder="搜索帖子..." />
+        </div>
+        <div class="nav-actions" id="navActions"></div>
+    </div>
+</nav>
+
+<!-- 主内容区 -->
+<main class="main-content" id="app"></main>
+
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <h3>🌸 次元社</h3>
+            <p>属于二次元爱好者的讨论社区，在这里分享你的热爱，找到同好伙伴。动画、漫画、游戏、轻小说、同人创作，一站式交流平台。</p>
+        </div>
+        <div class="footer-col">
+            <h4>快速导航</h4>
+            <a onclick="location.hash = '#/'">首页</a>
+            <a onclick="location.hash = '#/post/create'">发帖</a>
+            <a onclick="location.hash = '#/profile'">个人中心</a>
+            <a onclick="location.hash = '#/notifications'">消息通知</a>
+        </div>
+        <div class="footer-col">
+            <h4>板块分区</h4>
+            <a onclick="location.hash = '#/section/1'">动画</a>
+            <a onclick="location.hash = '#/section/2'">漫画</a>
+            <a onclick="location.hash = '#/section/3'">游戏</a>
+            <a onclick="location.hash = '#/section/4'">轻小说</a>
+            <a onclick="location.hash = '#/section/5'">同人创作</a>
+        </div>
+        <div class="footer-col">
+            <h4>关于我们</h4>
+            <a>用户协议</a>
+            <a>隐私政策</a>
+            <a>社区规范</a>
+            <a>联系站长</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 次元社 ACG Community · 仅供学习交流使用 · Powered by Spring Boot</p>
+    </div>
+</footer>
+
+<!-- 轻提示 -->
+<div class="toast" id="toast"></div>
+
+<!-- 模态框 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+    // ========== API 封装 ==========
+    const API_BASE = 'http://localhost:8089';
+
+    /**
+     * API 请求封装对象
+     * 统一处理 fetch 请求，包含 Session 凭证携带、JSON 序列化与错误处理
+     */
+    const API = {
+        /**
+         * 发起 API 请求
+         * @param {string} url - API 路径（以 /api 开头）
+         * @param {object} options - fetch 配置项
+         * @returns {Promise<object>} 解析后的响应 JSON
+         */
+        async request(url, options = {}) {
+            try {
+                const fetchOptions = {
+                    credentials: 'include',
+                    headers: {},
+                    ...options
+                };
+                if (options.body && typeof options.body === 'object') {
+                    fetchOptions.headers['Content-Type'] = 'application/json';
+                    fetchOptions.body = JSON.stringify(options.body);
+                }
+                const response = await fetch(API_BASE + url, fetchOptions);
+                if (response.status === 401) {
+                    state.user = null;
+                    showNotification('请先登录', 'warning');
+                    location.hash = '#/login';
+                    return { success: false, message: '未登录', data: null };
+                }
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    return { success: false, message: '服务器返回格式异常', data: null };
+                }
+                return data;
+            } catch (err) {
+                console.error('API请求失败:', err);
+                return { success: false, message: '网络请求失败，请检查后端服务是否启动', data: null };
+            }
+        },
+
+        async get(url) {
+            return this.request(url, { method: 'GET' });
+        },
+        async post(url, data) {
+            return this.request(url, { method: 'POST', body: data });
+        },
+        async put(url, data) {
+            return this.request(url, { method: 'PUT', body: data });
+        },
+        async del(url) {
+            return this.request(url, { method: 'DELETE' });
+        }
+    };
+
+    // ========== 状态管理 ==========
+    const state = {
+        user: null,
+        currentRoute: '',
+        unreadCount: 0
+    };
+
+    // ========== 辅助函数 ==========
+
+    /**
+     * 格式化日期时间
+     * @param {string|Date} date - 日期字符串或对象
+     * @returns {string} 格式化后的时间字符串
+     */
+    function formatDate(date) {
+        if (!date) return '未知';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '未知';
+        const now = new Date();
+        const diff = (now - d) / 1000;
+        if (diff < 60) return '刚刚';
+        if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+        if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+        if (diff < 2592000) return Math.floor(diff / 86400) + '天前';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const h = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${y}-${m}-${day} ${h}:${min}`;
+    }
+
+    /**
+     * HTML 转义，防止 XSS 攻击
+     * @param {string} str - 原始字符串
+     * @returns {string} 转义后的安全字符串
+     */
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * 显示轻提示
+     * @param {string} msg - 提示消息
+     * @param {string} type - 提示类型：success/error/warning
+     * @param {number} duration - 显示时长（毫秒）
+     */
+    function showNotification(msg, type = '', duration = 2500) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast show ' + type;
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+            toast.className = 'toast ' + type;
+        }, duration);
+    }
+
+    /**
+     * 检查登录状态，未登录则跳转登录页
+     * @returns {boolean} 是否已登录
+     */
+    function checkLogin() {
+        if (!state.user) {
+            showNotification('请先登录', 'warning');
+            location.hash = '#/login';
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 获取头像 HTML
+     * @param {string} avatar - 头像 URL
+     * @param {string} name - 用于占位符的名字
+     * @param {string} size - 尺寸：默认或 lg
+     * @returns {string} 头像 HTML
+     */
+    function getAvatarHtml(avatar, name, size = '') {
+        const sizeClass = size === 'lg' ? ' avatar-lg' : '';
+        const placeholderClass = size === 'lg' ? 'avatar-placeholder avatar-placeholder-lg' : 'avatar-placeholder';
+        const initial = escapeHtml(((name || '?')[0] || '?').toUpperCase());
+        if (avatar) {
+            return `<img src="${escapeHtml(avatar)}" class="avatar${sizeClass}" alt="${escapeHtml(name || '用户')}" />`;
+        }
+        return `<div class="${placeholderClass}">${initial}</div>`;
+    }
+
+    /**
+     * 获取板块图标 emoji
+     * @param {string} icon - 板块图标标识
+     * @returns {string} emoji 字符
+     */
+    function getSectionIcon(icon) {
+        const iconMap = {
+            'tv': '📺',
+            'book': '📖',
+            'gamepad': '🎮',
+            'book-open': '📕',
+            'palette': '🎨'
+        };
+        return iconMap[icon] || '💬';
+    }
+
+    /**
+     * 显示模态框
+     * @param {string} title - 标题
+     * @param {string} bodyHtml - 内容 HTML
+     * @param {function} onConfirm - 确认回调
+     */
+    function showModal(title, bodyHtml, onConfirm) {
+        const overlay = document.getElementById('modalOverlay');
+        const content = document.getElementById('modalContent');
+        content.innerHTML = `
+            <h3>${escapeHtml(title)}</h3>
+            <div>${bodyHtml}</div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="modalCancel">取消</button>
+                <button class="btn btn-primary" id="modalConfirm">确认</button>
+            </div>
+        `;
+        overlay.classList.add('show');
+        document.getElementById('modalCancel').onclick = () => {
+            overlay.classList.remove('show');
+        };
+        document.getElementById('modalConfirm').onclick = () => {
+            if (onConfirm) onConfirm();
+            overlay.classList.remove('show');
+        };
+        overlay.onclick = (e) => {
+            if (e.target === overlay) overlay.classList.remove('show');
+        };
+    }
+
+    /**
+     * 关闭模态框
+     */
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    /**
+     * 渲染帖子卡片
+     * @param {object} post - 帖子数据
+     * @returns {string} 帖子卡片 HTML
+     */
+    function renderPostCard(post) {
+        const tagsHtml = (post.tags || []).map(t => `<span class="post-tag">${escapeHtml(t)}</span>`).join('');
+        const badgesHtml = [
+            post.isTop ? '<span class="badge badge-top">置顶</span>' : '',
+            post.isEssence ? '<span class="badge badge-essence">精华</span>' : '',
+            post.sectionName ? `<span class="badge badge-section">${escapeHtml(post.sectionName)}</span>` : ''
+        ].join('');
+        return `
+            <div class="post-card" onclick="location.hash = '#/post/${post.id}'">
+                <div class="post-header">
+                    ${badgesHtml}
+                    <span class="post-title">${escapeHtml(post.title)}</span>
+                </div>
+                <div class="post-meta">
+                    <span class="meta-item">👤 ${escapeHtml(post.username || '匿名')}</span>
+                    <span class="meta-item">👁 ${post.viewCount || 0}</span>
+                    <span class="meta-item">❤ ${post.likeCount || 0}</span>
+                    <span class="meta-item">💬 ${post.commentCount || 0}</span>
+                    <span class="meta-item">⭐ ${post.favoriteCount || 0}</span>
+                    <span class="meta-item">🕒 更新于 ${formatDate(post.updateTime)}</span>
+                </div>
+                ${tagsHtml ? `<div class="post-tags">${tagsHtml}</div>` : ''}
+            </div>
+        `;
+    }
+
+    /**
+     * 渲染加载状态
+     * @returns {string} 加载 HTML
+     */
+    function renderLoading() {
+        return `<div class="loading"><div class="spinner"></div><div>加载中...</div></div>`;
+    }
+
+    /**
+     * 渲染空状态
+     * @param {string} text - 提示文字
+     * @returns {string} 空状态 HTML
+     */
+    function renderEmpty(text = '暂无数据') {
+        return `<div class="empty-state"><span class="emoji">🌸</span><div class="text">${escapeHtml(text)}</div></div>`;
+    }
+
+    // ========== 导航栏渲染 ==========
+
+    /**
+     * 渲染导航栏右侧操作区
+     */
+    function renderNavActions() {
+        const navActions = document.getElementById('navActions');
+        if (state.user) {
+            const displayName = escapeHtml(state.user.nickname || state.user.username || '用户');
+            const initial = (state.user.nickname || state.user.username || '?')[0].toUpperCase();
+            navActions.innerHTML = `
+                <button class="btn btn-primary btn-sm" onclick="location.hash = '#/post/create'">✏ 发帖</button>
+                <div class="nav-user" id="navUser">
+                    ${state.user.avatar
+                        ? `<img src="${escapeHtml(state.user.avatar)}" class="avatar" alt="${escapeHtml(state.user.username || '用户')}" />`
+                        : `<div class="avatar-placeholder">${initial}</div>`
+                    }
+                    <span class="nav-username">${displayName}</span>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a class="dropdown-item" onclick="location.hash = '#/profile'">👤 个人中心</a>
+                        <a class="dropdown-item" onclick="location.hash = '#/notifications'">🔔 消息通知${state.unreadCount > 0 ? ` (${state.unreadCount})` : ''}</a>
+                        <a class="dropdown-item" onclick="doLogout()">🚪 退出登录</a>
+                    </div>
+                </div>
+            `;
+            const navUser = document.getElementById('navUser');
+            const dropdown = document.getElementById('userDropdown');
+            navUser.onclick = (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('show');
+            };
+            document.onclick = () => dropdown.classList.remove('show');
+        } else {
+            navActions.innerHTML = `
+                <button class="btn btn-outline btn-sm" onclick="location.hash = '#/login'">登录</button>
+                <button class="btn btn-primary btn-sm" onclick="location.hash = '#/login'">注册</button>
+            `;
+        }
+    }
+
+    /**
+     * 获取当前登录用户信息
+     */
+    async function fetchCurrentUser() {
+        const res = await API.get('/api/auth/me');
+        if (res.success && res.data) {
+            state.user = res.data;
+        } else {
+            state.user = null;
+        }
+        renderNavActions();
+    }
+
+    /**
+     * 获取未读通知数
+     */
+    async function fetchUnreadCount() {
+        if (!state.user) return;
+        const res = await API.get('/api/notifications/unread-count');
+        if (res.success && res.data !== null) {
+            state.unreadCount = res.data;
+            renderNavActions();
+        }
+    }
+
+    /**
+     * 退出登录
+     */
+    async function doLogout() {
+        const res = await API.post('/api/auth/logout');
+        if (res.success) {
+            state.user = null;
+            state.unreadCount = 0;
+            showNotification('已退出登录', 'success');
+            renderNavActions();
+            location.hash = '#/';
+        } else {
+            showNotification(res.message || '退出失败', 'error');
+        }
+    }
+
+    // ========== 路由 ==========
+
+    /**
+     * Hash 路由分发器，解析当前 hash 并渲染对应页面
+     */
+    function router() {
+        const hash = location.hash.slice(1) || '/';
+        state.currentRoute = hash;
+        const app = document.getElementById('app');
+        window.scrollTo(0, 0);
+
+        // 解析路径和查询参数
+        const [path, queryString] = hash.split('?');
+        const params = new URLSearchParams(queryString || '');
+
+        // 路由匹配
+        if (path === '/' || path === '') {
+            renderHome();
+        } else if (path === '/login') {
+            renderLogin();
+        } else if (path.startsWith('/section/')) {
+            const id = path.split('/')[2];
+            renderSection(id);
+        } else if (path.startsWith('/post/create')) {
+            renderCreatePost();
+        } else if (path.startsWith('/post/')) {
+            const id = path.split('/')[2];
+            renderPost(id);
+        } else if (path === '/search') {
+            renderSearch(params.get('keyword') || '');
+        } else if (path === '/profile') {
+            renderProfile();
+        } else if (path.startsWith('/news/')) {
+            const id = path.split('/')[2];
+            renderNews(id);
+        } else if (path.startsWith('/work/')) {
+            const id = path.split('/')[2];
+            renderWork(id);
+        } else if (path === '/notifications') {
+            renderNotifications();
+        } else {
+            app.innerHTML = renderEmpty('页面不存在');
+        }
+    }
+
+    // ========== 页面渲染函数 ==========
+
+    /**
+     * 渲染首页
+     */
+    async function renderHome() {
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        // 并行加载首页数据
+        const [newsRes, worksRes, sectionsRes, hotPostsRes] = await Promise.all([
+            API.get('/api/news/latest'),
+            API.get('/api/works/hot'),
+            API.get('/api/sections'),
+            API.get('/api/posts/hot')
+        ]);
+
+        const newsList = (newsRes.success && newsRes.data) ? newsRes.data : [];
+        const worksList = (worksRes.success && worksRes.data) ? worksRes.data : [];
+        const sectionsList = (sectionsRes.success && sectionsRes.data) ? sectionsRes.data : [];
+        const hotPosts = (hotPostsRes.success && hotPostsRes.data) ? hotPostsRes.data : [];
+
+        const bgClasses = ['', 'bg2', 'bg3', 'bg4', 'bg5'];
+
+        // 轮播区
+        let carouselHtml = '';
+        if (newsList.length > 0) {
+            const slidesHtml = newsList.map((n, i) => `
+                <div class="carousel-slide ${bgClasses[i % bgClasses.length]}" onclick="location.hash = '#/news/${n.id}'">
+                    <div class="carousel-content">
+                        <span class="tag">${escapeHtml(n.category || '资讯')}</span>
+                        <h2>${escapeHtml(n.title)}</h2>
+                        <p>${escapeHtml(n.summary || '')}</p>
+                        <button class="btn">阅读全文 →</button>
+                    </div>
+                </div>
+            `).join('');
+            const dotsHtml = newsList.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`).join('');
+            carouselHtml = `
+                <div class="carousel" id="homeCarousel">
+                    <div class="carousel-track">${slidesHtml}</div>
+                    <div class="carousel-dots">${dotsHtml}</div>
+                </div>
+            `;
+        }
+
+        // 板块区
+        const sectionsHtml = sectionsList.map(s => `
+            <div class="section-card" onclick="location.hash = '#/section/${s.id}'">
+                <div class="icon">${getSectionIcon(s.icon)}</div>
+                <div class="name">${escapeHtml(s.name)}</div>
+                <div class="desc">${escapeHtml(s.description || '')}</div>
+                <div class="count">${s.postCount || 0} 帖子</div>
+            </div>
+        `).join('');
+
+        // 新番速递
+        const worksHtml = worksList.map(w => `
+            <div class="work-card" onclick="location.hash = '#/work/${w.id}'">
+                <div class="work-cover">${escapeHtml(w.type || '番剧')}</div>
+                <div class="work-info">
+                    <div class="work-title">${escapeHtml(w.title)}</div>
+                    <div class="work-meta">
+                        <span class="work-rating">★ ${w.rating ? w.rating.toFixed(1) : '-'}</span>
+                        <span>${escapeHtml(w.type || '')}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // 热门帖子
+        const hotPostsHtml = hotPosts.length > 0
+            ? hotPosts.map(renderPostCard).join('')
+            : renderEmpty('暂无热门帖子');
+
+        app.innerHTML = `
+            ${carouselHtml}
+            <div class="section-header">
+                <div class="section-title"><span class="emoji">📂</span> 板块分区</div>
+            </div>
+            <div class="section-grid">${sectionsHtml || renderEmpty('暂无板块')}</div>
+            <div class="section-header">
+                <div class="section-title"><span class="emoji">🔥</span> 新番速递</div>
+            </div>
+            <div class="work-grid">${worksHtml || renderEmpty('暂无作品')}</div>
+            <div class="section-header">
+                <div class="section-title"><span class="emoji">✨</span> 热门帖子</div>
+            </div>
+            <div class="post-list">${hotPostsHtml}</div>
+        `;
+
+        // 初始化轮播
+        if (newsList.length > 1) {
+            initCarousel(newsList.length);
+        }
+    }
+
+    /**
+     * 初始化轮播组件
+     * @param {number} total - 轮播总数
+     */
+    function initCarousel(total) {
+        let current = 0;
+        const track = document.querySelector('.carousel-track');
+        const dots = document.querySelectorAll('.carousel-dot');
+        if (!track || dots.length === 0) return;
+
+        // 清理旧的轮播定时器，避免重复渲染首页时定时器堆叠
+        if (window._carouselTimer) {
+            clearInterval(window._carouselTimer);
+        }
+
+        const goSlide = (index) => {
+            current = index;
+            track.style.transform = `translateX(-${current * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        };
+
+        dots.forEach((dot, i) => {
+            dot.onclick = () => goSlide(i);
+        });
+
+        // 自动轮播
+        window._carouselTimer = setInterval(() => {
+            goSlide((current + 1) % total);
+        }, 5000);
+    }
+
+    /**
+     * 渲染登录/注册页
+     */
+    function renderLogin() {
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div class="form-container">
+                <div class="form-tabs">
+                    <div class="form-tab active" id="tabLogin" onclick="switchAuthTab('login')">登录</div>
+                    <div class="form-tab" id="tabRegister" onclick="switchAuthTab('register')">注册</div>
+                </div>
+                <!-- 登录表单 -->
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-input" id="loginUsername" placeholder="请输入用户名" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码" />
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;" id="loginBtn" onclick="doLogin()">登 录</button>
+                    <p class="text-center text-muted text-sm mt-4">提示：可使用测试账号 user1 / user123</p>
+                </div>
+                <!-- 注册表单 -->
+                <div id="registerForm" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-input" id="regUsername" placeholder="请输入用户名" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="regPassword" placeholder="请输入密码" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱</label>
+                        <input type="email" class="form-input" id="regEmail" placeholder="请输入邮箱" />
+                    </div>
+                    <button class="btn btn-accent" style="width:100%;justify-content:center;padding:12px;" id="registerBtn" onclick="doRegister()">注 册</button>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 切换登录/注册 Tab
+     * @param {string} tab - login 或 register
+     */
+    function switchAuthTab(tab) {
+        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+        document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+    }
+
+    /**
+     * 执行登录
+     */
+    async function doLogin() {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!username || !password) {
+            showNotification('请填写用户名和密码', 'warning');
+            return;
+        }
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = '登录中...';
+        const res = await API.post('/api/auth/login', { username, password });
+        btn.disabled = false;
+        btn.textContent = '登 录';
+        if (res.success) {
+            state.user = res.data;
+            showNotification('登录成功', 'success');
+            renderNavActions();
+            location.hash = '#/';
+        } else {
+            showNotification(res.message || '登录失败', 'error');
+        }
+    }
+
+    /**
+     * 执行注册
+     */
+    async function doRegister() {
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        if (!username || !password) {
+            showNotification('请填写用户名和密码', 'warning');
+            return;
+        }
+        if (!email) {
+            showNotification('请填写邮箱', 'warning');
+            return;
+        }
+        const btn = document.getElementById('registerBtn');
+        btn.disabled = true;
+        btn.textContent = '注册中...';
+        const res = await API.post('/api/auth/register', { username, password, email });
+        btn.disabled = false;
+        btn.textContent = '注 册';
+        if (res.success) {
+            state.user = res.data;
+            showNotification('注册成功，已自动登录', 'success');
+            renderNavActions();
+            location.hash = '#/';
+        } else {
+            showNotification(res.message || '注册失败', 'error');
+        }
+    }
+
+    /**
+     * 渲染板块页
+     * @param {string} id - 板块 ID
+     */
+    async function renderSection(id) {
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const [sectionRes, postsRes] = await Promise.all([
+            API.get(`/api/sections/${id}`),
+            API.get(`/api/posts/section/${id}`)
+        ]);
+
+        const section = (sectionRes.success && sectionRes.data) ? sectionRes.data : null;
+        const posts = (postsRes.success && postsRes.data) ? postsRes.data : [];
+
+        if (!section) {
+            app.innerHTML = renderEmpty('板块不存在');
+            return;
+        }
+
+        // 置顶帖子优先排序
+        const sortedPosts = [...posts].sort((a, b) => {
+            if (a.isTop && !b.isTop) return -1;
+            if (!a.isTop && b.isTop) return 1;
+            return 0;
+        });
+
+        const postsHtml = sortedPosts.length > 0
+            ? sortedPosts.map(renderPostCard).join('')
+            : renderEmpty('该板块暂无帖子，快来发第一帖吧！');
+
+        app.innerHTML = `
+            <div class="breadcrumb">
+                <a onclick="location.hash = '#/'">首页</a>
+                <span class="separator">/</span>
+                <span>${escapeHtml(section.name)}</span>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body" style="display:flex;align-items:center;gap:16px;">
+                    <div style="width:56px;height:56px;border-radius:14px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:28px;">
+                        ${getSectionIcon(section.icon)}
+                    </div>
+                    <div style="flex:1;">
+                        <h2 style="font-size:20px;font-weight:700;">${escapeHtml(section.name)}</h2>
+                        <p class="text-muted text-sm">${escapeHtml(section.description || '')}</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="location.hash = '#/post/create?sectionId=${section.id}'">✏ 发帖</button>
+                </div>
+            </div>
+            <div class="section-title"><span class="emoji">📋</span> 帖子列表</div>
+            <div class="post-list">${postsHtml}</div>
+        `;
+    }
+
+    /**
+     * 渲染帖子详情页
+     * @param {string} id - 帖子 ID
+     */
+    async function renderPost(id) {
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const [postRes, commentsRes] = await Promise.all([
+            API.get(`/api/posts/${id}`),
+            API.get(`/api/comments/post/${id}`)
+        ]);
+
+        const post = (postRes.success && postRes.data) ? postRes.data : null;
+        const comments = (commentsRes.success && commentsRes.data) ? commentsRes.data : [];
+
+        if (!post) {
+            app.innerHTML = renderEmpty('帖子不存在');
+            return;
+        }
+
+        const tagsHtml = (post.tags || []).map(t => `<span class="post-tag">${escapeHtml(t)}</span>`).join('');
+        const badgesHtml = [
+            post.isTop ? '<span class="badge badge-top">置顶</span>' : '',
+            post.isEssence ? '<span class="badge badge-essence">精华</span>' : '',
+            post.sectionName ? `<span class="badge badge-section">${escapeHtml(post.sectionName)}</span>` : ''
+        ].join('');
+
+        // 评论列表 HTML（含楼层引用块与 @mention 高亮）
+        const commentsHtml = comments.length > 0
+            ? comments.map(c => {
+                const replyFormHtml = state.user ? `
+                    <div class="comment-reply-form" id="replyForm_${c.id}">
+                        <textarea class="form-input" id="replyInput_${c.id}" placeholder="回复 ${escapeHtml(c.username)}..." style="min-height:80px;"></textarea>
+                        <button class="btn btn-primary btn-sm mt-2" onclick="submitReply(${c.id}, ${post.id})">发送</button>
+                    </div>
+                ` : '';
+                // 楼层引用块：若该评论有 parentId，查找父评论并渲染引用块
+                let quoteHtml = '';
+                if (c.parentId) {
+                    const parentComment = comments.find(pc => pc.id === c.parentId);
+                    if (parentComment) {
+                        quoteHtml = `
+                            <div class="comment-quote">
+                                <span class="quote-floor">${parentComment.floor || 0}F</span>
+                                <span class="quote-author">${escapeHtml(parentComment.username || '匿名')}</span>
+                                <span class="quote-content">${escapeHtml(parentComment.content).substring(0, 100)}${parentComment.content.length > 100 ? '...' : ''}</span>
+                            </div>
+                        `;
+                    }
+                }
+                // @mention 高亮：将 @用户名 渲染为高亮链接
+                const mentionContent = escapeHtml(c.content).replace(
+                    /@(\w{3,20})/g,
+                    '<span class="mention">@$1</span>'
+                );
+                return `
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            ${getAvatarHtml(c.userAvatar, c.username)}
+                            <span style="font-weight:600;font-size:14px;">${escapeHtml(c.username || '匿名')}</span>
+                            <span class="comment-floor">${c.floor || 0}F</span>
+                        </div>
+                        ${quoteHtml}
+                        <div class="comment-content">${mentionContent}</div>
+                        <div class="comment-meta">
+                            <span>🕒 更新于 ${formatDate(c.updateTime)}</span>
+                            <span>❤ ${c.likeCount || 0}</span>
+                            ${state.user ? `<span class="comment-reply-btn" onclick="toggleReplyForm(${c.id})">回复</span>` : ''}
+                            ${state.user && state.user.id === c.userId ? `<span class="comment-reply-btn" style="color:var(--danger);" onclick="deleteComment(${c.id}, ${post.id})">删除</span>` : ''}
+                        </div>
+                        ${replyFormHtml}
+                    </div>
+                `;
+            }).join('')
+            : renderEmpty('暂无评论，快来抢沙发吧！');
+
+        app.innerHTML = `
+            <div class="breadcrumb">
+                <a onclick="location.hash = '#/'">首页</a>
+                <span class="separator">/</span>
+                ${post.sectionId ? `<a onclick="location.hash = '#/section/${post.sectionId}'">${escapeHtml(post.sectionName || '板块')}</a><span class="separator">/</span>` : ''}
+                <span>帖子详情</span>
+            </div>
+            <div class="post-detail">
+                <h1>${escapeHtml(post.title)}</h1>
+                <div class="author-bar">
+                    ${getAvatarHtml(post.userAvatar, post.username)}
+                    <div class="author-info">
+                        <div class="author-name">${escapeHtml(post.username || '匿名')}</div>
+                        <div class="post-time">
+                            发布于 ${formatDate(post.createdAt)} · 更新于 ${formatDate(post.updateTime)}
+                        </div>
+                    </div>
+                    ${badgesHtml}
+                </div>
+                <div class="post-content">${escapeHtml(post.content)}</div>
+                ${tagsHtml ? `<div class="post-tags">${tagsHtml}</div>` : ''}
+                <div class="post-actions">
+                    <div class="action-btn ${post.isLiked ? 'active liked' : ''}" id="likeBtn" onclick="toggleLikePost(${post.id})">
+                        ❤ ${post.isLiked ? '已点赞' : '点赞'} (${post.likeCount || 0})
+                    </div>
+                    <div class="action-btn ${post.isFavorited ? 'active' : ''}" id="favBtn" onclick="toggleFavoritePost(${post.id})">
+                        ⭐ ${post.isFavorited ? '已收藏' : '收藏'} (${post.favoriteCount || 0})
+                    </div>
+                    <div class="action-btn" onclick="showReportModal('POST', ${post.id})">
+                        🚩 举报
+                    </div>
+                </div>
+            </div>
+            <div class="comments-section">
+                <div class="section-title"><span class="emoji">💬</span> 评论区 (${comments.length})</div>
+                ${state.user ? `
+                    <div class="form-group mb-4">
+                        <textarea class="form-textarea" id="commentInput" placeholder="说点什么吧..."></textarea>
+                        <button class="btn btn-primary mt-2" onclick="submitComment(${post.id})">发表评论</button>
+                    </div>
+                ` : `
+                    <div class="empty-state" style="padding:20px;">
+                        <div class="text"><a onclick="location.hash = '#/login'">登录</a> 后参与评论</div>
+                    </div>
+                `}
+                <div id="commentsList">${commentsHtml}</div>
+            </div>
+        `;
+    }
+
+    /**
+     * 切换回复表单显示
+     * @param {number} commentId - 评论 ID
+     */
+    function toggleReplyForm(commentId) {
+        const form = document.getElementById(`replyForm_${commentId}`);
+        if (form) {
+            form.classList.toggle('show');
+        }
+    }
+
+    /**
+     * 提交评论
+     * @param {number} postId - 帖子 ID
+     */
+    async function submitComment(postId) {
+        if (!checkLogin()) return;
+        const input = document.getElementById('commentInput');
+        const content = input.value.trim();
+        if (!content) {
+            showNotification('评论内容不能为空', 'warning');
+            return;
+        }
+        const res = await API.post('/api/comments', { content, postId, parentId: null });
+        if (res.success) {
+            showNotification('评论成功', 'success');
+            renderPost(postId);
+        } else {
+            showNotification(res.message || '评论失败', 'error');
+        }
+    }
+
+    /**
+     * 提交回复
+     * @param {number} parentId - 父评论 ID
+     * @param {number} postId - 帖子 ID
+     */
+    async function submitReply(parentId, postId) {
+        if (!checkLogin()) return;
+        const input = document.getElementById(`replyInput_${parentId}`);
+        const content = input.value.trim();
+        if (!content) {
+            showNotification('回复内容不能为空', 'warning');
+            return;
+        }
+        const res = await API.post('/api/comments', { content, postId, parentId });
+        if (res.success) {
+            showNotification('回复成功', 'success');
+            renderPost(postId);
+        } else {
+            showNotification(res.message || '回复失败', 'error');
+        }
+    }
+
+    /**
+     * 删除评论
+     * @param {number} commentId - 评论 ID
+     * @param {number} postId - 帖子 ID
+     */
+    async function deleteComment(commentId, postId) {
+        showModal('确认删除', '<p>确定要删除这条评论吗？</p>', async () => {
+            const res = await API.del(`/api/comments/${commentId}`);
+            if (res.success) {
+                showNotification('删除成功', 'success');
+                renderPost(postId);
+            } else {
+                showNotification(res.message || '删除失败', 'error');
+            }
+        });
+    }
+
+    /**
+     * 切换帖子点赞
+     * @param {number} postId - 帖子 ID
+     */
+    async function toggleLikePost(postId) {
+        if (!checkLogin()) return;
+        const res = await API.post(`/api/interaction/like?targetType=POST&targetId=${postId}`);
+        if (res.success) {
+            showNotification(res.message || '操作成功', 'success');
+            renderPost(postId);
+        } else {
+            showNotification(res.message || '操作失败', 'error');
+        }
+    }
+
+    /**
+     * 切换帖子收藏
+     * @param {number} postId - 帖子 ID
+     */
+    async function toggleFavoritePost(postId) {
+        if (!checkLogin()) return;
+        const res = await API.post(`/api/interaction/favorite?postId=${postId}`);
+        if (res.success) {
+            showNotification(res.message || '操作成功', 'success');
+            renderPost(postId);
+        } else {
+            showNotification(res.message || '操作失败', 'error');
+        }
+    }
+
+    /**
+     * 显示举报模态框
+     * @param {string} targetType - 目标类型 POST/COMMENT
+     * @param {number} targetId - 目标 ID
+     */
+    function showReportModal(targetType, targetId) {
+        if (!checkLogin()) return;
+        const reasons = [
+            { value: 'SPAM', label: '垃圾广告' },
+            { value: 'PORNOGRAPHY', label: '色情低俗' },
+            { value: 'VIOLENCE', label: '暴力血腥' },
+            { value: 'ILLEGAL', label: '违法犯罪' },
+            { value: 'OFF_TOPIC', label: '不相关内容' },
+            { value: 'OTHER', label: '其他' }
+        ];
+        const reasonOptions = reasons.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
+        showModal('举报内容', `
+            <div class="form-group">
+                <label class="form-label">举报理由</label>
+                <select class="form-select" id="reportReason">${reasonOptions}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">补充说明</label>
+                <textarea class="form-input" id="reportDesc" placeholder="请描述具体问题..." style="min-height:100px;"></textarea>
+            </div>
+        `, async () => {
+            const reason = document.getElementById('reportReason').value;
+            const description = document.getElementById('reportDesc').value.trim();
+            const res = await API.post('/api/reports', { targetType, targetId, reason, description });
+            if (res.success) {
+                showNotification('举报已提交', 'success');
+            } else {
+                showNotification(res.message || '举报失败', 'error');
+            }
+        });
+    }
+
+    /**
+     * 渲染发帖页
+     */
+    async function renderCreatePost() {
+        if (!checkLogin()) return;
+        const app = document.getElementById('app');
+
+        // 获取板块列表
+        const sectionsRes = await API.get('/api/sections');
+        const sections = (sectionsRes.success && sectionsRes.data) ? sectionsRes.data : [];
+
+        // 获取预设板块 ID（从 URL 参数）
+        const hash = location.hash;
+        const queryString = hash.split('?')[1] || '';
+        const params = new URLSearchParams(queryString);
+        const presetSectionId = params.get('sectionId') || '';
+
+        const sectionOptions = sections.map(s =>
+            `<option value="${s.id}" ${String(s.id) === presetSectionId ? 'selected' : ''}>${escapeHtml(s.name)}</option>`
+        ).join('');
+
+        app.innerHTML = `
+            <div class="breadcrumb">
+                <a onclick="location.hash = '#/'">首页</a>
+                <span class="separator">/</span>
+                <span>发帖</span>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="section-title"><span class="emoji">✏</span> 发布新帖</div>
+                    <div class="form-group">
+                        <label class="form-label">选择板块</label>
+                        <select class="form-select" id="postSection">${sectionOptions}</select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">标题</label>
+                        <input type="text" class="form-input" id="postTitle" placeholder="请输入帖子标题" maxlength="100" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">正文</label>
+                        <textarea class="form-textarea" id="postContent" placeholder="请输入帖子内容..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">标签（逗号分隔）</label>
+                        <input type="text" class="form-input" id="postTags" placeholder="如：新番,推荐,讨论" />
+                    </div>
+                    <button class="btn btn-primary" id="submitPostBtn" onclick="submitPost()">发布帖子</button>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 提交发帖
+     */
+    async function submitPost() {
+        if (!checkLogin()) return;
+        const sectionId = parseInt(document.getElementById('postSection').value);
+        const title = document.getElementById('postTitle').value.trim();
+        const content = document.getElementById('postContent').value.trim();
+        const tagsStr = document.getElementById('postTags').value.trim();
+        const tags = tagsStr ? tagsStr.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+
+        if (!sectionId) {
+            showNotification('请选择板块', 'warning');
+            return;
+        }
+        if (!title) {
+            showNotification('请输入标题', 'warning');
+            return;
+        }
+        if (!content) {
+            showNotification('请输入内容', 'warning');
+            return;
+        }
+
+        const btn = document.getElementById('submitPostBtn');
+        btn.disabled = true;
+        btn.textContent = '发布中...';
+        const res = await API.post('/api/posts', { title, content, sectionId, tags });
+        btn.disabled = false;
+        btn.textContent = '发布帖子';
+
+        if (res.success && res.data) {
+            showNotification('发帖成功', 'success');
+            location.hash = `#/post/${res.data.id}`;
+        } else {
+            showNotification(res.message || '发帖失败', 'error');
+        }
+    }
+
+    /**
+     * 渲染搜索结果页
+     * @param {string} keyword - 搜索关键词
+     */
+    async function renderSearch(keyword) {
+        const app = document.getElementById('app');
+
+        if (!keyword) {
+            app.innerHTML = `
+                <div class="form-container">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="searchInput" placeholder="输入关键词搜索帖子..." style="height:44px;" />
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="doSearch()">搜索</button>
+                </div>
+                ${renderEmpty('请输入搜索关键词')}
+            `;
+            return;
+        }
+
+        app.innerHTML = renderLoading();
+        const res = await API.get(`/api/posts/search?keyword=${encodeURIComponent(keyword)}`);
+        const posts = (res.success && res.data) ? res.data : [];
+
+        const postsHtml = posts.length > 0
+            ? posts.map(renderPostCard).join('')
+            : renderEmpty(`未找到与「${escapeHtml(keyword)}」相关的帖子`);
+
+        app.innerHTML = `
+            <div class="form-container mb-4">
+                <div class="form-group" style="display:flex;gap:8px;">
+                    <input type="text" class="form-input" id="searchInput" value="${escapeHtml(keyword)}" placeholder="搜索帖子..." style="height:42px;" />
+                    <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+                </div>
+            </div>
+            <div class="section-title"><span class="emoji">🔍</span> 搜索结果：${escapeHtml(keyword)} (${posts.length})</div>
+            <div class="post-list">${postsHtml}</div>
+        `;
+    }
+
+    /**
+     * 执行搜索
+     */
+    function doSearch() {
+        const input = document.getElementById('searchInput');
+        const keyword = input.value.trim();
+        if (!keyword) {
+            showNotification('请输入搜索关键词', 'warning');
+            return;
+        }
+        location.hash = `#/search?keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    /**
+     * 渲染个人中心
+     */
+    async function renderProfile() {
+        if (!checkLogin()) return;
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const [profileRes, postsRes] = await Promise.all([
+            API.get('/api/users/profile'),
+            API.get(`/api/posts/user/${state.user.id}`)
+        ]);
+
+        const profile = (profileRes.success && profileRes.data) ? profileRes.data : null;
+        const posts = (postsRes.success && postsRes.data) ? postsRes.data : [];
+
+        if (!profile) {
+            app.innerHTML = renderEmpty('获取用户信息失败');
+            return;
+        }
+
+        const postsHtml = posts.length > 0
+            ? posts.map(renderPostCard).join('')
+            : renderEmpty('暂无发帖记录');
+
+        app.innerHTML = `
+            <div class="profile-header">
+                ${getAvatarHtml(profile.avatar, profile.nickname || profile.username, 'lg')}
+                <div class="profile-info">
+                    <div class="profile-name">${escapeHtml(profile.nickname || profile.username)}</div>
+                    <div class="text-muted text-sm">@${escapeHtml(profile.username)}</div>
+                    <div class="profile-signature mt-2">${escapeHtml(profile.signature || '这个人很懒，什么都没留下')}</div>
+                    <div class="profile-stats mt-2">
+                        <div class="stat-item">
+                            <div class="stat-num">${profile.postCount || 0}</div>
+                            <div class="stat-label">发帖</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">${profile.followerCount || 0}</div>
+                            <div class="stat-label">粉丝</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">${profile.followingCount || 0}</div>
+                            <div class="stat-label">关注</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="showEditProfileModal()">编辑资料</button>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="switchProfileTab('posts', this)">📝 发布历史</div>
+                <div class="tab" onclick="switchProfileTab('favorites', this)">⭐ 收藏夹</div>
+                <div class="tab" onclick="switchProfileTab('following', this)">👥 关注列表</div>
+                <div class="tab" onclick="switchProfileTab('followers', this)">❤ 粉丝列表</div>
+                <div class="tab" onclick="switchProfileTab('security', this)">🔒 账号安全</div>
+            </div>
+            <div id="profileContent">${postsHtml}</div>
+        `;
+    }
+
+    /**
+     * 切换个人中心 Tab
+     * @param {string} tab - Tab 名称
+     * @param {element} el - 当前 Tab 元素
+     */
+    async function switchProfileTab(tab, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        const content = document.getElementById('profileContent');
+        content.innerHTML = renderLoading();
+
+        if (tab === 'posts') {
+            const res = await API.get(`/api/posts/user/${state.user.id}`);
+            const posts = (res.success && res.data) ? res.data : [];
+            content.innerHTML = posts.length > 0 ? posts.map(renderPostCard).join('') : renderEmpty('暂无发帖记录');
+        } else if (tab === 'favorites') {
+            const res = await API.get('/api/interaction/favorites');
+            const favorites = (res.success && res.data) ? res.data : [];
+            if (favorites.length === 0) {
+                content.innerHTML = renderEmpty('暂无收藏');
+            } else {
+                // 逐个获取帖子详情
+                const postPromises = favorites.map(f => API.get(`/api/posts/${f.postId}`));
+                const postResults = await Promise.all(postPromises);
+                const posts = postResults.filter(r => r.success && r.data).map(r => r.data);
+                content.innerHTML = posts.length > 0 ? posts.map(renderPostCard).join('') : renderEmpty('收藏的帖子已不存在');
+            }
+        } else if (tab === 'following') {
+            const res = await API.get('/api/interaction/following');
+            const following = (res.success && res.data) ? res.data : [];
+            if (following.length === 0) {
+                content.innerHTML = renderEmpty('暂无关注');
+            } else {
+                // 获取关注用户信息
+                const userPromises = following.map(f => API.get(`/api/users/${f.followeeId}`));
+                const userResults = await Promise.all(userPromises);
+                const users = userResults.filter(r => r.success && r.data).map(r => r.data);
+                // 关注列表中的用户均为已关注状态，isFollowing 传 true
+                content.innerHTML = users.map(u => renderUserCard(u, true)).join('') || renderEmpty('关注用户不存在');
+            }
+        } else if (tab === 'followers') {
+            const res = await API.get('/api/interaction/followers');
+            const followers = (res.success && res.data) ? res.data : [];
+            if (followers.length === 0) {
+                content.innerHTML = renderEmpty('暂无粉丝');
+            } else {
+                // 获取当前用户关注列表，用于判断每个粉丝是否已被自己关注
+                const followingRes = await API.get('/api/interaction/following');
+                const followingList = (followingRes.success && followingRes.data) ? followingRes.data : [];
+                const followingIds = new Set(followingList.map(f => f.followeeId));
+                const userPromises = followers.map(f => API.get(`/api/users/${f.followerId}`));
+                const userResults = await Promise.all(userPromises);
+                const users = userResults.filter(r => r.success && r.data).map(r => r.data);
+                content.innerHTML = users.map(u => renderUserCard(u, followingIds.has(u.id))).join('') || renderEmpty('粉丝不存在');
+            }
+        } else if (tab === 'security') {
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">🔒 修改密码</div>
+                        <div class="form-group">
+                            <label class="form-label">原密码</label>
+                            <input type="password" class="form-input" id="oldPassword" placeholder="请输入原密码" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">新密码</label>
+                            <input type="password" class="form-input" id="newPassword" placeholder="请输入新密码" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">确认新密码</label>
+                            <input type="password" class="form-input" id="confirmPassword" placeholder="请再次输入新密码" />
+                        </div>
+                        <button class="btn btn-primary" onclick="changePassword()">修改密码</button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * 渲染用户卡片
+     * @param {object} user - 用户数据
+     * @param {boolean} [isFollowing] - 是否已关注该用户，控制按钮文案
+     * @returns {string} 用户卡片 HTML
+     */
+    function renderUserCard(user, isFollowing) {
+        // 判断是否为当前登录用户自己，自己不显示关注按钮
+        const isSelf = state.user && state.user.id === user.id;
+        // 关注按钮：已关注显示"取消关注"，未关注显示"关注"
+        const followBtn = isSelf ? '' : `
+            <button onclick="toggleFollow(${user.id})" class="btn ${isFollowing ? 'btn-outline' : 'btn-primary'} btn-follow" data-following="${isFollowing ? '1' : '0'}">
+                ${isFollowing ? '取消关注' : '关注'}
+            </button>
+        `;
+        return `
+            <div class="card mb-4">
+                <div class="card-body" style="display:flex;align-items:center;gap:16px;">
+                    ${getAvatarHtml(user.avatar, user.nickname || user.username)}
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:15px;">${escapeHtml(user.nickname || user.username)}</div>
+                        <div class="text-muted text-sm">@${escapeHtml(user.username)}</div>
+                        <div class="text-muted text-sm">${escapeHtml(user.signature || '')}</div>
+                    </div>
+                    <div class="text-sm text-muted">
+                        发帖 ${user.postCount || 0} · 粉丝 ${user.followerCount || 0}
+                    </div>
+                    ${followBtn}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 关注/取消关注用户
+     * @param {number} userId - 目标用户 ID
+     * @returns {Promise<void>}
+     */
+    async function toggleFollow(userId) {
+        // 未登录时跳转登录页
+        if (!state.user) {
+            showNotification('请先登录', 'warning');
+            location.hash = '#/login';
+            return;
+        }
+        // 禁止关注自己
+        if (state.user.id === userId) {
+            showNotification('不能关注自己', 'warning');
+            return;
+        }
+        try {
+            const res = await API.post(`/api/interaction/follow?userId=${userId}`);
+            if (res.success) {
+                // res.data 为 true 表示已关注，false 表示已取消关注
+                showNotification(res.data ? '已关注' : '已取消关注', 'success');
+                // 重新渲染当前列表以刷新按钮状态
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    const tabText = activeTab.textContent.trim();
+                    if (tabText.includes('关注列表')) {
+                        switchProfileTab('following', activeTab);
+                    } else if (tabText.includes('粉丝列表')) {
+                        switchProfileTab('followers', activeTab);
+                    }
+                }
+            } else {
+                showNotification(res.message || '操作失败', 'warning');
+            }
+        } catch (e) {
+            console.error('关注操作失败:', e);
+            showNotification('操作失败', 'warning');
+        }
+    }
+
+    /**
+     * 显示编辑资料模态框
+     */
+    function showEditProfileModal() {
+        API.get('/api/users/profile').then(res => {
+            if (!res.success || !res.data) {
+                showNotification('获取资料失败', 'error');
+                return;
+            }
+            const p = res.data;
+            showModal('编辑资料', `
+                <div class="form-group">
+                    <label class="form-label">昵称</label>
+                    <input type="text" class="form-input" id="editNickname" value="${escapeHtml(p.nickname || '')}" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">头像 URL</label>
+                    <input type="text" class="form-input" id="editAvatar" value="${escapeHtml(p.avatar || '')}" placeholder="输入头像图片地址" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">个性签名</label>
+                    <input type="text" class="form-input" id="editSignature" value="${escapeHtml(p.signature || '')}" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">个人简介</label>
+                    <textarea class="form-input" id="editBio" style="min-height:80px;">${escapeHtml(p.bio || '')}</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" class="form-input" id="editEmail" value="${escapeHtml(p.email || '')}" />
+                </div>
+            `, async () => {
+                const data = {
+                    nickname: document.getElementById('editNickname').value.trim(),
+                    avatar: document.getElementById('editAvatar').value.trim(),
+                    signature: document.getElementById('editSignature').value.trim(),
+                    bio: document.getElementById('editBio').value.trim(),
+                    email: document.getElementById('editEmail').value.trim()
+                };
+                const updateRes = await API.put('/api/users/profile', data);
+                if (updateRes.success) {
+                    showNotification('资料更新成功', 'success');
+                    renderProfile();
+                } else {
+                    showNotification(updateRes.message || '更新失败', 'error');
+                }
+            });
+        });
+    }
+
+    /**
+     * 修改密码
+     */
+    async function changePassword() {
+        const oldPassword = document.getElementById('oldPassword').value.trim();
+        const newPassword = document.getElementById('newPassword').value.trim();
+        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+        if (!oldPassword || !newPassword) {
+            showNotification('请填写密码', 'warning');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showNotification('两次输入的新密码不一致', 'warning');
+            return;
+        }
+        const res = await API.put('/api/users/password', { oldPassword, newPassword });
+        if (res.success) {
+            showNotification('密码修改成功', 'success');
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        } else {
+            showNotification(res.message || '修改失败', 'error');
+        }
+    }
+
+    /**
+     * 渲染新闻详情页
+     * @param {string} id - 新闻 ID
+     */
+    async function renderNews(id) {
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const res = await API.get(`/api/news/${id}`);
+        const news = (res.success && res.data) ? res.data : null;
+
+        if (!news) {
+            app.innerHTML = renderEmpty('新闻不存在');
+            return;
+        }
+
+        app.innerHTML = `
+            <div class="breadcrumb">
+                <a onclick="location.hash = '#/'">首页</a>
+                <span class="separator">/</span>
+                <span>资讯详情</span>
+            </div>
+            <div class="news-detail">
+                <h1>${escapeHtml(news.title)}</h1>
+                <div class="news-meta">
+                    <span class="badge badge-section">${escapeHtml(news.category || '资讯')}</span>
+                    <span>👁 ${news.viewCount || 0} 浏览</span>
+                    <span>🕒 发布于 ${formatDate(news.createdAt)}</span>
+                    <span>✏ 更新于 ${formatDate(news.updateTime)}</span>
+                </div>
+                <div class="news-body">${escapeHtml(news.content)}</div>
+            </div>
+        `;
+    }
+
+    /**
+     * 渲染作品详情页
+     * @param {string} id - 作品 ID
+     */
+    async function renderWork(id) {
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const res = await API.get(`/api/works/${id}`);
+        const work = (res.success && res.data) ? res.data : null;
+
+        if (!work) {
+            app.innerHTML = renderEmpty('作品不存在');
+            return;
+        }
+
+        const tags = work.tags ? work.tags.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+        const tagsHtml = tags.map(t => `<span class="post-tag">${escapeHtml(t)}</span>`).join('');
+
+        app.innerHTML = `
+            <div class="breadcrumb">
+                <a onclick="location.hash = '#/'">首页</a>
+                <span class="separator">/</span>
+                <span>作品详情</span>
+            </div>
+            <div class="work-detail">
+                <div class="work-detail-cover">${escapeHtml(work.type || '作品')}</div>
+                <div class="work-detail-info">
+                    <h1>${escapeHtml(work.title)}</h1>
+                    <div class="work-detail-rating">★ ${work.rating ? work.rating.toFixed(1) : '-'}</div>
+                    <div class="work-detail-desc">${escapeHtml(work.description || '暂无描述')}</div>
+                    <div class="text-muted text-sm mb-4">
+                        类型：${escapeHtml(work.type || '未知')} · 更新于 ${formatDate(work.updateTime)}
+                    </div>
+                    ${tagsHtml ? `<div class="work-detail-tags">${tagsHtml}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 渲染通知页
+     */
+    async function renderNotifications() {
+        if (!checkLogin()) return;
+        const app = document.getElementById('app');
+        app.innerHTML = renderLoading();
+
+        const res = await API.get('/api/notifications');
+        const notifications = (res.success && res.data) ? res.data : [];
+
+        const typeEmoji = {
+            'LIKE': '❤',
+            'COMMENT': '💬',
+            'REPLY': '💬',
+            'FOLLOW': '👥',
+            'SYSTEM': '📢',
+            'FAVORITE': '⭐'
+        };
+
+        const listHtml = notifications.length > 0
+            ? notifications.map(n => `
+                <div class="notification-item ${n.isRead ? '' : 'unread'}" onclick="markNotificationRead(${n.id}, ${n.relatedId || 0})">
+                    ${!n.isRead ? '<div class="notification-dot"></div>' : '<div style="width:8px;"></div>'}
+                    <span style="font-size:20px;">${typeEmoji[n.type] || '🔔'}</span>
+                    <div class="notification-content">
+                        ${escapeHtml(n.content || '')}
+                        ${n.senderName ? `<div class="text-muted text-sm">来自 ${escapeHtml(n.senderName)}</div>` : ''}
+                    </div>
+                    <div class="notification-time">${formatDate(n.createdAt)}</div>
+                </div>
+            `).join('')
+            : renderEmpty('暂无通知');
+
+        app.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <div class="section-header">
+                        <div class="section-title"><span class="emoji">🔔</span> 消息通知</div>
+                        ${notifications.length > 0 ? '<button class="btn btn-outline btn-sm" onclick="markAllRead()">全部已读</button>' : ''}
+                    </div>
+                    <div id="notificationsList">${listHtml}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 标记通知已读
+     * @param {number} id - 通知 ID
+     * @param {number} relatedId - 关联 ID
+     */
+    async function markNotificationRead(id, relatedId) {
+        const res = await API.put(`/api/notifications/${id}/read`);
+        if (res.success) {
+            fetchUnreadCount();
+            renderNotifications();
+        }
+    }
+
+    /**
+     * 标记全部已读
+     */
+    async function markAllRead() {
+        const res = await API.put('/api/notifications/read-all');
+        if (res.success) {
+            showNotification('已全部标记为已读', 'success');
+            state.unreadCount = 0;
+            renderNavActions();
+            renderNotifications();
+        } else {
+            showNotification(res.message || '操作失败', 'error');
+        }
+    }
+
+    // ========== 初始化 ==========
+
+    /**
+     * 初始化应用
+     */
+    async function init() {
+        await fetchCurrentUser();
+        fetchUnreadCount();
+
+        // 搜索框回车事件
+        const searchInput = document.getElementById('navSearchInput');
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const keyword = searchInput.value.trim();
+                if (keyword) {
+                    location.hash = `#/search?keyword=${encodeURIComponent(keyword)}`;
+                    searchInput.value = '';
+                }
+            }
+        });
+
+        // 路由监听
+        window.addEventListener('hashchange', router);
+        router();
+
+        // 定时刷新未读数
+        setInterval(fetchUnreadCount, 60000);
+    }
+
+    // 启动应用
+    init();
+</script>
+</body>
+</html>
