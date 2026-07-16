@@ -28,3 +28,14 @@ node_modules/
 
 # TRAE 临时分享包
 .trae-html-share-packages/
+
+# 压缩包（项目分发/打包产物，不入库）
+*.zip
+
+# 临时输出与凭据文件
+output.txt
+cookies.txt
+
+# Maven 分发包（脚本内置下载，不入库）
+scripts/maven/*.zip
+**/scripts/maven/*.zip

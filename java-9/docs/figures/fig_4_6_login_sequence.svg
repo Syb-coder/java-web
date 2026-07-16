@@ -1,67 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="750" height="520" viewBox="0 0 750 520">
-  <rect width="750" height="520" fill="#FAFAFA" rx="8"/>
-  <text x="375" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#333" font-family="SimHei">用户登录时序图</text>
-
-  <!-- 生命线 -->
-  <line x1="100" y1="60" x2="100" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
-  <line x1="280" y1="60" x2="280" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
-  <line x1="460" y1="60" x2="460" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
-  <line x1="640" y1="60" x2="640" y2="490" stroke="#CCC" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- 参与者 -->
-  <rect x="50" y="40" width="100" height="35" fill="#4A90D9" rx="4"/>
-  <text x="100" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">用户</text>
-
-  <rect x="220" y="40" width="120" height="35" fill="#5CB85C" rx="4"/>
-  <text x="280" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">AuthController</text>
-
-  <rect x="400" y="40" width="120" height="35" fill="#5CB85C" rx="4"/>
-  <text x="460" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">AuthService</text>
-
-  <rect x="580" y="40" width="120" height="35" fill="#F0AD4E" rx="4"/>
-  <text x="640" y="62" text-anchor="middle" font-size="13" fill="#FFF" font-family="SimHei">UserRepository</text>
-
-  <!-- 消息1: 用户 -> AuthController -->
-  <line x1="100" y1="100" x2="278" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
-  <text x="190" y="93" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">POST /api/auth/user/login</text>
-
-  <!-- 消息2: AuthController -> AuthService -->
-  <line x1="280" y1="140" x2="458" y2="140" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
-  <text x="370" y="133" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">loginUserService(req)</text>
-
-  <!-- 消息3: AuthService -> UserRepository -->
-  <line x1="460" y1="180" x2="638" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arr4)"/>
-  <text x="550" y="173" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">findByUsername(username)</text>
-
-  <!-- 消息4: UserRepository -> AuthService (返回) -->
-  <line x1="640" y1="220" x2="462" y2="220" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
-  <text x="550" y="213" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">User实体</text>
-
-  <!-- 消息5: AuthService 自调用 (BCrypt校验) -->
-  <rect x="450" y="245" width="20" height="40" fill="#F0AD4E" rx="2"/>
-  <text x="460" y="270" text-anchor="middle" font-size="11" fill="#333" font-family="SimHei" transform="rotate(-90 460 270)">BCrypt.matches</text>
-
-  <!-- 消息6: AuthService -> AuthController (返回) -->
-  <line x1="460" y1="300" x2="282" y2="300" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
-  <text x="370" y="293" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">LoginResponse</text>
-
-  <!-- 消息7: AuthController 自调用 (Session写入) -->
-  <rect x="270" y="325" width="20" height="40" fill="#F0AD4E" rx="2"/>
-  <text x="280" y="350" text-anchor="middle" font-size="11" fill="#333" font-family="SimHei" transform="rotate(-90 280 350)">session.setAttribute</text>
-
-  <!-- 消息8: AuthController -> 用户 (返回) -->
-  <line x1="280" y1="380" x2="102" y2="380" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
-  <text x="190" y="373" text-anchor="middle" font-size="12" fill="#333" font-family="SimHei">200 OK + 用户信息</text>
-
-  <!-- 分支：冻结状态 -->
-  <rect x="400" y="410" width="250" height="60" fill="#FFF3E0" stroke="#FF9800" rx="4"/>
-  <text x="525" y="430" text-anchor="middle" font-size="12" fill="#E65100" font-family="SimHei">alt: 账户冻结时</text>
-  <text x="525" y="450" text-anchor="middle" font-size="11" fill="#666" font-family="SimHei">返回 403 Forbidden</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="734" viewBox="0 0 1320 734" role="img" aria-label="图 4-6 用户登录时序图">
+  <title>图 4-6 用户登录时序图</title>
   <defs>
-    <marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#333"/>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
     </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .entity-label { font: 700 15px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#shadow); }
+      .blue { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #475569; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .note { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 2; }
+    </style>
   </defs>
+  <rect class="bg" width="1320" height="734"/>
+  
+  
+  <text x="60" y="56" class="title">图 4-6 用户登录时序图</text>
+  <text x="60" y="84" class="subtitle">采用时序图布局，纵向消息不重叠，箭头方向与调用方一致</text>
+  
+  <rect x="25" y="120" width="190" height="72" rx="16" class="blue"/>
+  <text x="120" y="154" text-anchor="middle" class="label white">用户</text>
+  
+
+  <rect x="285" y="120" width="190" height="72" rx="16" class="node"/>
+  <text x="380" y="154" text-anchor="middle" class="label">前端页面</text>
+  
+
+  <rect x="555" y="120" width="190" height="72" rx="16" class="node"/>
+  <text x="650" y="154" text-anchor="middle" class="label">AuthController</text>
+  
+
+  <rect x="825" y="120" width="190" height="72" rx="16" class="node"/>
+  <text x="920" y="154" text-anchor="middle" class="label">UserService</text>
+  
+
+  <rect x="1095" y="120" width="190" height="72" rx="16" class="dark"/>
+  <text x="1190" y="154" text-anchor="middle" class="label white">数据库</text>
+  
+  <path d="M 120 192 L 120 674" class="relation dash"/>
+<path d="M 380 192 L 380 674" class="relation dash"/>
+<path d="M 650 192 L 650 674" class="relation dash"/>
+<path d="M 920 192 L 920 674" class="relation dash"/>
+<path d="M 1190 192 L 1190 674" class="relation dash"/>
+  
+      <path d="M 120 245 L 380 245" class="line-blue"/>
+      <text x="250" y="235" text-anchor="middle" class="small">输入账号密码</text>
+
+      <path d="M 380 313 L 650 313" class="line"/>
+      <text x="515" y="303" text-anchor="middle" class="small">提交登录请求</text>
+
+      <path d="M 650 381 L 920 381" class="line"/>
+      <text x="785" y="371" text-anchor="middle" class="small">校验用户状态</text>
+
+      <path d="M 920 449 L 1190 449" class="line"/>
+      <text x="1055" y="439" text-anchor="middle" class="small">查询账户信息</text>
+
+      <path d="M 1190 517 L 920 517" class="line"/>
+      <text x="1055" y="507" text-anchor="middle" class="small">返回账户与风控状态</text>
+
+      <path d="M 920 585 L 650 585" class="line"/>
+      <text x="785" y="575" text-anchor="middle" class="small">生成会话信息</text>
+
+      <path d="M 650 653 L 380 653" class="line"/>
+      <text x="515" y="643" text-anchor="middle" class="small">返回登录结果</text>
+
+      <path d="M 380 721 L 120 721" class="line-blue"/>
+      <text x="250" y="711" text-anchor="middle" class="small">进入平台首页</text>
+  
 </svg>

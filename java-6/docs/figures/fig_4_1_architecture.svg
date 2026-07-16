@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="740" viewBox="0 0 1260 740" role="img" aria-label="图 4-1 系统架构设计图">
+  <title>图 4-1 系统架构设计图</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .entity-label { font: 700 15px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#shadow); }
+      .blue { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #475569; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .note { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="bg" width="1260" height="740"/>
+  
+  
+  <text x="60" y="56" class="title">图 4-1 系统架构设计图</text>
+  <text x="60" y="84" class="subtitle">国家网络安全宣传官网采用分层 B/S 架构，连线从组件边缘连接，避免穿越节点</text>
+  
+  <rect x="70" y="145" width="260" height="100" rx="16" class="blue"/>
+  <text x="200" y="179" text-anchor="middle" class="label white">用户访问层</text>
+  <text x="200" y="201" text-anchor="middle" class="white">浏览器客户端</text>
+<text x="200" y="225" text-anchor="middle" class="white">管理员管理端</text>
+  
+  <rect x="470" y="145" width="300" height="100" rx="16" class="purple"/>
+  <text x="620" y="179" text-anchor="middle" class="label white">Web 接口层</text>
+  <text x="620" y="201" text-anchor="middle" class="white">Spring MVC Controller</text>
+<text x="620" y="225" text-anchor="middle" class="white">RESTful API / JSON</text>
+  
+  <rect x="910" y="145" width="280" height="100" rx="16" class="green"/>
+  <text x="1050" y="179" text-anchor="middle" class="label white">静态资源层</text>
+  <text x="1050" y="201" text-anchor="middle" class="white">HTML / CSS / JavaScript</text>
+<text x="1050" y="225" text-anchor="middle" class="white">页面与交互脚本</text>
+  
+  <rect x="470" y="345" width="300" height="118" rx="16" class="orange"/>
+  <text x="620" y="379" text-anchor="middle" class="label white">业务服务层</text>
+  <text x="620" y="401" text-anchor="middle" class="white">资讯、知识、法规</text>
+<text x="620" y="425" text-anchor="middle" class="white">举报、后台管理</text>
+  
+  <rect x="70" y="555" width="300" height="112" rx="16" class="node"/>
+  <text x="220" y="589" text-anchor="middle" class="label">数据访问层</text>
+  <text x="220" y="611" text-anchor="middle" class="small">Spring Data JPA</text>
+<text x="220" y="635" text-anchor="middle" class="small">Repository 接口</text>
+  
+  <rect x="515" y="555" width="260" height="112" rx="16" class="node"/>
+  <text x="645" y="589" text-anchor="middle" class="label">领域模型层</text>
+  <text x="645" y="611" text-anchor="middle" class="small">News / KnowledgeArticle</text>
+<text x="645" y="635" text-anchor="middle" class="small">Regulation / Report</text>
+  
+  <rect x="920" y="555" width="260" height="112" rx="16" class="dark"/>
+  <text x="1050" y="589" text-anchor="middle" class="label white">数据存储层</text>
+  <text x="1050" y="611" text-anchor="middle" class="white">H2 Database</text>
+<text x="1050" y="635" text-anchor="middle" class="white">配置与初始化数据</text>
+  <path d="M 330 195 L 470 195" class="line-blue"/>
+  <path d="M 770 195 L 910 195" class="line-blue"/>
+  <path d="M 620 245 L 620 345" class="line-blue"/>
+  <path d="M 620 463 L 620 510 L 220 510 L 220 555" class="line"/>
+  <path d="M 620 463 L 645 555" class="line"/>
+  <path d="M 370 611 L 515 611" class="line"/>
+  <path d="M 775 611 L 920 611" class="line"/>
+  <text x="400" y="180" text-anchor="middle" class="tiny">HTTP / JSON</text>
+  <text x="655" y="306" text-anchor="middle" class="tiny">调用业务服务</text>
+  <text x="400" y="500" text-anchor="middle" class="tiny">Repository 读写</text>
+  <text x="840" y="600" text-anchor="middle" class="tiny">实体映射</text>
+  
+</svg>

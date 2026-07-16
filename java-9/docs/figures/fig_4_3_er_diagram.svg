@@ -1,117 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
-  <rect width="800" height="600" fill="#FAFAFA" rx="8"/>
-  <text x="400" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#333" font-family="SimHei">数据库实体关系图（ER Diagram）</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="960" viewBox="0 0 1620 960" role="img" aria-label="图 4-3 数据库 ER 图">
+  <title>图 4-3 数据库 ER 图</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .entity-label { font: 700 15px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#shadow); }
+      .blue { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #475569; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .note { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="bg" width="1620" height="960"/>
+  
+  
+  <text x="60" y="56" class="title">图 4-3 数据库 ER 图</text>
+  <text x="60" y="84" class="subtitle">实体按业务域分区，关系线走空白通道，不压住字段</text>
+  
+  <rect x="70" y="150" width="210" height="162" rx="14" class="blue"/>
+  <text x="175" y="184" text-anchor="middle" class="entity-label white">User 用户</text>
+  <line x1="86" y1="202" x2="264" y2="202" stroke="#ffffff" stroke-opacity="0.8"/>
+  <text x="88" y="228" class="mono">PK id</text>
+<text x="88" y="252" class="mono">username</text>
+<text x="88" y="276" class="mono">password</text>
+<text x="88" y="300" class="mono">status</text>
 
-  <!-- User实体 -->
-  <rect x="20" y="50" width="170" height="130" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2" rx="4"/>
-  <rect x="20" y="50" width="170" height="28" fill="#4CAF50" rx="4"/>
-  <text x="105" y="69" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">users（用户）</text>
-  <text x="30" y="95" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="30" y="110" font-size="11" fill="#333" font-family="SimHei">username (VARCHAR 50)</text>
-  <text x="30" y="125" font-size="11" fill="#333" font-family="SimHei">password (VARCHAR 100)</text>
-  <text x="30" y="140" font-size="11" fill="#333" font-family="SimHei">balance (DECIMAL 18,2)</text>
-  <text x="30" y="155" font-size="11" fill="#333" font-family="SimHei">verified (BOOLEAN)</text>
-  <text x="30" y="170" font-size="11" fill="#333" font-family="SimHei">status (VARCHAR 20)</text>
+  <rect x="390" y="150" width="210" height="162" rx="14" class="purple"/>
+  <text x="495" y="184" text-anchor="middle" class="entity-label white">FinancialProduct 理财产品</text>
+  <line x1="406" y1="202" x2="584" y2="202" stroke="#ffffff" stroke-opacity="0.8"/>
+  <text x="408" y="228" class="mono">PK id</text>
+<text x="408" y="252" class="mono">product_type</text>
+<text x="408" y="276" class="mono">rate</text>
+<text x="408" y="300" class="mono">status</text>
 
-  <!-- FinancialProduct实体 -->
-  <rect x="310" y="50" width="180" height="130" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" rx="4"/>
-  <rect x="310" y="50" width="180" height="28" fill="#2196F3" rx="4"/>
-  <text x="400" y="69" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">financial_products</text>
-  <text x="320" y="95" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="320" y="110" font-size="11" fill="#333" font-family="SimHei">name (VARCHAR 100)</text>
-  <text x="320" y="125" font-size="11" fill="#333" font-family="SimHei">annualRate (DECIMAL 6,4)</text>
-  <text x="320" y="140" font-size="11" fill="#333" font-family="SimHei">minAmount (DECIMAL 18,2)</text>
-  <text x="320" y="155" font-size="11" fill="#333" font-family="SimHei">riskLevel (INT)</text>
-  <text x="320" y="170" font-size="11" fill="#333" font-family="SimHei">status (VARCHAR 20)</text>
+  <rect x="710" y="150" width="210" height="162" rx="14" class="orange"/>
+  <text x="815" y="184" text-anchor="middle" class="entity-label white">InvestmentOrder 投资订单</text>
+  <line x1="726" y1="202" x2="904" y2="202" stroke="#ffffff" stroke-opacity="0.8"/>
+  <text x="728" y="228" class="mono">PK id</text>
+<text x="728" y="252" class="mono">FK user_id</text>
+<text x="728" y="276" class="mono">FK product_id</text>
+<text x="728" y="300" class="mono">status</text>
 
-  <!-- InvestmentOrder实体 -->
-  <rect x="610" y="50" width="170" height="130" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" rx="4"/>
-  <rect x="610" y="50" width="170" height="28" fill="#FF9800" rx="4"/>
-  <text x="695" y="69" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">investment_orders</text>
-  <text x="620" y="95" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="620" y="110" font-size="11" fill="#333" font-family="SimHei">orderNo (VARCHAR 32)</text>
-  <text x="620" y="125" font-size="11" fill="#333" font-family="SimHei">FK userId (BIGINT)</text>
-  <text x="620" y="140" font-size="11" fill="#333" font-family="SimHei">FK productId (BIGINT)</text>
-  <text x="620" y="155" font-size="11" fill="#333" font-family="SimHei">amount (DECIMAL 18,2)</text>
-  <text x="620" y="170" font-size="11" fill="#333" font-family="SimHei">expectedReturn (DECIMAL)</text>
+  <rect x="1030" y="150" width="210" height="162" rx="14" class="node"/>
+  <text x="1135" y="184" text-anchor="middle" class="entity-label">PaymentOrder 支付订单</text>
+  <line x1="1046" y1="202" x2="1224" y2="202" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="1048" y="228" class="mono">PK id</text>
+<text x="1048" y="252" class="mono">FK user_id</text>
+<text x="1048" y="276" class="mono">amount</text>
+<text x="1048" y="300" class="mono">status</text>
 
-  <!-- Merchant实体 -->
-  <rect x="20" y="220" width="170" height="120" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2" rx="4"/>
-  <rect x="20" y="220" width="170" height="28" fill="#9C27B0" rx="4"/>
-  <text x="105" y="239" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">merchants（商户）</text>
-  <text x="30" y="265" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="30" y="280" font-size="11" fill="#333" font-family="SimHei">username (VARCHAR 50)</text>
-  <text x="30" y="295" font-size="11" fill="#333" font-family="SimHei">merchantName (VARCHAR)</text>
-  <text x="30" y="310" font-size="11" fill="#333" font-family="SimHei">balance (DECIMAL 18,2)</text>
-  <text x="30" y="325" font-size="11" fill="#333" font-family="SimHei">licenseNo (VARCHAR)</text>
+  <rect x="1350" y="150" width="210" height="162" rx="14" class="node"/>
+  <text x="1455" y="184" text-anchor="middle" class="entity-label">Transaction 流水</text>
+  <line x1="1366" y1="202" x2="1544" y2="202" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="1368" y="228" class="mono">PK id</text>
+<text x="1368" y="252" class="mono">FK payment_id</text>
+<text x="1368" y="276" class="mono">type</text>
+<text x="1368" y="300" class="mono">amount</text>
 
-  <!-- PaymentOrder实体 -->
-  <rect x="310" y="220" width="180" height="120" fill="#FCE4EC" stroke="#E91E63" stroke-width="2" rx="4"/>
-  <rect x="310" y="220" width="180" height="28" fill="#E91E63" rx="4"/>
-  <text x="400" y="239" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">payment_orders</text>
-  <text x="320" y="265" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="320" y="280" font-size="11" fill="#333" font-family="SimHei">orderNo (VARCHAR 32)</text>
-  <text x="320" y="295" font-size="11" fill="#333" font-family="SimHei">FK userId (BIGINT)</text>
-  <text x="320" y="310" font-size="11" fill="#333" font-family="SimHei">FK merchantId (BIGINT)</text>
-  <text x="320" y="325" font-size="11" fill="#333" font-family="SimHei">channel/status (VARCHAR)</text>
+  <rect x="70" y="405" width="210" height="138" rx="14" class="node"/>
+  <text x="175" y="439" text-anchor="middle" class="entity-label">Merchant 商户</text>
+  <line x1="86" y1="457" x2="264" y2="457" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="88" y="483" class="mono">PK id</text>
+<text x="88" y="507" class="mono">name</text>
+<text x="88" y="531" class="mono">status</text>
 
-  <!-- Transaction实体 -->
-  <rect x="610" y="220" width="170" height="120" fill="#E0F2F1" stroke="#009688" stroke-width="2" rx="4"/>
-  <rect x="610" y="220" width="170" height="28" fill="#009688" rx="4"/>
-  <text x="695" y="239" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">transactions</text>
-  <text x="620" y="265" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="620" y="280" font-size="11" fill="#333" font-family="SimHei">transactionNo (VARCHAR)</text>
-  <text x="620" y="295" font-size="11" fill="#333" font-family="SimHei">accountId/type</text>
-  <text x="620" y="310" font-size="11" fill="#333" font-family="SimHei">amount (DECIMAL)</text>
-  <text x="620" y="325" font-size="11" fill="#333" font-family="SimHei">balanceAfter (DECIMAL)</text>
+  <rect x="390" y="405" width="210" height="138" rx="14" class="node"/>
+  <text x="495" y="439" text-anchor="middle" class="entity-label">Coupon 优惠券</text>
+  <line x1="406" y1="457" x2="584" y2="457" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="408" y="483" class="mono">PK id</text>
+<text x="408" y="507" class="mono">FK user_id</text>
+<text x="408" y="531" class="mono">status</text>
 
-  <!-- RiskRecord实体 -->
-  <rect x="120" y="380" width="170" height="110" fill="#FFEBEE" stroke="#F44336" stroke-width="2" rx="4"/>
-  <rect x="120" y="380" width="170" height="28" fill="#F44336" rx="4"/>
-  <text x="205" y="399" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">risk_records</text>
-  <text x="130" y="425" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="130" y="440" font-size="11" fill="#333" font-family="SimHei">targetType/targetId</text>
-  <text x="130" y="455" font-size="11" fill="#333" font-family="SimHei">riskType/riskLevel</text>
-  <text x="130" y="470" font-size="11" fill="#333" font-family="SimHei">status (VARCHAR 20)</text>
+  <rect x="710" y="405" width="210" height="138" rx="14" class="node"/>
+  <text x="815" y="439" text-anchor="middle" class="entity-label">Activity 活动</text>
+  <line x1="726" y1="457" x2="904" y2="457" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="728" y="483" class="mono">PK id</text>
+<text x="728" y="507" class="mono">activity_type</text>
+<text x="728" y="531" class="mono">enabled</text>
 
-  <!-- SupportTicket实体 -->
-  <rect x="340" y="380" width="170" height="110" fill="#E8EAF6" stroke="#3F51B5" stroke-width="2" rx="4"/>
-  <rect x="340" y="380" width="170" height="28" fill="#3F51B5" rx="4"/>
-  <text x="425" y="399" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">support_tickets</text>
-  <text x="350" y="425" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="350" y="440" font-size="11" fill="#333" font-family="SimHei">FK userId (BIGINT)</text>
-  <text x="350" y="455" font-size="11" fill="#333" font-family="SimHei">title/description</text>
-  <text x="350" y="470" font-size="11" fill="#333" font-family="SimHei">status/reply</text>
+  <rect x="1030" y="405" width="210" height="138" rx="14" class="node"/>
+  <text x="1135" y="439" text-anchor="middle" class="entity-label">RiskRecord 风控记录</text>
+  <line x1="1046" y1="457" x2="1224" y2="457" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="1048" y="483" class="mono">PK id</text>
+<text x="1048" y="507" class="mono">FK user_id</text>
+<text x="1048" y="531" class="mono">risk_level</text>
 
-  <!-- Activity实体 -->
-  <rect x="560" y="380" width="170" height="110" fill="#FFF8E1" stroke="#FFC107" stroke-width="2" rx="4"/>
-  <rect x="560" y="380" width="170" height="28" fill="#FFC107" rx="4"/>
-  <text x="645" y="399" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" font-family="SimHei">activities</text>
-  <text x="570" y="425" font-size="11" fill="#333" font-family="SimHei">PK id (BIGINT)</text>
-  <text x="570" y="440" font-size="11" fill="#333" font-family="SimHei">title/type</text>
-  <text x="570" y="455" font-size="11" fill="#333" font-family="SimHei">startTime/endTime</text>
-  <text x="570" y="470" font-size="11" fill="#333" font-family="SimHei">active (BOOLEAN)</text>
+  <rect x="1350" y="405" width="210" height="138" rx="14" class="node"/>
+  <text x="1455" y="439" text-anchor="middle" class="entity-label">SupportTicket 工单</text>
+  <line x1="1366" y1="457" x2="1544" y2="457" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="1368" y="483" class="mono">PK id</text>
+<text x="1368" y="507" class="mono">FK user_id</text>
+<text x="1368" y="531" class="mono">status</text>
 
-  <!-- 关系线 -->
-  <line x1="190" y1="115" x2="310" y2="115" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="250" y="108" text-anchor="middle" font-size="10" fill="#666" font-family="SimHei">1:N</text>
+  <rect x="70" y="660" width="210" height="138" rx="14" class="dark"/>
+  <text x="175" y="694" text-anchor="middle" class="entity-label white">AdminUser 管理员</text>
+  <line x1="86" y1="712" x2="264" y2="712" stroke="#ffffff" stroke-opacity="0.8"/>
+  <text x="88" y="738" class="mono">PK id</text>
+<text x="88" y="762" class="mono">username</text>
+<text x="88" y="786" class="mono">role</text>
 
-  <line x1="490" y1="115" x2="610" y2="115" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="550" y="108" text-anchor="middle" font-size="10" fill="#666" font-family="SimHei">1:N</text>
-
-  <line x1="105" y1="180" x2="105" y2="220" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="115" y="205" font-size="10" fill="#666" font-family="SimHei">1:N</text>
-
-  <line x1="190" y1="260" x2="310" y2="260" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="250" y="253" text-anchor="middle" font-size="10" fill="#666" font-family="SimHei">1:N</text>
-
-  <line x1="490" y1="260" x2="610" y2="260" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="550" y="253" text-anchor="middle" font-size="10" fill="#666" font-family="SimHei">1:N</text>
-
-  <line x1="105" y1="340" x2="205" y2="380" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-
-  <line x1="400" y1="340" x2="425" y2="380" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3"/>
-
-  <text x="400" y="540" text-anchor="middle" font-size="12" fill="#888" font-family="SimHei">虚线表示实体间关联关系（1:N = 一对多）</text>
+  <rect x="390" y="660" width="210" height="138" rx="14" class="node"/>
+  <text x="495" y="694" text-anchor="middle" class="entity-label">SystemConfig 系统配置</text>
+  <line x1="406" y1="712" x2="584" y2="712" stroke="#cbd5e1" stroke-opacity="0.8"/>
+  <text x="408" y="738" class="mono">PK id</text>
+<text x="408" y="762" class="mono">config_key</text>
+<text x="408" y="786" class="mono">config_value</text>
+  <path d="M 280 200 L 390 200" class="relation"/><text x="335" y="184" text-anchor="middle" class="tiny">浏览产品</text>
+<path d="M 600 200 L 710 200" class="relation"/><text x="655" y="184" text-anchor="middle" class="tiny">1:N 投资订单</text>
+<path d="M 175 298 L 175 360 L 1135 360 L 1135 405" class="relation"/><text x="660" y="348" text-anchor="middle" class="tiny">1:N 支付订单</text>
+<path d="M 1240 200 L 1350 200" class="relation"/><text x="1295" y="184" text-anchor="middle" class="tiny">1:N 支付流水</text>
+<path d="M 175 298 L 175 350 L 495 350 L 495 405" class="relation"/><text x="338" y="338" text-anchor="middle" class="tiny">1:N 优惠券</text>
+<path d="M 175 298 L 175 375 L 1135 375 L 1135 405" class="relation dash"/><text x="735" y="388" text-anchor="middle" class="tiny">1:N 风控记录</text>
+<path d="M 175 298 L 175 390 L 1455 390 L 1455 405" class="relation dash"/><text x="960" y="405" text-anchor="middle" class="tiny">1:N 客服工单</text>
+<path d="M 815 405 L 815 610 L 815 660" class="relation"/><text x="835" y="602" text-anchor="middle" class="tiny">活动配置</text>
+<path d="M 1135 660 L 1135 610 L 1455 610 L 1455 660" class="relation"/><text x="1295" y="602" text-anchor="middle" class="tiny">系统参数</text>
+  <rect x="70" y="830" width="1488" height="82" rx="18" class="note"/>
+  <text x="95" y="862" class="label">关系说明</text>
+  <text x="245" y="862" class="small" text-anchor="start">User 可发起 InvestmentOrder 与 PaymentOrder；FinancialProduct、PaymentOrder 和 Transaction 形成投资支付主链路。</text>
+  <text x="245" y="892" class="small" text-anchor="start">Merchant、Coupon、Activity 支撑营销；RiskRecord、SupportTicket 和 SystemConfig 支撑风控、客服与后台配置。</text>
+  
 </svg>

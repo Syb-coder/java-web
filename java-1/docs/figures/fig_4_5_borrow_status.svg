@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="620" viewBox="0 0 1380 620" role="img" aria-label="图 4-5 借阅状态流转图">
+  <title>图 4-5 借阅状态流转图</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 16px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 700 18px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .entity-label { font: 700 15px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 14px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .tiny { font: 500 12px "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px Consolas, "Microsoft YaHei", monospace; fill: #475569; }
+      .white { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; filter: url(#shadow); }
+      .blue { fill: #2563eb; stroke: #1d4ed8; }
+      .green { fill: #16a34a; stroke: #15803d; }
+      .orange { fill: #f97316; stroke: #ea580c; }
+      .purple { fill: #7c3aed; stroke: #6d28d9; }
+      .pink { fill: #db2777; stroke: #be185d; }
+      .dark { fill: #1f2937; stroke: #111827; }
+      .line { fill: none; stroke: #475569; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-blue { fill: none; stroke: #2563eb; stroke-width: 2.6; marker-end: url(#arrow-blue); }
+      .relation { fill: none; stroke: #64748b; stroke-width: 2.1; }
+      .dash { stroke-dasharray: 8 8; }
+      .note { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="bg" width="1380" height="620"/>
+  
+  
+  <text x="60" y="56" class="title">图 4-5 借阅状态流转图</text>
+  <text x="60" y="84" class="subtitle">状态分层排布，主路径与异常路径分离</text>
+  
+  <rect x="90" y="170" width="220" height="84" rx="16" class="blue"/>
+  <text x="200" y="204" text-anchor="middle" class="label white">待借阅</text>
+  <text x="200" y="226" text-anchor="middle" class="white">初始状态</text>
+  
+  <rect x="420" y="170" width="220" height="84" rx="16" class="node"/>
+  <text x="530" y="204" text-anchor="middle" class="label">已借出</text>
+  <text x="530" y="226" text-anchor="middle" class="small">等待处理</text>
+  
+  <rect x="750" y="170" width="220" height="84" rx="16" class="purple"/>
+  <text x="860" y="204" text-anchor="middle" class="label white">待归还</text>
+  <text x="860" y="226" text-anchor="middle" class="white">处理中</text>
+  
+  <rect x="1080" y="170" width="220" height="84" rx="16" class="green"/>
+  <text x="1190" y="204" text-anchor="middle" class="label white">已归还</text>
+  <text x="1190" y="226" text-anchor="middle" class="white">正常结束</text>
+  
+  <rect x="420" y="430" width="220" height="84" rx="16" class="orange"/>
+  <text x="530" y="464" text-anchor="middle" class="label white">已逾期</text>
+  <text x="530" y="486" text-anchor="middle" class="white">异常或撤销</text>
+  
+  <rect x="750" y="430" width="220" height="84" rx="16" class="dark"/>
+  <text x="860" y="464" text-anchor="middle" class="label white">已关闭</text>
+  <text x="860" y="486" text-anchor="middle" class="white">最终关闭</text>
+  <path d="M 310 212 L 420 212" class="line-blue"/>
+  <path d="M 640 212 L 750 212" class="line-blue"/>
+  <path d="M 970 212 L 1080 212" class="line-blue"/>
+  <path d="M 530 254 L 530 430" class="line"/>
+  <path d="M 640 472 L 750 472" class="line"/>
+  <path d="M 860 430 L 860 302 L 1190 302 L 1190 254" class="line"/>
+  <text x="365" y="196" text-anchor="middle" class="tiny">确认借阅</text>
+  <text x="695" y="196" text-anchor="middle" class="tiny">到期提醒</text>
+  <text x="1030" y="196" text-anchor="middle" class="tiny">完成还书</text>
+  <text x="560" y="350" text-anchor="middle" class="tiny">超过期限</text>
+  <text x="695" y="456" text-anchor="middle" class="tiny">结清关闭</text>
+  
+</svg>
