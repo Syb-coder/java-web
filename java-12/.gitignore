@@ -1,0 +1,23 @@
+# Maven 构建产物
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE 文件
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+
+# 日志文件
+*.log
+
+# H2 数据库文件（运行时生成）
+data/
+
+# Node.js（前端构建产物）
+node_modules/
+dist/
